@@ -5,13 +5,15 @@
 这是一个基于 Pandoc 的 Obsidian 加强版导出插件。提供了基本的导出格式：Markdown 、Markdown（Hugo [https://gohugo.io/](https://gohugo.io/)）、Html、docx、Latex等。
 其中 Markdown 、Markdown（Hugo）、Html 会把媒体资源一并导出。
 
-**注意：**目前自用的就是 Markdown 、Markdown（Hugo）、Html，在 Mac OS、Windows、Linux 可正常使用，其他未经严格测试。
+**注意：** 目前自用的就是 Markdown 、Markdown（Hugo）、Html，在 Mac OS、Windows、Linux 可正常使用，其他未经严格测试。
 
 ## 界面截图
 - 导出界面，在文件菜单上点击 `导出为......`
-  ![](screenshot/exportview_zh-CN.png)
+   
+   ![](screenshot/exportview_zh-CN.png)
 - 设置界面
-  ![](screenshot/settingview_zh-CN.png)
+   
+   ![](screenshot/settingview_zh-CN.png)
 
 ## 安装
 1. 需要先安装 `pandoc`，最好配置到 PATH 环境变量，或者设置界面指定路径。
