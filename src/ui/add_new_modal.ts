@@ -1,6 +1,7 @@
 import { App, Modal, Setting, TextComponent } from 'obsidian';
 import type { ExportSettingTab } from './setting_tab';
-import {templates, ExportSetting} from '../settings';
+import { ExportSetting } from '../settings';
+import export_command_templates from '../export_command_templates';
 
 export class AddNewModal extends Modal {
   readonly settingTab: ExportSettingTab;
@@ -17,7 +18,7 @@ export class AddNewModal extends Modal {
   onOpen() {
     const { contentEl, titleEl, lang, callback } = this;
     titleEl.setText(lang.new);
-    let tpl = Object.values(templates).first();
+    let tpl = Object.values(export_command_templates).first();
     let tplName = tpl.name;
     let name = tpl.name;
 
@@ -25,7 +26,7 @@ export class AddNewModal extends Modal {
     let nameSetting: Setting;
 
     new Setting(contentEl).setName(lang.template).addDropdown(cb => {
-      cb.addOptions(Object.fromEntries(Object.values(templates).map(o => [o.name, o.name])))
+      cb.addOptions(Object.fromEntries(Object.values(export_command_templates).map(o => [o.name, o.name])))
         .setValue(tplName)
         .onChange(v => {
           tplName = v;
@@ -35,16 +36,13 @@ export class AddNewModal extends Modal {
         });
     });
 
-    nameSetting = new Setting(contentEl)
-      .setName(lang.name)
-      .addText(cb => {
-        cb.setValue(name)
-          .onChange(v => name = v);
-      });
+    nameSetting = new Setting(contentEl).setName(lang.name).addText(cb => {
+      cb.setValue(name).onChange(v => (name = v));
+    });
 
     contentEl.createEl('div', { cls: ['modal-button-container'], parent: contentEl }, el => {
       el.createEl('button', { text: lang.add, cls: ['mod-cta'], parent: el }).onclick = async () => {
-        tpl = JSON.parse(JSON.stringify(templates[tplName]));
+        tpl = JSON.parse(JSON.stringify(export_command_templates[tplName]));
         tpl.name = name;
         callback(tpl);
         this.close();

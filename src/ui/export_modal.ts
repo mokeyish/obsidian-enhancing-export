@@ -1,12 +1,12 @@
 import { App, Modal, Setting, TFile, TextComponent, Notice } from 'obsidian';
 import * as ct from 'electron';
-import {extractDefaultExtension as extractExtension, getPlatformValue, setPlatformValue, Variables} from '../settings';
+import { extractDefaultExtension as extractExtension, getPlatformValue, setPlatformValue, Variables } from '../settings';
 import type UniversalExportPlugin from '../main';
 
 import { exec } from 'child_process';
 import { MessageBox } from './message_box';
 import * as fs from 'fs';
-
+import { setTooltip, setVisible } from '../utils';
 
 export const executeCommand = (cmd: string, successCallback?: (msg: string) => void, errorCallback?: (msg: string) => void) => {
   let options;
@@ -37,11 +37,12 @@ export const executeCommand = (cmd: string, successCallback?: (msg: string) => v
   });
 };
 
-
 export class ExportDialog extends Modal {
   readonly plugin: UniversalExportPlugin;
   readonly currentFile: TFile;
-  get lang() { return this.plugin.lang; }
+  get lang() {
+    return this.plugin.lang;
+  }
   constructor(app: App, plugin: UniversalExportPlugin, currentFile: TFile) {
     super(app);
     this.plugin = plugin;
@@ -49,8 +50,13 @@ export class ExportDialog extends Modal {
   }
 
   onOpen() {
-    const { titleEl, contentEl, currentFile, plugin: { settings: common }, lang } = this;
-    
+    const {
+      titleEl,
+      contentEl,
+      currentFile,
+      plugin: { settings: common },
+      lang,
+    } = this;
 
     const exportDirectoryMode = common.defaultExportDirectoryMode;
 
@@ -62,7 +68,6 @@ export class ExportDialog extends Modal {
     let showOverwriteConfirmation = common.showOverwriteConfirmation;
     let candidateOutputDirectory = `${getPlatformValue(common.lastExportDirectory) ?? ct.remote.app.getPath('documents')}`;
     let candidateOutputFileName = `${currentFile.basename}${extension}`;
-
 
     // eslint-disable-next-line prefer-const
     let candidateOutputFileNameSetting: Setting;
@@ -78,7 +83,7 @@ export class ExportDialog extends Modal {
 
     new Setting(contentEl).setName(lang.type).addDropdown(cb => {
       cb.addOptions(Object.fromEntries(common.items.map(o => [o.name, o.name])))
-        .onChange((v => {
+        .onChange(v => {
           exportType = v;
           setting = common.items.find(o => o.name === exportType);
           titleEl.setText(lang.exportDialog.title(setting.name));
@@ -89,15 +94,20 @@ export class ExportDialog extends Modal {
           } else {
             candidateOutputFileName = candidateOutputFileName + extension;
           }
-          (candidateOutputFileNameSetting.components.first() as TextComponent)?.setValue(candidateOutputFileName)
+          (candidateOutputFileNameSetting.components.first() as TextComponent)
+            ?.setValue(candidateOutputFileName)
             .inputEl.setAttribute('title', candidateOutputFileName);
-        }))
+        })
         .setValue(exportType);
     });
 
     candidateOutputFileNameSetting = new Setting(contentEl).setName(lang.fileName).addText(cb => {
       cb.setValue(candidateOutputFileName)
-        .onChange(v => { candidateOutputFileName = v; cb.inputEl.setTooltip(v); }).inputEl.setAttribute('title', candidateOutputFileName);
+        .onChange(v => {
+          candidateOutputFileName = v;
+          setTooltip(cb.inputEl, v);
+        })
+        .inputEl.setAttribute('title', candidateOutputFileName);
     });
 
     const candidateOutputDirectorySetting = new Setting(contentEl)
@@ -105,46 +115,46 @@ export class ExportDialog extends Modal {
       .setDisabled(true)
       .addText(cb => {
         cb.setValue(candidateOutputDirectory).onChange(v => {
-          candidateOutputDirectory = v; 
-          cb.inputEl.setTooltip(candidateOutputDirectory);
+          candidateOutputDirectory = v;
+          setTooltip(cb.inputEl, candidateOutputDirectory);
         });
-        cb.inputEl.setTooltip(candidateOutputDirectory);
-      }).addExtraButton(cb => {
-        cb.setIcon('folder').onClick((async () => {
+        setTooltip(cb.inputEl, candidateOutputDirectory);
+      })
+      .addExtraButton(cb => {
+        cb.setIcon('folder').onClick(async () => {
           const retval = await ct.remote.dialog.showOpenDialog({
             title: lang.selectExportFolder,
             defaultPath: candidateOutputDirectory,
-            properties: ['createDirectory', 'openDirectory']
+            properties: ['createDirectory', 'openDirectory'],
           });
           if (!retval.canceled && retval.filePaths?.length > 0) {
             candidateOutputDirectory = retval.filePaths[0];
-            (candidateOutputDirectorySetting.components.first() as TextComponent)?.setValue(candidateOutputDirectory)
-              .inputEl
-              .setAttribute('title', candidateOutputDirectory);
+            (candidateOutputDirectorySetting.components.first() as TextComponent)
+              ?.setValue(candidateOutputDirectory)
+              .inputEl.setAttribute('title', candidateOutputDirectory);
           }
-        }));
+        });
       });
 
     new Setting(contentEl).setName(lang.overwriteConfirmation).addToggle(cb => {
-      cb.setValue(showOverwriteConfirmation).onChange(v => showOverwriteConfirmation = v);
+      cb.setValue(showOverwriteConfirmation).onChange(v => (showOverwriteConfirmation = v));
     });
 
     contentEl.createEl('div', { cls: ['modal-button-container'], parent: contentEl }, el => {
       el.createEl('button', { text: lang.exportDialog.export, cls: ['mod-cta'], parent: el }).onclick = async () => {
-
         /* Variables
-        *   /User/aaa/Documents/test.pdf
-        * - ${outputDir}             --> /User/aaa/Documents/
-        * - ${outputPath}            --> /User/aaa/Documents/test.pdf
-        * - ${outputFileName}        --> test
-        * - ${outputFileFullName}    --> test.pdf
-        * 
-        *   /User/aaa/Documents/test.pdf
-        * - ${currentDir}            --> /User/aaa/Documents/
-        * - ${currentPath}           --> /User/aaa/Documents/test.pdf
-        * - ${CurrentFileName}       --> test
-        * - ${CurrentFileFullName}   --> test.pdf
-        */
+         *   /User/aaa/Documents/test.pdf
+         * - ${outputDir}             --> /User/aaa/Documents/
+         * - ${outputPath}            --> /User/aaa/Documents/test.pdf
+         * - ${outputFileName}        --> test
+         * - ${outputFileFullName}    --> test.pdf
+         *
+         *   /User/aaa/Documents/test.pdf
+         * - ${currentDir}            --> /User/aaa/Documents/
+         * - ${currentPath}           --> /User/aaa/Documents/test.pdf
+         * - ${CurrentFileName}       --> test
+         * - ${CurrentFileFullName}   --> test.pdf
+         */
 
         const pluginDir = `${this.app.vault.adapter.getBasePath()}/${this.plugin.manifest.dir}`;
         const outputDir = candidateOutputDirectory;
@@ -173,25 +183,23 @@ export class ExportDialog extends Modal {
         };
 
         switch (ct.remote.process.platform) {
-        case 'darwin':{
-          let envPath = ct.remote.process.env['PATH'];
-          const brewBin = '/usr/local/bin';
-          if (!envPath.includes(brewBin)) {
-            envPath = `${brewBin}:${envPath}`;
-            ct.remote.process.env['PATH'] = envPath;
+          case 'darwin': {
+            let envPath = ct.remote.process.env['PATH'];
+            const brewBin = '/usr/local/bin';
+            if (!envPath.includes(brewBin)) {
+              envPath = `${brewBin}:${envPath}`;
+              ct.remote.process.env['PATH'] = envPath;
+            }
+            break;
           }
-          break;
+          default:
+            break;
         }
-        default:
-          break;
-        }
-
-
 
         const showCommandLineOutput = setting.type === 'custom' && setting.showCommandOutput;
         const openExportedFileLocation = setting.openExportedFileLocation ?? common.openExportedFileLocation;
         const openExportedFile = setting.openExportedFile ?? common.openExportedFile;
-        
+
         const onExportSuccess = async () => {
           if (openExportedFileLocation) {
             setTimeout(() => {
@@ -204,7 +212,7 @@ export class ExportDialog extends Modal {
           // success
           this.plugin.settings.showOverwriteConfirmation = showOverwriteConfirmation;
           this.plugin.settings.lastExportDirectory = setPlatformValue(this.plugin.settings.lastExportDirectory, candidateOutputDirectory);
-          
+
           this.plugin.settings.lastExportType = exportType;
           await this.plugin.saveSettings();
           this.close();
@@ -214,37 +222,41 @@ export class ExportDialog extends Modal {
           // show progress
           const progress = this.app.loadProgress;
           progress.setMessage(lang.preparing(outputFileFullName));
-          this.containerEl.setVisible(false);
+          setVisible(this.containerEl, false);
           progress.show();
-          
+
           const pandocPath = getPlatformValue(common.pandocPath) ?? 'pandoc';
-          
-          const cmdTpl = setting.type === 'pandoc' ?
-            `${pandocPath} ${setting.arguments ?? ''} ${setting.customArguments ?? ''} "${currentPath}"`
-            : setting.command;
+
+          const cmdTpl =
+            setting.type === 'pandoc'
+              ? `${pandocPath} ${setting.arguments ?? ''} ${setting.customArguments ?? ''} "${currentPath}"`
+              : setting.command;
 
           const cmd = cmdTpl.replace(/\${(.*?)}/g, (_, p1: string) => {
             return variables[p1 as keyof typeof variables];
           });
 
-
           // console.log('export command:' + cmd);
 
-          executeCommand(cmd, () => {
-            progress.hide();
-            if (showCommandLineOutput) {
-              const box = new MessageBox(this.app, lang.exportCommandOutputMessage(cmd));
-              box.onClose = onExportSuccess;
-              box.open();
-            } else {
-              new Notice(lang.exportSuccessNotice(outputFileFullName), 1500);
-              onExportSuccess();
+          executeCommand(
+            cmd,
+            () => {
+              progress.hide();
+              if (showCommandLineOutput) {
+                const box = new MessageBox(this.app, lang.exportCommandOutputMessage(cmd));
+                box.onClose = onExportSuccess;
+                box.open();
+              } else {
+                new Notice(lang.exportSuccessNotice(outputFileFullName), 1500);
+                onExportSuccess();
+              }
+            },
+            err => {
+              progress.hide();
+              new MessageBox(this.app, lang.exportErrorOutputMessage(cmd, err)).open();
+              setVisible(this.containerEl, true);
             }
-          }, (err)=> {
-            progress.hide();
-            new MessageBox(this.app, lang.exportErrorOutputMessage(cmd, err)).open();
-            this.containerEl.setVisible(true);
-          });
+          );
         };
 
         if (showOverwriteConfirmation && fs.existsSync(outputPath)) {
@@ -263,13 +275,13 @@ export class ExportDialog extends Modal {
           //   }
           // });
           // msgBox.open();
-          
+
           const result = await ct.remote.dialog.showSaveDialog({
             title: lang.overwriteConfirmationDialog.title(outputFileFullName),
             defaultPath: outputPath,
-            properties: ['showOverwriteConfirmation', 'createDirectory']
+            properties: ['showOverwriteConfirmation', 'createDirectory'],
           });
-          
+
           if (!result.canceled) {
             variables.outputPath = result.filePath;
             variables.outputDir = variables.outputPath.substring(0, variables.outputPath.lastIndexOf('/'));
@@ -283,7 +295,7 @@ export class ExportDialog extends Modal {
       };
     });
   }
-  
+
   onClose() {
     const { contentEl } = this;
     contentEl.empty();

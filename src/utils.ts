@@ -1,33 +1,48 @@
-
-
 export function strTpl(strings: TemplateStringsArray, ...keys: number[]): (...values: any[]) => string {
-  return (function(...values) {
+  return function (...values) {
     const dict = values[values.length - 1] || {};
     const result = [strings[0]];
-    keys.forEach(function(key, i) {
+    keys.forEach(function (key, i) {
       const value = Number.isInteger(key) ? values[key] : dict[key];
       result.push(value, strings[i + 1]);
     });
     return result.join('');
-  });
+  };
 }
 
+export function setVisible(el: Element, visible: boolean) {
+  if (visible) {
+    el.removeAttribute('hidden');
+  } else {
+    el.setAttribute('hidden', '');
+  }
+  return el;
+}
 
+export function setTooltip(el: Element, tooltip?: string) {
+  if (tooltip && tooltip.trim() != '') {
+    el.setAttribute('title', tooltip);
+  } else {
+    el.removeAttribute('title');
+  }
+  return el;
+}
 
 // noinspection SpellCheckingInspection
-export const nameofFactory = <T>() => (name: keyof T) => name;
+export const nameofFactory =
+  <T>() =>
+  (name: keyof T) =>
+    name;
 
-type TOnChangingHandler<T extends object, K extends keyof T> = (value: T[K], key: K, target: T) => boolean ;
-type TOnChangedHandler<T extends object, K extends keyof T> = (value: T[K], key: K, target: T) => void ; 
+type TOnChangingHandler<T extends object, K extends keyof T> = (value: T[K], key: K, target: T) => boolean;
+type TOnChangedHandler<T extends object, K extends keyof T> = (value: T[K], key: K, target: T) => void;
 
-export class Watcher<T extends object>{
+export class Watcher<T extends object> {
   onChanging: { [k in keyof T]?: TOnChangingHandler<T, keyof T>[] };
   onChanged: { [k in keyof T]?: TOnChangedHandler<T, keyof T>[] };
   private readonly _onChangingCallback: TOnChangingHandler<T, keyof T>;
   private readonly _onChangedCallback: TOnChangedHandler<T, keyof T>;
-  constructor(options?: {
-      onChangingCallback?: TOnChangingHandler<T, keyof T>,
-      onChangedCallback?: TOnChangedHandler<T, keyof T> } ) {
+  constructor(options?: { onChangingCallback?: TOnChangingHandler<T, keyof T>; onChangedCallback?: TOnChangedHandler<T, keyof T> }) {
     this.onChanging = {};
     this.onChanged = {};
     this._onChangingCallback = options?.onChangingCallback ?? (() => true);
@@ -42,7 +57,7 @@ export class Watcher<T extends object>{
   watchOnChanged<K extends keyof T>(key: K, handler: TOnChangedHandler<T, K>): void {
     (this.onChanged[key] ?? (this.onChanged[key] = [])).push(handler);
   }
-  
+
   set<K extends keyof T>(target: T, key: K, value: T[K], _receiver: T): boolean {
     if (this._onChangingCallback && this._onChangingCallback(value, key, target) === false) {
       return false;
@@ -62,7 +77,7 @@ export class Watcher<T extends object>{
 
     // The default behavior to store the value
     target[key] = value;
-    
+
     const onChangedHandlers = this.onChanged[key];
     if (onChangedHandlers) {
       for (const h of onChangedHandlers) {
@@ -73,7 +88,7 @@ export class Watcher<T extends object>{
         }
       }
     }
-    
+
     if (this._onChangedCallback) {
       this._onChangedCallback(value, key, target);
     }
@@ -81,9 +96,9 @@ export class Watcher<T extends object>{
     // Indicate success
     return true;
   }
-  
+
   fireChanged(target: T) {
-    for (const key of Object.keys(this.onChanged)){
+    for (const key of Object.keys(this.onChanged)) {
       const k = key as keyof T;
       const onChangedHandlers = this.onChanged[k];
       if (onChangedHandlers) {
@@ -96,6 +111,5 @@ export class Watcher<T extends object>{
         }
       }
     }
-
   }
 }

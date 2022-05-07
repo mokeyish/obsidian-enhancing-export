@@ -1,14 +1,10 @@
-import './polyfill';
-import { App, Menu, Plugin, PluginManifest, TFile } from 'obsidian';
-import * as https from 'https';
-import * as fs from 'fs';
+import luaScripts from './lua';
 import * as fsp from 'fs/promises';
-
-import { UniversalExportPluginSettings, DEFAULT_SETTINGS} from './settings';
+import { App, Menu, Plugin, PluginManifest, TFile } from 'obsidian';
+import { UniversalExportPluginSettings, DEFAULT_SETTINGS } from './settings';
 import { ExportDialog } from './ui/export_modal';
 import { ExportSettingTab } from './ui/setting_tab';
-import lang, { Lang} from './lang';
-
+import lang, { Lang } from './lang';
 
 
 export default class UniversalExportPlugin extends Plugin {
@@ -25,19 +21,23 @@ export default class UniversalExportPlugin extends Plugin {
 
     this.addSettingTab(new ExportSettingTab(this.app, this));
 
-    this.registerEvent(this.app.workspace.on('file-menu', (menu: Menu, file) => {
-      if (file instanceof TFile) {
-        menu.addItem((item) => {
-          item
-            .setTitle(this.lang.exportToOo)
-            .setIcon('document')
-            .onClick((): void => {
-              new ExportDialog(this.app, this, file).open();
-            });
-        }).addSeparator();
-      }
-    }));
-    this.downloadLuaScripts().then();
+    this.registerEvent(
+      this.app.workspace.on('file-menu', (menu: Menu, file) => {
+        if (file instanceof TFile) {
+          menu
+            .addItem(item => {
+              item
+                .setTitle(this.lang.exportToOo)
+                .setIcon('document')
+                .onClick((): void => {
+                  new ExportDialog(this.app, this, file).open();
+                });
+            })
+            .addSeparator();
+        }
+      })
+    );
+    // this.downloadLuaScripts().then();
   }
 
   public async resetSettings(): Promise<void> {
@@ -50,55 +50,24 @@ export default class UniversalExportPlugin extends Plugin {
 
   public async loadSettings(): Promise<void> {
     this.settings = Object.assign({}, JSON.parse(JSON.stringify(DEFAULT_SETTINGS)), await this.loadData());
-  }
-
-  public async saveSettings(): Promise<void> {
-    console.log('saveSettings', this.settings);
-    await this.saveData(this.settings);
-  }
-  
-  async downloadLuaScripts(): Promise<void> {
-    const luaDir = `${this.app.vault.adapter.getBasePath()}/${this.manifest.dir}/lua`;
-    await fsp.mkdir(luaDir, {recursive: true});
-    
-    const luaScripts = [
-      'utf8_filenames.lua', 
-      'url.lua', 
-      'polyfill.lua', 
-      'markdown.lua',
-      'markdown+hugo.lua'
-    ];
-    for (const luaScript of luaScripts) {
-      const luaFile = `${luaDir}/${luaScript}`;
-      if (fs.existsSync(luaScript)) {
-        continue;
-      }
-      await this.download(
-        `https://cdn.jsdelivr.net/gh/mokeyish/obsidian-enhancing-export@master/lua/${luaScript}`,
-        luaFile
-      );
-      console.log(`下载成功=${luaScript}`);
+    if (this.settings.version !== this.manifest.version) {
+      await this.saveLuaScripts();
+      this.settings.version = this.manifest.version;
+      await this.saveSettings();
     }
   }
 
-  download(url: string, dest: string): Promise<void> {
-    return new Promise<void>((resolve) => {
-      https.get(url, (res) => {
-        const writeStream = fs.createWriteStream(dest);
-        res.pipe(writeStream);
-        writeStream.on('finish', () => {
-          writeStream.close();
-          resolve();
-        });
-      });
-    });
+  public async saveSettings(): Promise<void> {
+    console.log('[obsidian-enhancing-export] saveSettings', this.settings);
+    await this.saveData(this.settings);
+  }
+
+  async saveLuaScripts(): Promise<void> {
+    const luaDir = `${this.app.vault.adapter.getBasePath()}/${this.manifest.dir}/lua`;
+    await fsp.mkdir(luaDir, { recursive: true });
+    for (const luaScript of Object.keys(luaScripts) as Array<keyof typeof luaScripts>) {
+      const luaFile = `${luaDir}/${luaScript}`;
+      await fsp.writeFile(luaFile, luaScripts[luaScript]);
+    }
   }
 }
-
-
-
-
-
-
-
-

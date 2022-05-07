@@ -1,6 +1,6 @@
 import zhCN from './zh-CN';
 import enUS from './en-US';
-import {moment} from 'obsidian';
+import { moment } from 'obsidian';
 
 export type Lang = typeof enUS;
 

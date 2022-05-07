@@ -23,9 +23,9 @@ Where `Markdown`、`Markdown (Hugo)`、`Html` will export and its media resource
 
 2. Search `obsidian-enhancing-export` in the community plugin of obsidian, and install it.
 
-## Custom export commands
+## Customize export commands
 
-You can custom your export command by yourself, click `add` in the plugin setting view and then choose template `custom` to add new custom configuration.
+You can customize your export command by yourself, click `add` in the plugin setting view and then choose template `custom` to add new custom configuration.
 
 ## Variables 
 
@@ -44,5 +44,5 @@ You can use `${variables}` in custom export command, their values are:
 
 ## Finally
 
-- Welcome to provide more command templates.
+- Welcome to provide more command templates to [here](src/export_command_templates.ts).
 - Feel free to file an issue for any questions.

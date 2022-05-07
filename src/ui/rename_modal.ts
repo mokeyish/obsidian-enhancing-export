@@ -1,14 +1,15 @@
 import { App, Modal, Setting } from 'obsidian';
 import type { ExportSettingTab } from './setting_tab';
-import type { ExportSetting} from '../settings';
-
+import type { ExportSetting } from '../settings';
 
 export class RenemeModal extends Modal {
   private readonly settingTab: ExportSettingTab;
   private readonly setting: ExportSetting;
   private readonly callback: (name: string) => void;
-  get lang() { return this.settingTab.lang; }
-  constructor(app: App, settingTab:  ExportSettingTab , setting: ExportSetting, callback: (name: string) => void) {
+  get lang() {
+    return this.settingTab.lang;
+  }
+  constructor(app: App, settingTab: ExportSettingTab, setting: ExportSetting, callback: (name: string) => void) {
     super(app);
     this.settingTab = settingTab;
     this.setting = setting;
@@ -21,12 +22,9 @@ export class RenemeModal extends Modal {
 
     let name = setting.name;
 
-
-    new Setting(contentEl)
-      .setName('名称')
-      .addText(cb => {
-        cb.setValue(setting.name).onChange(v => name = v);
-      });
+    new Setting(contentEl).setName(lang.name).addText(cb => {
+      cb.setValue(setting.name).onChange(v => (name = v));
+    });
 
     contentEl.createEl('div', { cls: ['modal-button-container'], parent: contentEl }, el => {
       el.createEl('button', { text: lang.save, cls: ['mod-cta'], parent: el }).onclick = async () => {
@@ -35,7 +33,6 @@ export class RenemeModal extends Modal {
         this.close();
       };
     });
-
   }
 
   onClose() {

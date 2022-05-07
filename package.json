@@ -1,15 +1,21 @@
 {
 	"name": "obsidian-enhancing-export",
-	"version": "0.12.0",
-	"description": "This is a enhancing export plugin for Obsidian. It allows to export to formats like DOCX, ePub and PDF or Hugo.",
+	"version": "1.0.4",
+	"description": "This is a enhancing export plugin for Obsidian. It allows to export to formats like Html, DOCX, ePub and PDF or Markdown(Hugo) etc.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
-		"build": "node esbuild.config.mjs production"
+		"build": "node esbuild.config.mjs production",
+    "version": "node version-bump.mjs && git add manifest.json versions.json",
+		"lint": "eslint --ext .ts,.js src build",
+		"lint-fix": "eslint --fix --ext .ts,.js src build gulpfile.js",
+		"format-check": "prettier --check \"src/**/*.ts\"",
+		"format-fix": "prettier --write \"src/**/*.ts\""
 	},
 	"keywords": [],
 	"author": "YISH",
 	"license": "MIT",
+  "repository": "https://github.com/mokeyish/obsidian-enhancing-export",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
 		"@typescript-eslint/eslint-plugin": "^5.18.0",
@@ -20,6 +26,7 @@
 		"esbuild-plugin-copy": "^1.3.0",
 		"eslint": "^8.13.0",
 		"obsidian": "latest",
+		"prettier": "^2.6.2",
 		"tslib": "2.3.1",
 		"typescript": "4.6.3"
 	}
