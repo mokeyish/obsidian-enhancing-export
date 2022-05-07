@@ -11,8 +11,10 @@ Where `Markdown`、`Markdown (Hugo)`、`Html` will export and its media resource
 ## Screen shot
 
 - Export view，click on `Export to ......` on file menu.
+
   ![](screenshot/exportview_en-US.png)
 - Setting view
+
   ![](screenshot/settingview_en-US.png)
 
 ## Installation
