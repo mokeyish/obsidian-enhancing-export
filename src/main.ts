@@ -63,11 +63,12 @@ export default class UniversalExportPlugin extends Plugin {
   }
 
   async saveLuaScripts(): Promise<void> {
-    const luaDir = `${this.app.vault.adapter.getBasePath()}/${this.manifest.dir}/lua`;
-    await fsp.mkdir(luaDir, { recursive: true });
+    const { adapter } = this.app.vault;
+    const luaDir = `${this.manifest.dir}/lua`;
+    await adapter.mkdir(luaDir);
     for (const luaScript of Object.keys(luaScripts) as Array<keyof typeof luaScripts>) {
       const luaFile = `${luaDir}/${luaScript}`;
-      await fsp.writeFile(luaFile, luaScripts[luaScript]);
+      await adapter.writeBinary(luaFile, luaScripts[luaScript]);
     }
   }
 }
