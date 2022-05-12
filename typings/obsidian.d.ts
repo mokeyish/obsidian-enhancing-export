@@ -15,4 +15,10 @@ declare module 'obsidian' {
   export interface App {
     readonly loadProgress: { show(): void; hide(): void; setMessage(msg: string): void; };
   }
+  
+  export interface Vault {
+    config: {
+      attachmentFolderPath: string
+    }
+  }
 }

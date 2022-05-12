@@ -16,6 +16,7 @@ import export_command_templates from './export_command_templates';
  * - ${CurrentFileFullName}   --> test.pdf
  */
 export interface Variables {
+  attachmentFolderPath: string;
   pluginDir: string;
   outputDir: string;
   outputPath: string;

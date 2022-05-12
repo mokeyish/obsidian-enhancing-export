@@ -192,9 +192,8 @@ export class ExportDialog extends Modal {
            * - ${CurrentFileFullName}   --> test.pdf
            */
 
-          const pluginDir = `${this.app.vault.adapter.getBasePath()}/${
-            this.plugin.manifest.dir
-          }`;
+          const vaultDir = this.app.vault.adapter.getBasePath();
+          const pluginDir = `${vaultDir}/${this.plugin.manifest.dir}`;
           const outputDir = candidateOutputDirectory;
           const outputPath = `${outputDir}/${candidateOutputFileName}`;
           const outputFileName = candidateOutputFileName.substring(
@@ -213,6 +212,16 @@ export class ExportDialog extends Modal {
           const currentFileName = currentFile.basename;
           const currentFileFullName = currentFile.name;
 
+          let attachmentFolderPath =
+            this.app.vault.config.attachmentFolderPath ?? '/';
+          if (attachmentFolderPath === '/') {
+            attachmentFolderPath = vaultDir;
+          } else if (attachmentFolderPath.startsWith('.')) {
+            attachmentFolderPath = `${currentDir}/${attachmentFolderPath.substring(
+              1
+            )}`;
+          }
+
           const variables: Variables = {
             pluginDir,
             outputDir,
@@ -223,6 +232,7 @@ export class ExportDialog extends Modal {
             currentPath,
             currentFileName,
             currentFileFullName,
+            attachmentFolderPath,
             // date: new Date(currentFile.stat.ctime),
             // lastMod: new Date(currentFile.stat.mtime),
             // now: new Date()

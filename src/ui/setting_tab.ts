@@ -321,6 +321,23 @@ export class ExportSettingTab extends PluginSettingTab {
       setVisible(argumentsSetting.settingEl, value === 'pandoc');
     });
 
+    const targetFileExtensionsSetting = new Setting(containerEl)
+      .setName(lang.settingTab.targetFileExtensions)
+      .addText(cb => {
+        cb.onChange(v => {
+          if (current.type === 'custom' && current.targetFileExtensions !== v) {
+            current.targetFileExtensions = v;
+          }
+        });
+
+        customSettingWatcher.watchOnChanged('targetFileExtensions', value => {
+          cb.setValue(value ?? '');
+        });
+      });
+    settingWatcher.watchOnChanged('type', value => {
+      setVisible(targetFileExtensionsSetting.settingEl, value === 'custom');
+    });
+
     const customArgumentsSetting = new Setting(containerEl)
       .setName(lang.extraArguments)
       .addText(cb => {

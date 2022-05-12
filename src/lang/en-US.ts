@@ -56,9 +56,10 @@ export default {
 
   arguments: 'Arguments',
   extraArguments: 'Extra arguments',
-  targetFileExtensions: 'Target file extensions',
-  targetFileExtensionsTip: '(Separated by whitespace)',
-
+  settingTab: {
+    targetFileExtensions: 'Target file extensions',
+    targetFileExtensionsTip: '(Separated by whitespace)',
+  },
   afterExport: 'After Export',
 
   runCommand: 'Run command',

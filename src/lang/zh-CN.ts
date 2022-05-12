@@ -52,8 +52,10 @@ export default ((): typeof lang => {
     runCommand: '运行自定义命令',
     settingTabTitle: '导出设置',
     showCommandOutput: '显示命令行删除',
-    targetFileExtensions: '目标文件扩展名',
-    targetFileExtensionsTip: '（用空格分开）',
+    settingTab: {
+      targetFileExtensions: '目标文件扩展名',
+      targetFileExtensionsTip: '（用空格分开）',
+    },
     template: '模板',
   };
 })();
