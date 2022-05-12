@@ -9,7 +9,12 @@ export class RenemeModal extends Modal {
   get lang() {
     return this.settingTab.lang;
   }
-  constructor(app: App, settingTab: ExportSettingTab, setting: ExportSetting, callback: (name: string) => void) {
+  constructor(
+    app: App,
+    settingTab: ExportSettingTab,
+    setting: ExportSetting,
+    callback: (name: string) => void
+  ) {
     super(app);
     this.settingTab = settingTab;
     this.setting = setting;
@@ -26,13 +31,21 @@ export class RenemeModal extends Modal {
       cb.setValue(setting.name).onChange(v => (name = v));
     });
 
-    contentEl.createEl('div', { cls: ['modal-button-container'], parent: contentEl }, el => {
-      el.createEl('button', { text: lang.save, cls: ['mod-cta'], parent: el }).onclick = async () => {
-        // success
-        this.callback(name);
-        this.close();
-      };
-    });
+    contentEl.createEl(
+      'div',
+      { cls: ['modal-button-container'], parent: contentEl },
+      el => {
+        el.createEl('button', {
+          text: lang.save,
+          cls: ['mod-cta'],
+          parent: el,
+        }).onclick = async () => {
+          // success
+          this.callback(name);
+          this.close();
+        };
+      }
+    );
   }
 
   onClose() {

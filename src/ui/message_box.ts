@@ -34,7 +34,10 @@ export class MessageBox extends Modal {
   constructor(app: App, options: MessageBoxOptions);
   constructor(app: App, options: MessageBoxOptions | string, title?: string) {
     super(app);
-    this.options = typeof options === 'string' ? { message: options, buttons: 'Ok', title } : options;
+    this.options =
+      typeof options === 'string'
+        ? { message: options, buttons: 'Ok', title }
+        : options;
     this.lang = lang.current;
   }
   onOpen(): void {
@@ -42,7 +45,14 @@ export class MessageBox extends Modal {
       titleEl,
       contentEl,
       lang,
-      options: { message, title, buttons, callback, buttonsLabel: label, buttonsClass },
+      options: {
+        message,
+        title,
+        buttons,
+        callback,
+        buttonsLabel: label,
+        buttonsClass,
+      },
     } = this;
     if (title) {
       titleEl.setText(title);
@@ -50,35 +60,66 @@ export class MessageBox extends Modal {
     contentEl.createDiv({ text: message });
     switch (buttons) {
       case 'Yes':
-        contentEl.createEl('div', { cls: ['modal-button-container'], parent: contentEl }, el => {
-          el.createEl('button', { text: label?.yes ?? lang.messageBox.yes, cls: ['mod-cta', buttonsClass?.yes], parent: el }).onclick =
-            () => this.call(callback?.yes);
-        });
+        contentEl.createEl(
+          'div',
+          { cls: ['modal-button-container'], parent: contentEl },
+          el => {
+            el.createEl('button', {
+              text: label?.yes ?? lang.messageBox.yes,
+              cls: ['mod-cta', buttonsClass?.yes],
+              parent: el,
+            }).onclick = () => this.call(callback?.yes);
+          }
+        );
         break;
       case 'YesNo':
-        contentEl.createEl('div', { cls: ['modal-button-container'], parent: contentEl }, el => {
-          el.createEl('button', { text: label?.yes ?? lang.messageBox.yes, cls: ['mod-cta', buttonsClass?.yes], parent: el }).onclick =
-            () => this.call(callback?.yes);
-          el.createEl('button', { text: label?.no ?? lang.messageBox.no, cls: ['mod-cta', buttonsClass?.no], parent: el }).onclick = () =>
-            this.call(callback?.no);
-        });
+        contentEl.createEl(
+          'div',
+          { cls: ['modal-button-container'], parent: contentEl },
+          el => {
+            el.createEl('button', {
+              text: label?.yes ?? lang.messageBox.yes,
+              cls: ['mod-cta', buttonsClass?.yes],
+              parent: el,
+            }).onclick = () => this.call(callback?.yes);
+            el.createEl('button', {
+              text: label?.no ?? lang.messageBox.no,
+              cls: ['mod-cta', buttonsClass?.no],
+              parent: el,
+            }).onclick = () => this.call(callback?.no);
+          }
+        );
         break;
       case 'Ok':
-        contentEl.createEl('div', { cls: ['modal-button-container'], parent: contentEl }, el => {
-          el.createEl('button', { text: label?.ok ?? lang.messageBox.ok, cls: ['mod-cta', buttonsClass?.no], parent: el }).onclick = () =>
-            this.call(callback?.ok);
-        });
+        contentEl.createEl(
+          'div',
+          { cls: ['modal-button-container'], parent: contentEl },
+          el => {
+            el.createEl('button', {
+              text: label?.ok ?? lang.messageBox.ok,
+              cls: ['mod-cta', buttonsClass?.no],
+              parent: el,
+            }).onclick = () => this.call(callback?.ok);
+          }
+        );
         break;
       case 'OkCancel':
-        contentEl.createEl('div', { cls: ['modal-button-container'], parent: contentEl }, el => {
-          el.createEl('button', { text: label?.ok ?? lang.messageBox.ok, cls: ['mod-cta', buttonsClass?.ok], parent: el }).onclick = () =>
-            this.call(callback?.ok);
-          el.createEl('button', {
-            text: label?.cancel ?? lang.messageBox.cancel,
-            cls: ['mod-cta', buttonsClass?.cancel],
-            parent: el,
-          }).onclick = () => this.call(callback?.cancel);
-        });
+        contentEl.createEl(
+          'div',
+          { cls: ['modal-button-container'], parent: contentEl },
+          el => {
+            el.createEl('button', {
+              text: label?.ok ?? lang.messageBox.ok,
+              cls: ['mod-cta', buttonsClass?.ok],
+              parent: el,
+            }).onclick = () => this.call(callback?.ok);
+            el.createEl('button', {
+              text: label?.cancel ?? lang.messageBox.cancel,
+              cls: ['mod-cta', buttonsClass?.cancel],
+              parent: el,
+            }).onclick = () => this.call(callback?.cancel);
+          }
+        );
         break;
     }
   }

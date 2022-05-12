@@ -35,7 +35,8 @@ export default {
     type: 'pandoc',
     arguments:
       '-f markdown --resource-path="${currentDir}" --self-contained --metadata title="${currentFileName}" -s -o "${outputPath}" -t html',
-    customArguments: '--mathjax="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg-full.js"',
+    customArguments:
+      '--mathjax="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg-full.js"',
     extension: '.html',
   },
   'PDF': {
@@ -48,55 +49,64 @@ export default {
   'Word (.docx)': {
     name: 'Word (.docx)',
     type: 'pandoc',
-    arguments: '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t docx',
+    arguments:
+      '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t docx',
     extension: '.docx',
   },
   'OpenOffice': {
     name: 'OpenOffice',
     type: 'pandoc',
-    arguments: '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t odt',
+    arguments:
+      '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t odt',
     extension: '.odt',
   },
   'RTF': {
     name: 'RTF',
     type: 'pandoc',
-    arguments: '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t rtf',
+    arguments:
+      '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t rtf',
     extension: '.rtf',
   },
   'Epub': {
     name: 'Epub',
     type: 'pandoc',
-    arguments: '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t epub',
+    arguments:
+      '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t epub',
     extension: '.epub',
   },
   'Latex': {
     name: 'Latex',
     type: 'pandoc',
-    arguments: '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t latex',
+    arguments:
+      '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t latex',
     extension: '.latex',
   },
   'Media Wiki': {
     name: 'Media Wiki',
     type: 'pandoc',
-    arguments: '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t mediawiki',
+    arguments:
+      '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t mediawiki',
     extension: '.mediawiki',
   },
   'reStructuredText': {
     name: 'reStructuredText',
     type: 'pandoc',
-    arguments: '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t rst',
+    arguments:
+      '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t rst',
     extension: '.rst',
   },
   'Textile': {
     name: 'Textile',
     type: 'pandoc',
-    arguments: '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t textile',
+    arguments:
+      '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t textile',
     extension: '.textile',
   },
   'OPML': {
     name: 'OPML',
     type: 'pandoc',
-    arguments: '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t opml',
+    arguments:
+      '-f markdown --resource-path="${currentDir}" -s -o "${outputPath}" -t opml',
     extension: '.opml',
   },
   'Custom': {

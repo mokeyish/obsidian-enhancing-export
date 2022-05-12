@@ -9,7 +9,7 @@ const files = {
   'url.lua': url,
   'polyfill.lua': polyfill,
   'markdown.lua': markdown,
-  'markdown+hugo.lua': markdown_hugo
+  'markdown+hugo.lua': markdown_hugo,
 };
 
 export default files;

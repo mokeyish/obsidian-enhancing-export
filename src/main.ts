@@ -1,11 +1,9 @@
 import luaScripts from './lua';
-import * as fsp from 'fs/promises';
 import { App, Menu, Plugin, PluginManifest, TFile } from 'obsidian';
 import { UniversalExportPluginSettings, DEFAULT_SETTINGS } from './settings';
 import { ExportDialog } from './ui/export_modal';
 import { ExportSettingTab } from './ui/setting_tab';
 import lang, { Lang } from './lang';
-
 
 export default class UniversalExportPlugin extends Plugin {
   settings: UniversalExportPluginSettings;
@@ -49,7 +47,11 @@ export default class UniversalExportPlugin extends Plugin {
   }
 
   public async loadSettings(): Promise<void> {
-    this.settings = Object.assign({}, JSON.parse(JSON.stringify(DEFAULT_SETTINGS)), await this.loadData());
+    this.settings = Object.assign(
+      {},
+      JSON.parse(JSON.stringify(DEFAULT_SETTINGS)),
+      await this.loadData()
+    );
     if (this.settings.version !== this.manifest.version) {
       await this.saveLuaScripts();
       this.settings.version = this.manifest.version;
@@ -66,7 +68,9 @@ export default class UniversalExportPlugin extends Plugin {
     const { adapter } = this.app.vault;
     const luaDir = `${this.manifest.dir}/lua`;
     await adapter.mkdir(luaDir);
-    for (const luaScript of Object.keys(luaScripts) as Array<keyof typeof luaScripts>) {
+    for (const luaScript of Object.keys(luaScripts) as Array<
+      keyof typeof luaScripts
+    >) {
       const luaFile = `${luaDir}/${luaScript}`;
       await adapter.writeBinary(luaFile, luaScripts[luaScript]);
     }

@@ -1,4 +1,7 @@
-export function strTpl(strings: TemplateStringsArray, ...keys: number[]): (...values: any[]) => string {
+export function strTpl(
+  strings: TemplateStringsArray,
+  ...keys: number[]
+): (...values: any[]) => string {
   return function (...values) {
     const dict = values[values.length - 1] || {};
     const result = [strings[0]];
@@ -34,15 +37,26 @@ export const nameofFactory =
   (name: keyof T) =>
     name;
 
-type TOnChangingHandler<T extends object, K extends keyof T> = (value: T[K], key: K, target: T) => boolean;
-type TOnChangedHandler<T extends object, K extends keyof T> = (value: T[K], key: K, target: T) => void;
+type TOnChangingHandler<T extends object, K extends keyof T> = (
+  value: T[K],
+  key: K,
+  target: T
+) => boolean;
+type TOnChangedHandler<T extends object, K extends keyof T> = (
+  value: T[K],
+  key: K,
+  target: T
+) => void;
 
 export class Watcher<T extends object> {
   onChanging: { [k in keyof T]?: TOnChangingHandler<T, keyof T>[] };
   onChanged: { [k in keyof T]?: TOnChangedHandler<T, keyof T>[] };
   private readonly _onChangingCallback: TOnChangingHandler<T, keyof T>;
   private readonly _onChangedCallback: TOnChangedHandler<T, keyof T>;
-  constructor(options?: { onChangingCallback?: TOnChangingHandler<T, keyof T>; onChangedCallback?: TOnChangedHandler<T, keyof T> }) {
+  constructor(options?: {
+    onChangingCallback?: TOnChangingHandler<T, keyof T>;
+    onChangedCallback?: TOnChangedHandler<T, keyof T>;
+  }) {
     this.onChanging = {};
     this.onChanged = {};
     this._onChangingCallback = options?.onChangingCallback ?? (() => true);
@@ -51,15 +65,29 @@ export class Watcher<T extends object> {
   as<T extends object>(): Watcher<T> {
     return this as unknown as Watcher<T>;
   }
-  watchOnChanging<K extends keyof T>(key: K, handler: TOnChangingHandler<T, K>): void {
+  watchOnChanging<K extends keyof T>(
+    key: K,
+    handler: TOnChangingHandler<T, K>
+  ): void {
     (this.onChanging[key] ?? (this.onChanging[key] = [])).push(handler);
   }
-  watchOnChanged<K extends keyof T>(key: K, handler: TOnChangedHandler<T, K>): void {
+  watchOnChanged<K extends keyof T>(
+    key: K,
+    handler: TOnChangedHandler<T, K>
+  ): void {
     (this.onChanged[key] ?? (this.onChanged[key] = [])).push(handler);
   }
 
-  set<K extends keyof T>(target: T, key: K, value: T[K], _receiver: T): boolean {
-    if (this._onChangingCallback && this._onChangingCallback(value, key, target) === false) {
+  set<K extends keyof T>(
+    target: T,
+    key: K,
+    value: T[K],
+    _receiver: T
+  ): boolean {
+    if (
+      this._onChangingCallback &&
+      this._onChangingCallback(value, key, target) === false
+    ) {
       return false;
     }
     const onChangingHandlers = this.onChanging[key];
