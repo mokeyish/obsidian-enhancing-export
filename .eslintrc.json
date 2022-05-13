@@ -35,5 +35,8 @@
       "error",
       "always"
     ]
-  }
+  },
+  "ignorePatterns": [
+    "dist/*"
+  ]
 }

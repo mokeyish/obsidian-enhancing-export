@@ -33,10 +33,7 @@ export interface Variables {
 
 export type PlatformValue<T> = { [k in typeof platform]?: T };
 
-export function setPlatformValue<T>(
-  obj: { [k in typeof platform]?: T },
-  value: T
-): { [k in typeof platform]?: T } {
+export function setPlatformValue<T>(obj: { [k in typeof platform]?: T }, value: T): { [k in typeof platform]?: T } {
   if (typeof value === 'string' && value.trim() === '') {
     value = undefined;
   }
@@ -94,9 +91,7 @@ export interface CustomExportSetting extends CommonExportSetting {
 export type ExportSetting = PandocExportSetting | CustomExportSetting;
 
 export const DEFAULT_SETTINGS: UniversalExportPluginSettings = {
-  items: Object.values(export_command_templates).filter(
-    o => o.type !== 'custom'
-  ),
+  items: Object.values(export_command_templates).filter(o => o.type !== 'custom'),
   pandocPath: undefined,
   defaultExportDirectoryMode: 'Auto',
   openExportedFile: true,

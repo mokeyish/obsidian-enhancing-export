@@ -1,9 +1,10 @@
 import luaScripts from './lua';
-import { App, Menu, Plugin, PluginManifest, TFile } from 'obsidian';
-import { UniversalExportPluginSettings, DEFAULT_SETTINGS } from './settings';
-import { ExportDialog } from './ui/export_modal';
+import { App, Menu, Plugin, PluginManifest, TFile, Notice } from 'obsidian';
+import { UniversalExportPluginSettings, DEFAULT_SETTINGS, getPlatformValue } from './settings';
+import { ExportDialog } from './ui/export_dialog';
 import { ExportSettingTab } from './ui/setting_tab';
 import lang, { Lang } from './lang';
+import { exportToOo } from './exporto0o';
 
 export default class UniversalExportPlugin extends Plugin {
   settings: UniversalExportPluginSettings;
@@ -11,13 +12,48 @@ export default class UniversalExportPlugin extends Plugin {
 
   constructor(app: App, manifest: PluginManifest) {
     super(app, manifest);
+    this.lang = lang.current;
   }
 
   async onload() {
     await this.loadSettings();
-    this.lang = lang.current;
+    const { lang, settings: globalSetting } = this;
 
     this.addSettingTab(new ExportSettingTab(this.app, this));
+
+    this.addCommand({
+      id: 'obsidian-enhancing-export:export',
+      name: lang.exportToOo,
+      icon: 'document',
+      callback: () => {
+        const file = this.app.workspace.getActiveFile();
+        if (file) {
+          new ExportDialog(this.app, this, file).open();
+        } else {
+          new Notice(lang.pleaseOpenFile, 2000);
+        }
+      },
+    });
+    this.addCommand({
+      id: 'obsidian-enhancing-export:export-with-previous',
+      name: lang.exportWithPrevious,
+      icon: 'document',
+      callback: async () => {
+        const file = this.app.workspace.getActiveFile();
+        if (file) {
+          if (this.settings.lastExportType && this.settings.lastExportDirectory) {
+            const setting = this.settings.items.find(s => s.name === this.settings.lastExportType);
+            if (setting) {
+              await exportToOo(this, file, getPlatformValue(this.settings.lastExportDirectory), undefined, setting);
+              return;
+            }
+          }
+          new ExportDialog(this.app, this, file).open();
+        } else {
+          new Notice(lang.pleaseOpenFile, 2000);
+        }
+      },
+    });
 
     this.registerEvent(
       this.app.workspace.on('file-menu', (menu: Menu, file) => {
@@ -25,7 +61,7 @@ export default class UniversalExportPlugin extends Plugin {
           menu
             .addItem(item => {
               item
-                .setTitle(this.lang.exportToOo)
+                .setTitle(lang.exportToOo)
                 .setIcon('document')
                 .onClick((): void => {
                   new ExportDialog(this.app, this, file).open();
@@ -47,11 +83,7 @@ export default class UniversalExportPlugin extends Plugin {
   }
 
   public async loadSettings(): Promise<void> {
-    this.settings = Object.assign(
-      {},
-      JSON.parse(JSON.stringify(DEFAULT_SETTINGS)),
-      await this.loadData()
-    );
+    this.settings = Object.assign({}, JSON.parse(JSON.stringify(DEFAULT_SETTINGS)), await this.loadData());
     if (this.settings.version !== this.manifest.version) {
       await this.saveLuaScripts();
       this.settings.version = this.manifest.version;
@@ -68,9 +100,7 @@ export default class UniversalExportPlugin extends Plugin {
     const { adapter } = this.app.vault;
     const luaDir = `${this.manifest.dir}/lua`;
     await adapter.mkdir(luaDir);
-    for (const luaScript of Object.keys(luaScripts) as Array<
-      keyof typeof luaScripts
-    >) {
+    for (const luaScript of Object.keys(luaScripts) as Array<keyof typeof luaScripts>) {
       const luaFile = `${luaDir}/${luaScript}`;
       await adapter.writeBinary(luaFile, luaScripts[luaScript]);
     }

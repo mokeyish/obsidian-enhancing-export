@@ -3,9 +3,6 @@ import { strTpl } from '../utils';
 export default {
   preparing: strTpl`generating "${0}" ......`,
   exportToOo: 'Export to ......',
-  settingTabTitle: 'Export Setting',
-  pandocPath: 'Pandoc path',
-  pandocPathPlaceholder: '(Auto Detect)',
   selectExportFolder: 'Please select an export folder.',
   exportSuccessNotice: strTpl`Export file ${0} success！`,
   exportCommandOutputMessage: strTpl`Command: ${0}`,
@@ -26,37 +23,37 @@ export default {
   name: 'Name',
   new: 'New',
 
-  add: 'Add',
-  remove: 'Remove',
-  rename: 'Rename',
-  chooseSetting: 'Choose setting',
-
   save: 'Save',
 
   exportDialog: {
+    exportTo: 'Export to',
+    fileName: 'File Name',
     title: strTpl`Export to ${0}`,
     export: 'Export',
+    overwriteConfirmation: 'Overwrite confirmation',
   },
-
-  exportTo: 'Export to',
 
   template: 'Template',
 
-  fileName: 'File Name',
   type: 'Type',
 
-  overwriteConfirmation: 'Overwrite confirmation',
-
   defaultFolderForExportedFile: 'Default Folder for Exported File',
-  auto: 'Auto',
   sameFolderWithCurrentFile: 'Same folder with current file',
   customLocation: 'Custom location',
-  reset: 'Reset',
   command: 'Command',
 
   arguments: 'Arguments',
   extraArguments: 'Extra arguments',
   settingTab: {
+    title: 'Export Setting',
+    pandocPath: 'Pandoc path',
+    pandocPathPlaceholder: '(Auto Detect)',
+    reset: 'Reset',
+    auto: 'Auto',
+    add: 'Add',
+    remove: 'Remove',
+    rename: 'Rename',
+    chooseSetting: 'Choose setting',
     targetFileExtensions: 'Target file extensions',
     targetFileExtensionsTip: '(Separated by whitespace)',
   },
@@ -66,4 +63,6 @@ export default {
   showCommandOutput: 'Show command output',
   openExportedFileLocation: 'Open exported file location',
   openExportedFile: 'Open exported file',
+  exportWithPrevious: 'Export with Previous',
+  pleaseOpenFile: 'Please open a file first.',
 };

@@ -9,11 +9,7 @@ export class AddNewModal extends Modal {
   get lang() {
     return this.settingTab.lang;
   }
-  constructor(
-    app: App,
-    settingTab: ExportSettingTab,
-    callback: (setting: ExportSetting) => void
-  ) {
+  constructor(app: App, settingTab: ExportSettingTab, callback: (setting: ExportSetting) => void) {
     super(app);
     this.settingTab = settingTab;
     this.callback = callback;
@@ -30,11 +26,7 @@ export class AddNewModal extends Modal {
     let nameSetting: Setting;
 
     new Setting(contentEl).setName(lang.template).addDropdown(cb => {
-      cb.addOptions(
-        Object.fromEntries(
-          Object.values(export_command_templates).map(o => [o.name, o.name])
-        )
-      )
+      cb.addOptions(Object.fromEntries(Object.values(export_command_templates).map(o => [o.name, o.name])))
         .setValue(tplName)
         .onChange(v => {
           tplName = v;
@@ -48,22 +40,18 @@ export class AddNewModal extends Modal {
       cb.setValue(name).onChange(v => (name = v));
     });
 
-    contentEl.createEl(
-      'div',
-      { cls: ['modal-button-container'], parent: contentEl },
-      el => {
-        el.createEl('button', {
-          text: lang.add,
-          cls: ['mod-cta'],
-          parent: el,
-        }).onclick = async () => {
-          tpl = JSON.parse(JSON.stringify(export_command_templates[tplName]));
-          tpl.name = name;
-          callback(tpl);
-          this.close();
-        };
-      }
-    );
+    contentEl.createEl('div', { cls: ['modal-button-container'], parent: contentEl }, el => {
+      el.createEl('button', {
+        text: lang.settingTab.add,
+        cls: ['mod-cta'],
+        parent: el,
+      }).onclick = async () => {
+        tpl = JSON.parse(JSON.stringify(export_command_templates[tplName]));
+        tpl.name = name;
+        callback(tpl);
+        this.close();
+      };
+    });
   }
 
   onClose() {

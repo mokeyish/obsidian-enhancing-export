@@ -16,7 +16,7 @@
       "ES7",
       "ES2021"
     ],
-    "typeRoots": [ "./typings", "./node_modules/@types"],
+    "typeRoots": [ "./typings", "./node_modules/@types"]
   },
   "include": [
     "**/*.ts"
