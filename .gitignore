@@ -1,5 +1,6 @@
 /dist
 /node_modules
+/coverage
 /lua/main.lua
 /.env.local
 /.idea

@@ -22,21 +22,21 @@ export default {
     name: 'Markdown',
     type: 'pandoc',
     arguments:
-      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${pluginDir}/lua/markdown.lua" -s -o "${outputPath}" -t commonmark_x-attributes',
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/markdown.lua" -s -o "${outputPath}" -t commonmark_x-attributes',
     extension: '.md',
   },
   'Markdown (Hugo)': {
     name: 'Markdown (Hugo)',
     type: 'pandoc',
     arguments:
-      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${pluginDir}/lua/markdown+hugo.lua" -s -o "${outputPath}" -t commonmark_x-attributes',
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/markdown+hugo.lua" -s -o "${outputPath}" -t commonmark_x-attributes',
     extension: '.md',
   },
   'Html': {
     name: 'Html',
     type: 'pandoc',
     arguments:
-      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --self-contained --metadata title="${currentFileName}" -s -o "${outputPath}" -t html',
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/math_block.lua" --self-contained --metadata title="${currentFileName}" -s -o "${outputPath}" -t html',
     customArguments: '--mathjax="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg-full.js"',
     extension: '.html',
   },

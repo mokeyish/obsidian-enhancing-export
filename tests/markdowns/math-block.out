@@ -1,0 +1,8 @@
+Pandoc
+  Meta { unMeta = fromList [] }
+  [ Para
+      [ Math
+          DisplayMath
+          "\n\\begin{align*}\n\\begin{rcases}\n\\lambda_{1}(a_{11}^{*}, \\ldots, a_{22}^{*}) < 0 \\\\\n\\lambda_{2}(a_{11}^{*}, \\ldots, a_{22}^{*}) < 0 \\\\\n\\end{rcases} & \\Rightarrow \\text{stable knot} \\\\\n\n    \\begin{rcases}\n        \\lambda_{1}(a_{11}^{*}, \\ldots, a_{22}^{*}) > 0 \\\\\n        \\lambda_{2}(a_{11}^{*}, \\ldots, a_{22}^{*}) < 0 \\\\\n    \\end{rcases} & \\Rightarrow \\text{saddle}\n\\end{align*}\n"
+      ]
+  ]

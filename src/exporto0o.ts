@@ -5,6 +5,7 @@ import { Notice, TFile } from 'obsidian';
 import * as fs from 'fs';
 import type ExportPlugin from './main';
 import { exec } from 'child_process';
+import path from 'path';
 
 export async function exportToOo(
   plugin: ExportPlugin,
@@ -50,6 +51,7 @@ export async function exportToOo(
    */
   const vaultDir = adapter.getBasePath();
   const pluginDir = `${vaultDir}/${manifest.dir}`;
+  const luaDir = `${pluginDir}/lua`;
   const outputDir = candidateOutputDirectory;
   const outputPath = `${outputDir}/${candidateOutputFileName}`;
   const outputFileName = candidateOutputFileName.substring(0, candidateOutputFileName.lastIndexOf('.'));
@@ -64,11 +66,12 @@ export async function exportToOo(
   if (attachmentFolderPath === '/') {
     attachmentFolderPath = vaultDir;
   } else if (attachmentFolderPath.startsWith('.')) {
-    attachmentFolderPath = `${currentDir}/${attachmentFolderPath.substring(1)}`;
+    attachmentFolderPath = path.join(currentDir, attachmentFolderPath.substring(1));
   }
 
   const variables: Variables = {
     pluginDir,
+    luaDir,
     outputDir,
     outputPath,
     outputFileName,

@@ -18,6 +18,7 @@ import export_command_templates from './export_command_templates';
 export interface Variables {
   attachmentFolderPath: string;
   pluginDir: string;
+  luaDir: string;
   outputDir: string;
   outputPath: string;
   outputFileName: string;
