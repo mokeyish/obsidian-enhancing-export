@@ -1,6 +1,6 @@
 import luaScripts from './lua';
 import { App, Menu, Plugin, PluginManifest, TFile, Notice } from 'obsidian';
-import { UniversalExportPluginSettings, DEFAULT_SETTINGS, getPlatformValue } from './settings';
+import { UniversalExportPluginSettings, ExportSetting, DEFAULT_SETTINGS, getPlatformValue } from './settings';
 import { ExportDialog } from './ui/export_dialog';
 import { ExportSettingTab } from './ui/setting_tab';
 import lang, { Lang } from './lang';
@@ -17,7 +17,7 @@ export default class UniversalExportPlugin extends Plugin {
 
   async onload() {
     await this.loadSettings();
-    const { lang, settings: globalSetting } = this;
+    const { lang } = this;
 
     this.addSettingTab(new ExportSettingTab(this.app, this));
 
@@ -83,7 +83,11 @@ export default class UniversalExportPlugin extends Plugin {
   }
 
   public async loadSettings(): Promise<void> {
-    this.settings = Object.assign({}, JSON.parse(JSON.stringify(DEFAULT_SETTINGS)), await this.loadData());
+    const settings: UniversalExportPluginSettings = Object.assign({}, await this.loadData());
+    settings.items.forEach(v => {
+      Object.assign(v, DEFAULT_SETTINGS.items.find(o => o.name === v.name) ?? {}, v);
+    });
+    this.settings = settings;
     if (this.settings.version !== this.manifest.version) {
       await this.saveLuaScripts();
       this.settings.version = this.manifest.version;
@@ -93,7 +97,18 @@ export default class UniversalExportPlugin extends Plugin {
 
   public async saveSettings(): Promise<void> {
     console.log('[obsidian-enhancing-export] saveSettings', this.settings);
-    await this.saveData(this.settings);
+    const settings: UniversalExportPluginSettings = JSON.parse(JSON.stringify(this.settings));
+    settings.items.forEach(v => {
+      const def = DEFAULT_SETTINGS.items.find(o => o.name === v.name);
+      if (def) {
+        Object.keys(v).forEach((k: keyof ExportSetting) => {
+          if (k !== 'name' && v[k] === def[k]) {
+            delete v[k];
+          }
+        });
+      }
+    });
+    await this.saveData(settings);
   }
 
   async saveLuaScripts(): Promise<void> {
