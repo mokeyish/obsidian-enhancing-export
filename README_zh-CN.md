@@ -1,6 +1,6 @@
 # Obsidian Enhancing Export Plugin
 
-[English](./README.md) | 中文
+[English](https://github.com/mokeyish/obsidian-enhancing-export/blob/master/README.md) | 中文
 
 这是一个基于 Pandoc 的 Obsidian 加强版导出插件。提供了基本的导出格式：Markdown 、Markdown（Hugo [https://gohugo.io/](https://gohugo.io/)）、Html、docx、Latex等。
 其中 Markdown 、Markdown（Hugo）、Html 会把媒体资源一并导出。
@@ -10,10 +10,10 @@
 ## 界面截图
 - 导出界面，在文件菜单上点击 `导出为......`
    
-   ![](screenshot/exportview_zh-CN.png)
+   ![](https://raw.githubusercontent.com/mokeyish/obsidian-enhancing-export/master/screenshot/exportview_zh-CN.png)
 - 设置界面
    
-   ![](screenshot/settingview_zh-CN.png)
+   ![](https://raw.githubusercontent.com/mokeyish/obsidian-enhancing-export/master/screenshot/settingview_zh-CN.png)
 
 ## 安装
 1. 需要先安装最新的 `pandoc`(2.18+)，最好配置到 PATH 环境变量，或者设置界面指定路径。

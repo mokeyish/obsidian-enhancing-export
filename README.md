@@ -1,6 +1,6 @@
 # Obsidian Enhancing Export Plugin
 
-English | [中文](./README_zh-CN.md)
+English | [中文](https://github.com/mokeyish/obsidian-enhancing-export/blob/master/README_zh-CN.md)
 
 This is an enhancing export plugin base on `Pandoc` for Obsidian ([https://obsidian.md/](https://obsidian.md/)). It's allow you to export to formats like `Markdown`、`Markdown (Hugo)`、`Html`、`docx`、`Latex` etc.
 
@@ -12,10 +12,10 @@ Where `Markdown`、`Markdown (Hugo)`、`Html` will export and its media resource
 
 - Export view，click on `Export to ......` on file menu.
 
-  ![](screenshot/exportview_en-US.png)
+  ![](https://raw.githubusercontent.com/mokeyish/obsidian-enhancing-export/master/screenshot/exportview_en-US.png)
 - Setting view
 
-  ![](screenshot/settingview_en-US.png)
+  ![](https://raw.githubusercontent.com/mokeyish/obsidian-enhancing-export/master/screenshot/settingview_en-US.png)
 
 ## Installation
 
