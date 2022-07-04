@@ -21,9 +21,13 @@ end
 if PANDOC_STATE.output_file then
   local output_file = PANDOC_STATE.output_file
   doc_dir = PATH.directory(output_file)
-  media_dir = PATH.split_extension(output_file)
-  if Mode ~= 'hugo' then
-    media_dir = media_dir .. '-media'
+  if PANDOC_WRITER_OPTIONS.variables["media_dir"] then
+    media_dir = PANDOC_WRITER_OPTIONS.variables["media_dir"]
+  else
+    media_dir = PATH.split_extension(output_file)
+    if Mode ~= 'hugo' then
+      media_dir = media_dir .. '-media'
+    end
   end
 end
 assert(doc_dir, "doc_dir is nil")

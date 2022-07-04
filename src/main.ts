@@ -87,6 +87,11 @@ export default class UniversalExportPlugin extends Plugin {
     settings.items.forEach(v => {
       Object.assign(v, DEFAULT_SETTINGS.items.find(o => o.name === v.name) ?? {}, v);
     });
+    for (const item of DEFAULT_SETTINGS.items) {
+      if (settings.items.every(o => o.name !== item.name)) {
+        settings.items.push(item);
+      }
+    }
     this.settings = settings;
     if (this.settings.version !== this.manifest.version) {
       await this.saveLuaScripts();

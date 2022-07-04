@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import type ExportPlugin from './main';
 import { exec } from 'child_process';
 import path from 'path';
+import yargs from 'yargs/yargs';
 
 export async function exportToOo(
   plugin: ExportPlugin,
@@ -157,13 +158,17 @@ export async function exportToOo(
       progress.hide();
 
       const next = async () => {
+        const args = yargs(cmd.split(' ')).options({
+          output: { type: 'string', alias: 'o' },
+        });
+        const argv = await args.argv;
         if (openExportedFileLocation) {
           setTimeout(() => {
-            ct.remote.shell.showItemInFolder(outputPath);
+            ct.remote.shell.showItemInFolder(argv.output);
           }, 1000);
         }
         if (openExportedFile) {
-          await ct.remote.shell.openPath(outputPath);
+          await ct.remote.shell.openPath(argv.output);
         }
         if (setting.type === 'pandoc' && setting.runCommand === true && setting.command) {
           executeCommand(setting.command);

@@ -1,6 +1,6 @@
 {
   "name": "obsidian-enhancing-export",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "This is a enhancing export plugin for Obsidian. It allows to export to formats like Html, DOCX, ePub and PDF or Markdown(Hugo) etc.",
   "main": "dist/main.js",
   "scripts": {
@@ -33,5 +33,8 @@
     "ts-jest": "^28.0.2",
     "tslib": "2.3.1",
     "typescript": "4.6.3"
+  },
+  "dependencies": {
+    "yargs": "^17.5.1"
   }
 }

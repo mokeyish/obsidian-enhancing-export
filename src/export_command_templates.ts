@@ -13,7 +13,7 @@ import type { ExportSetting } from './settings';
  *   /User/aaa/Documents/test.pdf
  * - ${currentDir}            --> /User/aaa/Documents/
  * - ${currentPath}           --> /User/aaa/Documents/test.pdf
- * - ${CurrentFileName}       --> test
+ * - ${currentFileName}       --> test
  * - ${CurrentFileFullName}   --> test.pdf
  */
 
@@ -39,6 +39,13 @@ export default {
       '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/math_block.lua" --self-contained --metadata title="${currentFileName}" -s -o "${outputPath}" -t html',
     customArguments: '--mathjax="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg-full.js"',
     extension: '.html',
+  },
+  'TextBundle': {
+    name: 'TextBundle',
+    type: 'pandoc',
+    arguments:
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/markdown.lua" -V media_dir="${outputDir}/${outputFileName}/assets" -s -o "${outputDir}/${outputFileName}/text.md" -t commonmark_x-attributes',
+    extension: '.md',
   },
   'PDF': {
     name: 'PDF',
