@@ -44,7 +44,7 @@ export default {
     name: 'TextBundle',
     type: 'pandoc',
     arguments:
-      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/markdown.lua" -V media_dir="${outputDir}/${outputFileName}/assets" -s -o "${outputDir}/${outputFileName}/text.md" -t commonmark_x-attributes',
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/markdown.lua" -V media_dir="${outputDir}/${outputFileName}.textbundle/assets" -s -o "${outputDir}/${outputFileName}.textbundle/text.md" -t commonmark_x-attributes',
     extension: '.md',
   },
   'PDF': {

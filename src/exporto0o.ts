@@ -152,23 +152,32 @@ export async function exportToOo(
 
   const cmd = cmdTpl.replace(/\${(.*?)}/g, (_, p1: string) => variables[p1 as keyof typeof variables]);
 
+  const args = await yargs(cmd.split(' ')).options({
+    output: { type: 'string', alias: 'o' },
+  }).argv;
+  const actualOutputPath = args.output.startsWith('"') && args.output.endsWith('"')
+  || args.output.startsWith('\'') && args.output.endsWith('\'')
+    ? args.output.substring(1, args.output.length - 1)
+    : args.output;
+
+  const actualOutputDir = actualOutputPath.substring(0, actualOutputPath.lastIndexOf('/'));
+  if (!fs.existsSync(actualOutputDir)) {
+    fs.mkdirSync(actualOutputDir);
+  }
+  
   executeCommand(
     cmd,
     () => {
       progress.hide();
 
       const next = async () => {
-        const args = yargs(cmd.split(' ')).options({
-          output: { type: 'string', alias: 'o' },
-        });
-        const argv = await args.argv;
         if (openExportedFileLocation) {
           setTimeout(() => {
-            ct.remote.shell.showItemInFolder(argv.output);
+            ct.remote.shell.showItemInFolder(actualOutputPath);
           }, 1000);
         }
         if (openExportedFile) {
-          await ct.remote.shell.openPath(argv.output);
+          await ct.remote.shell.openPath(actualOutputPath);
         }
         if (setting.type === 'pandoc' && setting.runCommand === true && setting.command) {
           executeCommand(setting.command);
