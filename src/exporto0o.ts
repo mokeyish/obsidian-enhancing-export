@@ -152,7 +152,7 @@ export async function exportToOo(
 
   const cmd = cmdTpl.replace(/\${(.*?)}/g, (_, p1: string) => variables[p1 as keyof typeof variables]);
 
-  const args = await yargs(cmd.split(' ')).options({
+  const args = await yargs(cmd.match(/(?:[^\s"]+|"[^"]*")+/g)).options({
     output: { type: 'string', alias: 'o' },
   }).argv;
   const actualOutputPath = args.output.startsWith('"') && args.output.endsWith('"')
