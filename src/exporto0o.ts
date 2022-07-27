@@ -155,16 +155,16 @@ export async function exportToOo(
   const args = await yargs(cmd.match(/(?:[^\s"]+|"[^"]*")+/g)).options({
     output: { type: 'string', alias: 'o' },
   }).argv;
-  const actualOutputPath = args.output.startsWith('"') && args.output.endsWith('"')
-  || args.output.startsWith('\'') && args.output.endsWith('\'')
-    ? args.output.substring(1, args.output.length - 1)
-    : args.output;
+  const actualOutputPath =
+    (args.output.startsWith('"') && args.output.endsWith('"')) || (args.output.startsWith("'") && args.output.endsWith("'"))
+      ? args.output.substring(1, args.output.length - 1)
+      : args.output;
 
   const actualOutputDir = actualOutputPath.substring(0, actualOutputPath.lastIndexOf('/'));
   if (!fs.existsSync(actualOutputDir)) {
     fs.mkdirSync(actualOutputDir);
   }
-  
+
   executeCommand(
     cmd,
     () => {

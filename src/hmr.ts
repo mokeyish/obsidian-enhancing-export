@@ -1,4 +1,4 @@
-import type { Plugin, TAbstractFile } from 'obsidian';
+import type { Plugin } from 'obsidian';
 
 declare global {
   interface Window {
@@ -6,11 +6,19 @@ declare global {
   }
 }
 
-Window.prototype.hmr = function(plugin: Plugin): void {
+Window.prototype.hmr = function (plugin: Plugin): void {
   console.log(`[hmr: ${plugin.manifest.name}]`);
 
-  const { app: { vault: { adapter }, plugins }, manifest: { dir: pluginDir, id }  } = plugin;
-  const { app: { vault } }= plugin;
+  const {
+    app: {
+      vault: { adapter },
+      plugins,
+    },
+    manifest: { dir: pluginDir, id },
+  } = plugin;
+  const {
+    app: { vault },
+  } = plugin;
 
   const onChange = async (file: string) => {
     if (file.startsWith(pluginDir)) {
@@ -36,5 +44,3 @@ function debounce<T extends Function>(cb: T, wait = 20) {
 }
 
 export {};
-
-
