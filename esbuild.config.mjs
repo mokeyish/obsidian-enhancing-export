@@ -62,6 +62,7 @@ esbuild.build({
     '@codemirror/view',
     ...builtins],
   loader: { '.json': 'file', '.lua': 'binary' },
+  inject: prod ? undefined : [ './src/hmr.ts' ],
   format: 'cjs',
   watch: !prod,
   target: 'es2021',

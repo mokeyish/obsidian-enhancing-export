@@ -16,6 +16,7 @@ export default class UniversalExportPlugin extends Plugin {
   }
 
   async onload() {
+    window.hmr && window.hmr(this);
     await this.loadSettings();
     const { lang } = this;
 

@@ -34,7 +34,8 @@
     "semi": [
       "error",
       "always"
-    ]
+    ],
+    "no-prototype-builtins": "off"
   },
   "ignorePatterns": [
     "dist/*"
