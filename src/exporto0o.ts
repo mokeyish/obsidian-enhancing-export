@@ -90,11 +90,12 @@ export async function exportToOo(
   switch (ct.remote.process.platform) {
     case 'darwin': {
       let envPath = ct.remote.process.env['PATH'];
-      const brewBin = '/usr/local/bin';
-      if (!envPath.includes(brewBin)) {
-        envPath = `${brewBin}:${envPath}`;
-        ct.remote.process.env['PATH'] = envPath;
+      const extraBins = ['/usr/local/bin', '/Library/TeX/texbin'];
+      for (const bin of extraBins) {
+        if (envPath.includes(bin)) continue;
+        envPath = `${bin}:${envPath}`;
       }
+      ct.remote.process.env['PATH'] = envPath;
       break;
     }
     default:
