@@ -11,6 +11,11 @@ Where `Markdown`、`Markdown (Hugo)`、`Html` will export and its media resource
 
 **Note：**  `Markdown`、`Markdown (Hugo)`、`Html` are tested in Mac OS、Window、Linux as I used it for myself, others are not tested well.
 
+
+**Ads**: You might like my other plugins 🤪
+- [Obsidian Code Emitter](https://github.com/mokeyish/obsidian-code-emitter)
+
+
 ## Screen shot
 
 - Export view，click on `Export to ......` on file menu.
