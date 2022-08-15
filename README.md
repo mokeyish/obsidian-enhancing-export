@@ -27,7 +27,7 @@ Where `Markdown`、`Markdown (Hugo)`、`Html` will export and its media resource
 
 ## Installation
 
-1. First install the latest `pandoc` (2.18+), and then add `pandoc` path to environment variable `PATH` or set absolute path of `pandoc` in the plugin setting view.
+1. First install the latest `pandoc` (2.19+), and then add `pandoc` path to environment variable `PATH` or set absolute path of `pandoc` in the plugin setting view.
 
    See more details in [https://pandoc.org/installing.html](https://pandoc.org/installing.html)。
 

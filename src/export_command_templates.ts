@@ -36,7 +36,7 @@ export default {
     name: 'Html',
     type: 'pandoc',
     arguments:
-      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/math_block.lua" --self-contained --metadata title="${currentFileName}" -s -o "${outputPath}" -t html',
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/math_block.lua" --embed-resources --standalone --metadata title="${currentFileName}" -s -o "${outputPath}" -t html',
     customArguments: '--mathjax="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg-full.js"',
     extension: '.html',
   },
