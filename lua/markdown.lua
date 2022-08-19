@@ -115,12 +115,15 @@ function RawInline(el)
   if el.format == "html" then
     el.format = 'markdown'
     el.text = string.gsub(el.text, '<img[^>]+>', function(img)
-      return string.gsub(img, 'src="([^"]+)"', function(src)
-        local extract_media_src = extract_media(src)
-        if extract_media_src then
-          return 'src="' .. extract_media_src .. '"'
+      return string.gsub(img, 'src="([^"]+)"', function(url)
+        if string.find(url, '^[Hh][Tt][Tt][Pp][Ss]?://') == nil  then
+          local extract_media_url = extract_media(url)
+          if extract_media_url then
+            return 'src="' .. extract_media_url .. '"'
+          end
+          return '123'
         end
-        return src
+        return 'src="' .. url .. '"'
       end)
     end)
   end
