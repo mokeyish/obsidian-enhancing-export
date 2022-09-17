@@ -37,6 +37,7 @@
 | `${currentDir}` | 当前文件所在目录，按上面的例子，值为  `/User/aaa/Documents`。 |
 | `${currentFileName}` | 当前文件不带扩展名的名字，值是 `readme` |
 | `${currentFileFullName}` | 当前文件全名，值是 `readme.md`。 |
+| `${vaultDir}`            | Obsidian 当前的 vaultDir.        |
 
 ## 最后
 

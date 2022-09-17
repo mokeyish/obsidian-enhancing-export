@@ -41,16 +41,17 @@ You can customize your export command by yourself, click `add` in the plugin set
 
 You can use `${variables}` in custom export command, their values are:
 
-| Key                      | Value                                                        |
-| ------------------------ | ------------------------------------------------------------ |
-| `${outputPath}`          | Output file path after export. For example， if your export to location `/User/aaa/Documents/test.pdf`, then `${outputDir}`  will be replace that path. |
-| `${outputDir}`           | Output directory of saved exported file，It will be `/User/aaa/Documents` in above case. |
-| `${outputFileName}`      | File name (without extension)  of the saved exported file. It will be `test` in above case. |
-| `${outputFileFullName}`  | File name (with extension)  of the saved exported file. It will be `test.pdf` in above case. |
+| Key                      | Value                                                                                                                                                   |
+|--------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `${outputPath}`          | Output file path after export. For example， if your export to location `/User/aaa/Documents/test.pdf`, then `${outputDir}`  will be replace that path.  |
+| `${outputDir}`           | Output directory of saved exported file，It will be `/User/aaa/Documents` in above case.                                                                 |
+| `${outputFileName}`      | File name (without extension)  of the saved exported file. It will be `test` in above case.                                                             |
+| `${outputFileFullName}`  | File name (with extension)  of the saved exported file. It will be `test.pdf` in above case.                                                            |
 | `${currentPath}`         | Path of currently edited file. For example, if your are editing `/User/aaa/Documents/readme.md`, the the value will be `/User/aaa/Documents/readme.md`. |
-| `${currentDir}`          | Current directory of currently edited file, It will be`/User/aaa/Documents` in above case. |
-| `${currentFileName}`     | Filename without extension of currently edited file, It will be `readme` in above case. |
-| `${currentFileFullName}` | Filename with extension of currently edited file. It will be `readme.md` in above case. |
+| `${currentDir}`          | Current directory of currently edited file, It will be`/User/aaa/Documents` in above case.                                                              |
+| `${currentFileName}`     | Filename without extension of currently edited file, It will be `readme` in above case.                                                                 |
+| `${currentFileFullName}` | Filename with extension of currently edited file. It will be `readme.md` in above case.                                                                 |
+| `${vaultDir}`            | The obsidian current vaultDir.                                                                                                                          |
 
 ## Finally
 

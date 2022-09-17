@@ -82,6 +82,7 @@ export async function exportToOo(
     currentFileName,
     currentFileFullName,
     attachmentFolderPath,
+    vaultDir
     // date: new Date(currentFile.stat.ctime),
     // lastMod: new Date(currentFile.stat.mtime),
     // now: new Date()
