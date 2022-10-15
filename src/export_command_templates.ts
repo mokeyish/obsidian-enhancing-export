@@ -51,7 +51,7 @@ export default {
     name: 'PDF',
     type: 'pandoc',
     arguments:
-      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --embed-resources --standalone --metadata title="${currentFileName}" -s -o "${outputPath}" -t pdf',
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" --embed-resources --standalone --metadata title="${currentFileName}" -s -o "${outputPath}" -t pdf',
     extension: '.pdf',
   },
   'Word (.docx)': {
