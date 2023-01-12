@@ -153,19 +153,61 @@ function Math(el)
   return el
 end
 
+
+local function starts_with(str, start)
+   return str:sub(1, #start) == start
+end
+
+local function ends_with(str, ending)
+   return ending == "" or str:sub(-#ending) == ending
+end
+
+local function headerLink(input)
+  -- github style section link
+  return "#"..input:gsub(' ', '-')
+end
+
+
+local function insertLink(content, linkDescription)
+  local descriptionText = table.concat(linkDescription, "")
+
+  if string.find(descriptionText, '|') then
+    local target, desc = descriptionText:match("(.*)|(.*)")
+    table.insert(content, pandoc.Link(desc, headerLink(target)))
+  else
+    table.insert(content, pandoc.Link(descriptionText, headerLink(descriptionText)))
+  end
+end
+
 function Para(el)
   local content = {}
   local in_display_math = false
+  local in_section_link = false
+  local linkDescription = {}
   for _, item in pairs(el.content) do
     if item.t == 'Str'and item.text == "$$" then
       in_display_math = not in_display_math
+    elseif item.t == 'Str' and starts_with(item.text, '[[#') then
+      in_section_link = true
+      table.insert(linkDescription, string.sub(item.text, 4))
     else
       if in_display_math then
+        -- handle insides of math
         if item.t == 'RawInline' and item.format == 'tex' then
           local n = pandoc.Math('DisplayMath', '\n' .. item.text .. '\n')
           table.insert(content, Math(n))
         else
           table.insert(content, item)
+        end
+      elseif in_section_link then
+        -- handle insides of internal section link
+        if ends_with(item.text, ']]') then
+          table.insert(linkDescription, string.sub(item.text, 1, -3))
+          insertLink(content, linkDescription)
+          in_section_link = false
+          linkDescription = {}
+        else
+          table.insert(linkDescription, item.text)
         end
       else
         table.insert(content, item)
