@@ -27,7 +27,7 @@ export const testConversion = async (name: String, filter: String) => {
   const input_file = `./markdowns/${name}.md`;
   const expect_out = `./markdowns/${name}.out`;
   const lua_script = `../lua/${filter}.lua`;
-  const pandoc = `pandoc -s -L ${lua_script}  -t native -f markdown "${input_file}"`;
+  const pandoc = `pandoc -s -L ${lua_script}  -t native -f markdown "${input_file}" -o -`;
   const ret = await exec(pandoc, { lineSeparator: '\n'});
   expect(ret).toBe(await readFile(expect_out, { encoding: 'utf-8', flag: 'r' }));
 }
