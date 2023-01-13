@@ -13,7 +13,7 @@ const files = {
   'math_block.lua': math_block,
   'markdown.lua': markdown,
   'markdown+hugo.lua': markdown_hugo,
-  'pdf.lua': pdf
+  'pdf.lua': pdf,
 };
 
 export default files;

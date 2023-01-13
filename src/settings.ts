@@ -27,7 +27,7 @@ export interface Variables {
   currentPath: string;
   currentFileName: string;
   currentFileFullName: string;
-  vaultDir: string,
+  vaultDir: string;
   // date: new Date(currentFile.stat.ctime),
   // lastMod: new Date(currentFile.stat.mtime),
   // now: new Date()
