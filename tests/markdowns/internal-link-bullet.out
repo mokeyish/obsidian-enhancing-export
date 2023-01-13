@@ -1,0 +1,19 @@
+Pandoc
+  Meta { unMeta = fromList [] }
+  [ BulletList
+      [ [ Plain [ Str "potato" ] ]
+      , [ Plain
+            [ Link
+                ( "" , [] , [] )
+                [ Str "more"
+                , Space
+                , Str "complex"
+                , Space
+                , Str "vegetables"
+                ]
+                ( "#more-complex-vegetables" , "" )
+            ]
+        ]
+      , [ Plain [ Str "cucumber" ] ]
+      ]
+  ]
