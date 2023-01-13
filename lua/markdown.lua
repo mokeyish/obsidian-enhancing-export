@@ -6,6 +6,7 @@ local url = require('url')
 local pandoc=pandoc
 local PANDOC_STATE=PANDOC_STATE
 
+PANDOC_VERSION:must_be_at_least '2.17'
 
 local PATH = pandoc.path
 local doc_dir = nil
