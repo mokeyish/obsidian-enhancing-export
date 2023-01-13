@@ -153,15 +153,6 @@ function Math(el)
   return el
 end
 
-
-local function starts_with(str, start)
-   return str:sub(1, #start) == start
-end
-
-local function ends_with(str, ending)
-   return ending == "" or str:sub(-#ending) == ending
-end
-
 local function headerLink(input)
   -- github style section link
   return "#"..input:gsub(' ', '-')
@@ -215,11 +206,11 @@ function ProcessInternalLinks(elements)
   local linkDescription = {}
 
   for _, item in pairs(elements) do
-    if item.t == 'Str' and starts_with(item.text, '[[#') then
+    if item.t == 'Str' and Starts_with(item.text, '[[#') then
       in_section_link = true
       table.insert(linkDescription, string.sub(item.text, 4))
     elseif in_section_link then
-      if ends_with(item.text, ']]') then
+      if Ends_with(item.text, ']]') then
         table.insert(linkDescription, string.sub(item.text, 1, -3))
         insertLink(content, linkDescription)
         in_section_link = false
