@@ -1,5 +1,6 @@
-import { exec as execSync, ExecException } from 'child_process';
 import os from 'os';
+import { exec as execSync, ExecException } from 'child_process';
+import { readFile } from 'fs/promises';
 
 
 export async function exec(cmd: string, options: { lineSeparator: '\n' | '\r\n' | '\r' }): Promise<string> {
@@ -21,4 +22,12 @@ export async function exec(cmd: string, options: { lineSeparator: '\n' | '\r\n' 
 }
 
 
-
+export const testConversion = async (name: String, filter: String) => {
+  process.chdir(module.path);
+  const input_file = `./markdowns/${name}.md`;
+  const expect_out = `./markdowns/${name}.out`;
+  const lua_script = `../lua/${filter}.lua`;
+  const pandoc = `pandoc -s -L ${lua_script}  -t native -f markdown "${input_file}"`;
+  const ret = await exec(pandoc, { lineSeparator: '\n'});
+  expect(ret).toBe(await readFile(expect_out, { encoding: 'utf-8', flag: 'r' }));
+}
