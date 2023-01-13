@@ -43,3 +43,11 @@ os.exists = function(path)
     return code == 0
   end
 end
+
+function Starts_with(str, start)
+   return str:sub(1, #start) == start
+end
+
+function Ends_with(str, ending)
+   return ending == "" or str:sub(-#ending) == ending
+end

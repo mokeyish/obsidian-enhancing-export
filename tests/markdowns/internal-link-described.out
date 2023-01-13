@@ -1,0 +1,14 @@
+Pandoc
+  Meta { unMeta = fromList [] }
+  [ Para
+      [ Link
+          ( "" , [] , [] )
+          [ Str "with"
+          , Space
+          , Str "custom"
+          , Space
+          , Str "description"
+          ]
+          ( "#Some-complex-section" , "" )
+      ]
+  ]
