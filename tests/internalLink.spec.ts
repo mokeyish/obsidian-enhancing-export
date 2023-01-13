@@ -9,3 +9,7 @@ test('test basic internal link block parsing', async () => {
 test('test complex internal link block parsing', async () => {
   await testConversion('internal-link-bullet', 'markdown')
 });
+
+test('test basic internal link with description', async () => {
+  await testConversion('internal-link-described', 'markdown')
+});
