@@ -1,0 +1,11 @@
+Pandoc
+  Meta { unMeta = fromList [] }
+  [ Plain []
+  , Para []
+  , Para []
+  , Para
+      [ Math
+          DisplayMath
+          "\n\\left(\\begin{array}{c}\n\\hat{F}_{1,i,j}\\\\ \\hat{F}_{2,i,j} \\\\ \\vdots \\\\ \\hat{F}_{C-1,i,j} \\\\ \\hat{F}_{C,i,j}\n\\end{array}\\right)=\\begin{pmatrix}\n\\frac{\\gamma_1}{\\sqrt{\\hat{\\sigma}^2_1}+\\epsilon} & 0 & \\cdots & &0\n\\\\\n0 && \\frac{\\gamma_2}{\\sqrt{\\hat{\\sigma}^2_2}+\\epsilon} & & & &\n\\\\\n\\vdots && \\ddots && \\vdots\n\\\\\n&&& \\frac{\\gamma_{C-1}}{\\sqrt{\\hat{\\sigma}^2_{C-1}+\\epsilon}} & 0\n\\\\\n0 && \\cdots &0 & \\frac{\\gamma_C}{\\sqrt{\\hat{\\sigma}^2_{C}+\\epsilon}}\n\n\\end{pmatrix}\\cdot\\begin{pmatrix}\nF_{1,i,j}\n\\\\\nF_{2,i,j}\n\\\\\n\\vdots\n\\\\\nF_{C-1,i,j}\n\\\\\n\nF_{C,i,j}\n\\end{pmatrix}\\begin{pmatrix}\n\\beta_1-\\gamma_1\\frac{\\hat{\\mu}_1}{\\sqrt{\\hat{\\sigma}^2_1+\\epsilon}}\n\\\\\n\\beta_2-\\gamma_2\\frac{\\hat{\\mu}_2}{\\sqrt{\\hat{\\sigma}^2_2+\\epsilon}}\n\\\\\n\\vdots\n\\\\\n\\beta_{C-1}-\\gamma_{C-1}\\frac{\\hat{\\mu}_{C-1}}{\\sqrt{\\hat{\\sigma}^2_{C-1}+\\epsilon}}\n\\\\\n\\beta_C-\\gamma_C\\frac{\\hat{\\mu}_C}{\\sqrt{\\hat{\\sigma}^2_C+\\epsilon}}\n\n\\end{pmatrix}\n"
+      ]
+  ]

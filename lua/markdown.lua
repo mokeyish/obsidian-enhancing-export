@@ -1,4 +1,4 @@
-package.path=package.path..";" ..debug.getinfo(1).source:match("(.*[/\\])"):sub(2) .. "?.lua"
+package.path=debug.getinfo(1).source:gsub('@','./'):sub(0):match('(.*[/\\])'):sub(0) .. '?.lua' .. ';' .. package.path
 
 require("polyfill")
 local url = require('url')
@@ -15,7 +15,6 @@ local media_dir = nil
 if Mode == nil then
   Mode = 'default'
 end
-
 
 -- print("Mode: "..Mode)
 
@@ -207,11 +206,11 @@ function ProcessInternalLinks(elements)
   local linkDescription = {}
 
   for _, item in pairs(elements) do
-    if item.t == 'Str' and Starts_with(item.text, '[[#') then
+    if item.t == 'Str' and string.starts_with(item.text, '[[#') then
       in_section_link = true
       table.insert(linkDescription, string.sub(item.text, 4))
     elseif in_section_link then
-      if Ends_with(item.text, ']]') then
+      if string.ends_with(item.text, ']]') then
         table.insert(linkDescription, string.sub(item.text, 1, -3))
         insertLink(content, linkDescription)
         in_section_link = false

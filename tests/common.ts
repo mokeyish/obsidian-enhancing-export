@@ -22,12 +22,17 @@ export async function exec(cmd: string, options: { lineSeparator: '\n' | '\r\n' 
 }
 
 
-export const testConversion = async (name: String, filter: String) => {
+export const testConversion = async (name: string, filter?: string) => {
   process.chdir(module.path);
   const input_file = `./markdowns/${name}.md`;
   const expect_out = `./markdowns/${name}.out`;
-  const lua_script = `../lua/${filter}.lua`;
-  const pandoc = `pandoc -s -L ${lua_script}  -t native -f markdown "${input_file}" -o -`;
+  let pandoc: string;
+  if (filter) {
+    const lua_script = `../lua/${filter}.lua`;
+    pandoc = `pandoc -s -L ${lua_script} -t native -f markdown "${input_file}" -o -`;
+  } else {
+    pandoc = `pandoc -s -t native -f markdown "${input_file}" -o -`;
+  }
   const ret = await exec(pandoc, { lineSeparator: '\n'});
   expect(ret).toBe(await readFile(expect_out, { encoding: 'utf-8', flag: 'r' }));
-}
+};
