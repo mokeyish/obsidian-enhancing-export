@@ -1,4 +1,4 @@
-package.path=debug.getinfo(1).source:gsub('@','./'):sub(0):match('(.*[/\\])'):sub(0) .. '?.lua' .. ';' .. package.path
+package.path=debug.getinfo(1).source:gsub('@',''):sub(0):match('(.*[/\\])'):sub(0) .. '?.lua' .. ';' .. package.path
 
 require("polyfill")
 local url = require('url')

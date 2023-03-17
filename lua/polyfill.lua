@@ -1,6 +1,6 @@
 os.platform = nil
 if os.platform == nil then
-  local libExt = package.cpath:match("%p[\\|/]?%p(%a+)")
+  local libExt = package.cpath:match("%p[\\|/]?\\.%p(%a+)")
   if libExt == 'dll' then
     os.platform = "Windows"
     require"utf8_filenames"
