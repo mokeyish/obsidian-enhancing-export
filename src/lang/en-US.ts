@@ -46,6 +46,7 @@ export default {
   extraArguments: 'Extra arguments',
   settingTab: {
     title: 'Export Setting',
+    version: strTpl`Version: ${0}`,
     pandocPath: 'Pandoc path',
     pandocPathPlaceholder: '(Auto Detect)',
     reset: 'Reset',

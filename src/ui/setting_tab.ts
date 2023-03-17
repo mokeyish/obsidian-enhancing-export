@@ -12,6 +12,7 @@ import {
 } from '../settings';
 import { RenemeModal } from './rename_modal';
 import { AddNewModal } from './add_new_modal';
+import { getPandocVersion } from '../pandoc';
 
 export class ExportSettingTab extends PluginSettingTab {
   plugin: UniversalExportPlugin;
@@ -101,10 +102,18 @@ export class ExportSettingTab extends PluginSettingTab {
       })
       .setHeading();
 
-    new Setting(containerEl).setName(lang.settingTab.pandocPath).addText(cb => {
+    const pandocPathSetting = new Setting(containerEl);
+    getPandocVersion(getPlatformValue(globalSetting.pandocPath)).then((ver) => {
+      pandocPathSetting.setDesc(lang.settingTab.version(ver.version));
+    }).catch(() => pandocPathSetting.setDesc(''));
+
+    pandocPathSetting.setName(lang.settingTab.pandocPath).addText(cb => {
       cb.setPlaceholder(lang.settingTab.pandocPathPlaceholder).onChange(v => {
         if (globalSetting.pandocPath !== v) {
           globalSetting.pandocPath = setPlatformValue(globalSetting.pandocPath, v);
+          getPandocVersion(getPlatformValue(globalSetting.pandocPath)).then((ver) => {
+            pandocPathSetting.setDesc(lang.settingTab.version(ver.version));
+          }).catch(() => pandocPathSetting.setDesc(''));
         }
       });
 

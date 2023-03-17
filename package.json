@@ -20,6 +20,7 @@
   "devDependencies": {
     "@types/jest": "^27.5.1",
     "@types/node": "^16.11.6",
+    "@types/semver": "^7.3.13",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
     "builtin-modules": "^3.2.0",
@@ -35,6 +36,7 @@
     "typescript": "4.6.3"
   },
   "dependencies": {
+    "semver": "^7.3.8",
     "yargs": "^17.5.1"
   }
 }

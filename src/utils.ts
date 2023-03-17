@@ -1,3 +1,7 @@
+
+import { exec as node_exec } from 'child_process';
+import { string } from 'yargs';
+
 export function strTpl(strings: TemplateStringsArray, ...keys: number[]): (...values: any[]) => string {
   return function (...values) {
     const dict = values[values.length - 1] || {};
@@ -31,8 +35,8 @@ export function setTooltip(el: Element, tooltip?: string) {
 // noinspection SpellCheckingInspection
 export const nameofFactory =
   <T>() =>
-  (name: keyof T) =>
-    name;
+    (name: keyof T) =>
+      name;
 
 type TOnChangingHandler<T extends object, K extends keyof T> = (value: T[K], key: K, target: T) => boolean;
 type TOnChangedHandler<T extends object, K extends keyof T> = (value: T[K], key: K, target: T) => void;
@@ -113,3 +117,23 @@ export class Watcher<T extends object> {
     }
   }
 }
+
+
+export function exec(cmd: string, options?: { env?: { [k: string]: any } }): Promise<string> {
+  options = options ?? {};
+
+  return new Promise((resolve, reject) => {
+    node_exec(cmd, options, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      if (stderr && stderr !== '') {
+        reject(error);
+        return;
+      }
+      resolve(stdout);
+    });
+  });
+}
+

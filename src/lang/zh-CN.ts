@@ -46,6 +46,7 @@ export default ((): typeof lang => {
     showCommandOutput: '显示命令行删除',
     settingTab: {
       title: '导出设置',
+      version: strTpl`版本: ${0}`,
       pandocPath: 'Pandoc 路径',
       pandocPathPlaceholder: '（自动检测）',
       auto: '自动',
