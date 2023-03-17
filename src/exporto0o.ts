@@ -210,7 +210,7 @@ const executeCommand = (cmd: string, successCallback?: (msg: string) => void, er
   if (ct.remote.process.platform === 'win32') {
     options = {};
   } else {
-    options = { env: { PATH: ct.remote.process.env['PATH'] } };
+    options = { env: { PATH: ct.remote.process.env['PATH'], HOME: ct.remote.process.env['HOME'] } };
   }
   exec(cmd, options, (error, stdout, stderr) => {
     if (error) {
