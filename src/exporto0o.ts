@@ -7,6 +7,7 @@ import type ExportPlugin from './main';
 import { exec } from 'child_process';
 import path from 'path';
 import yargs from 'yargs/yargs';
+import { env } from './utils';
 
 export async function exportToOo(
   plugin: ExportPlugin,
@@ -87,21 +88,6 @@ export async function exportToOo(
     // lastMod: new Date(currentFile.stat.mtime),
     // now: new Date()
   };
-
-  switch (ct.remote.process.platform) {
-    case 'darwin': {
-      let envPath = ct.remote.process.env['PATH'];
-      const extraBins = ['/usr/local/bin', '/Library/TeX/texbin'];
-      for (const bin of extraBins) {
-        if (envPath.includes(bin)) continue;
-        envPath = `${bin}:${envPath}`;
-      }
-      ct.remote.process.env['PATH'] = envPath;
-      break;
-    }
-    default:
-      break;
-  }
 
   const showCommandLineOutput = setting.type === 'custom' && setting.showCommandOutput;
   const openExportedFileLocation = setting.openExportedFileLocation ?? globalSetting.openExportedFileLocation;
@@ -210,8 +196,9 @@ const executeCommand = (cmd: string, successCallback?: (msg: string) => void, er
   if (ct.remote.process.platform === 'win32') {
     options = {};
   } else {
-    options = { env: { PATH: ct.remote.process.env['PATH'], HOME: ct.remote.process.env['HOME'] } };
+    options = { env };
   }
+  
   exec(cmd, options, (error, stdout, stderr) => {
     if (error) {
       console.log(`cmd: ${cmd}\n error: ${error.message}`);

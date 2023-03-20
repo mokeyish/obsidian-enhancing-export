@@ -1,10 +1,13 @@
 import luaScripts from './lua';
+import ct from 'electron';
+import semver from 'semver/preload';
 import { App, Menu, Plugin, PluginManifest, TFile, Notice } from 'obsidian';
 import { UniversalExportPluginSettings, ExportSetting, DEFAULT_SETTINGS, getPlatformValue } from './settings';
 import { ExportDialog } from './ui/export_dialog';
 import { ExportSettingTab } from './ui/setting_tab';
 import lang, { Lang } from './lang';
 import { exportToOo } from './exporto0o';
+import { env } from './utils';
 
 export default class UniversalExportPlugin extends Plugin {
   settings: UniversalExportPluginSettings;
@@ -17,6 +20,25 @@ export default class UniversalExportPlugin extends Plugin {
 
   async onload() {
     window.hmr && window.hmr(this);
+
+    switch (ct.remote.process.platform) {
+      case 'darwin': {
+        let envPath = ct.remote.process.env['PATH'];
+        const extraBins = ['/usr/local/bin', '/Library/TeX/texbin'];
+        for (const bin of extraBins) {
+          if (envPath.includes(bin)) continue;
+          envPath = `${bin}:${envPath}`;
+        }
+        env.PATH = envPath;
+        break;
+      }
+      default:
+        break;
+    }
+    env.HOME = ct.remote.process.env['HOME'];
+    
+    await this.releaseLuaScripts();
+
     await this.loadSettings();
     const { lang } = this;
 
@@ -94,11 +116,6 @@ export default class UniversalExportPlugin extends Plugin {
       }
     }
     this.settings = settings;
-    if (this.settings.version !== this.manifest.version) {
-      await this.saveLuaScripts();
-      this.settings.version = this.manifest.version;
-      await this.saveSettings();
-    }
   }
 
   public async saveSettings(): Promise<void> {
@@ -117,7 +134,7 @@ export default class UniversalExportPlugin extends Plugin {
     await this.saveData(settings);
   }
 
-  async saveLuaScripts(): Promise<void> {
+  async releaseLuaScripts(): Promise<void> {
     const { adapter } = this.app.vault;
     const luaDir = `${this.manifest.dir}/lua`;
     await adapter.mkdir(luaDir);

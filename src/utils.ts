@@ -1,6 +1,7 @@
 
 import { exec as node_exec } from 'child_process';
-import { string } from 'yargs';
+
+export const env: { [k: string]: string, HOME?: string, PATH?: string } = {};
 
 export function strTpl(strings: TemplateStringsArray, ...keys: number[]): (...values: any[]) => string {
   return function (...values) {
@@ -120,7 +121,10 @@ export class Watcher<T extends object> {
 
 
 export function exec(cmd: string, options?: { env?: { [k: string]: any } }): Promise<string> {
-  options = options ?? {};
+  options = options ?? { };
+  if (!options.env) {
+    options.env = env;
+  }
 
   return new Promise((resolve, reject) => {
     node_exec(cmd, options, (error, stdout, stderr) => {

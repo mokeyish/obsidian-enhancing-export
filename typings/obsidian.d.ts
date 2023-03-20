@@ -1,6 +1,7 @@
 
 import  'obsidian';
-import { EventRef, Plugin_2, TAbstractFile } from 'obsidian';
+import type { EventRef } from 'obsidian';
+
 
 declare module 'obsidian' {
 
