@@ -47,6 +47,7 @@ export default {
   settingTab: {
     title: 'Export Setting',
     version: strTpl`Version: ${0}`,
+    pandocNotFound : 'Pandoc not found, please fill in the Pandoc file path, or add it to the system environment variables.',
     pandocPath: 'Pandoc path',
     pandocPathPlaceholder: '(Auto Detect)',
     reset: 'Reset',

@@ -105,7 +105,9 @@ export class ExportSettingTab extends PluginSettingTab {
     const pandocPathSetting = new Setting(containerEl);
     getPandocVersion(getPlatformValue(globalSetting.pandocPath)).then((ver) => {
       pandocPathSetting.setDesc(lang.settingTab.version(ver.version));
-    }).catch(() => pandocPathSetting.setDesc(''));
+    }).catch(() => {
+      pandocPathSetting.setDesc(lang.settingTab.pandocNotFound);
+    });
 
     pandocPathSetting.setName(lang.settingTab.pandocPath).addText(cb => {
       cb.setPlaceholder(lang.settingTab.pandocPathPlaceholder).onChange(v => {
@@ -113,7 +115,9 @@ export class ExportSettingTab extends PluginSettingTab {
           globalSetting.pandocPath = setPlatformValue(globalSetting.pandocPath, v);
           getPandocVersion(getPlatformValue(globalSetting.pandocPath)).then((ver) => {
             pandocPathSetting.setDesc(lang.settingTab.version(ver.version));
-          }).catch(() => pandocPathSetting.setDesc(''));
+          }).catch(() => {
+            pandocPathSetting.setDesc(lang.settingTab.pandocNotFound);
+          });
         }
       });
 
