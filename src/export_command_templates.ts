@@ -47,6 +47,13 @@ export default {
       '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/markdown.lua" -V media_dir="${outputDir}/${outputFileName}.textbundle/assets" -s -o "${outputDir}/${outputFileName}.textbundle/text.md" -t commonmark_x-attributes',
     extension: '.md',
   },
+  'Typst': {
+    name: 'Typst',
+    type: 'pandoc',
+    arguments:
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/markdown.lua" -s -o "${outputPath}" -t typst',
+    extension: '.typ',
+  },
   'PDF': {
     name: 'PDF',
     type: 'pandoc',
