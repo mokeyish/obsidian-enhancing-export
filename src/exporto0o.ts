@@ -4,10 +4,9 @@ import { MessageBox } from './ui/message_box';
 import { Notice, TFile } from 'obsidian';
 import * as fs from 'fs';
 import type ExportPlugin from './main';
-import { exec } from 'child_process';
 import path from 'path';
 import yargs from 'yargs/yargs';
-import { env } from './utils';
+import { exec } from './utils';
 
 export async function exportToOo(
   plugin: ExportPlugin,
@@ -144,7 +143,7 @@ export async function exportToOo(
     output: { type: 'string', alias: 'o' },
   }).argv;
   const actualOutputPath =
-    (args.output.startsWith('"') && args.output.endsWith('"')) || (args.output.startsWith("'") && args.output.endsWith("'"))
+    (args.output.startsWith('"') && args.output.endsWith('"')) || (args.output.startsWith('\'') && args.output.endsWith('\''))
       ? args.output.substring(1, args.output.length - 1)
       : args.output;
 
@@ -153,70 +152,38 @@ export async function exportToOo(
     fs.mkdirSync(actualOutputDir);
   }
 
-  executeCommand(
-    cmd,
-    () => {
-      progress.hide();
+  try {
+    console.log(`[${plugin.manifest.name}]: export command: ${cmd}`);
+    await exec(cmd, { cwd: variables.currentDir });
+    progress.hide();
 
-      const next = async () => {
-        if (openExportedFileLocation) {
-          setTimeout(() => {
-            ct.remote.shell.showItemInFolder(actualOutputPath);
-          }, 1000);
-        }
-        if (openExportedFile) {
-          await ct.remote.shell.openPath(actualOutputPath);
-        }
-        if (setting.type === 'pandoc' && setting.runCommand === true && setting.command) {
-          executeCommand(setting.command);
-        }
-        // success
-        onSuccess && onSuccess();
-      };
-
-      if (showCommandLineOutput) {
-        const box = new MessageBox(app, lang.exportCommandOutputMessage(cmd));
-        box.onClose = next;
-        box.open();
-      } else {
-        new Notice(lang.exportSuccessNotice(outputFileFullName), 1500);
-        next();
+    const next = async () => {
+      if (openExportedFileLocation) {
+        setTimeout(() => {
+          ct.remote.shell.showItemInFolder(actualOutputPath);
+        }, 1000);
       }
-    },
-    err => {
-      progress.hide();
-      new MessageBox(app, lang.exportErrorOutputMessage(cmd, err)).open();
-      onFailure && onFailure();
-    }
-  );
-}
+      if (openExportedFile) {
+        await ct.remote.shell.openPath(actualOutputPath);
+      }
+      if (setting.type === 'pandoc' && setting.runCommand === true && setting.command) {
+        await exec(setting.command);
+      }
+      // success
+      onSuccess && onSuccess();
+    };
 
-const executeCommand = (cmd: string, successCallback?: (msg: string) => void, errorCallback?: (msg: string) => void) => {
-  let options;
-  if (ct.remote.process.platform === 'win32') {
-    options = {};
-  } else {
-    options = { env };
+    if (showCommandLineOutput) {
+      const box = new MessageBox(app, lang.exportCommandOutputMessage(cmd));
+      box.onClose = next;
+      box.open();
+    } else {
+      new Notice(lang.exportSuccessNotice(outputFileFullName), 1500);
+      await next();
+    }
+  } catch (err) {
+    progress.hide();
+    new MessageBox(app, lang.exportErrorOutputMessage(cmd, err)).open();
+    onFailure && onFailure();
   }
-  
-  exec(cmd, options, (error, stdout, stderr) => {
-    if (error) {
-      console.log(`cmd: ${cmd}\n error: ${error.message}`);
-      if (errorCallback) {
-        errorCallback(error.message);
-      }
-      return;
-    }
-    if (stderr) {
-      console.log(`cmd: ${cmd}\n stderr: ${stderr}`);
-      if (errorCallback) {
-        errorCallback(stderr);
-      }
-      return;
-    }
-    console.log(`cmd: ${cmd}\n stdout: ${stdout}`);
-    if (successCallback) {
-      successCallback(stdout);
-    }
-  });
-};
+}

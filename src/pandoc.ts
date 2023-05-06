@@ -17,7 +17,6 @@ export class Pandoc {
   }
 }
 
-
 export async function getPandocVersion(path?: string): Promise<SemVer> {
   path = path ?? 'pandoc';
   let version = await exec(`${path} --version`);

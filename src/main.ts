@@ -1,6 +1,5 @@
 import luaScripts from './lua';
 import ct from 'electron';
-import semver from 'semver/preload';
 import { App, Menu, Plugin, PluginManifest, TFile, Notice } from 'obsidian';
 import { UniversalExportPluginSettings, ExportSetting, DEFAULT_SETTINGS, getPlatformValue } from './settings';
 import { ExportDialog } from './ui/export_dialog';
@@ -35,8 +34,10 @@ export default class UniversalExportPlugin extends Plugin {
       default:
         break;
     }
-    env.HOME = ct.remote.process.env['HOME'];
-    
+    if (ct.remote.process.env['HOME']) {
+      env.HOME = ct.remote.process.env['HOME'];
+    }
+
     await this.releaseLuaScripts();
 
     await this.loadSettings();

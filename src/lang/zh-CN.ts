@@ -7,7 +7,7 @@ export default ((): typeof lang => {
     selectExportFolder: '请选择导出文件夹',
     exportSuccessNotice: strTpl`导出文件 ${0} 成功！`,
     exportCommandOutputMessage: strTpl`命令：${0}`,
-    exportErrorOutputMessage: strTpl`命令 ${0}，错误：{1}`,
+    exportErrorOutputMessage: strTpl`命令 ${0}，错误：${1}`,
     messageBox: {
       yes: '是',
       no: '否',
@@ -47,7 +47,7 @@ export default ((): typeof lang => {
     settingTab: {
       title: '导出设置',
       version: strTpl`版本: ${0}`,
-      pandocNotFound : '找不到 Pandoc，请填写 Pandoc 文件路径，或者将其添加到系统环境变量中。',
+      pandocNotFound: '找不到 Pandoc，请填写 Pandoc 文件路径，或者将其添加到系统环境变量中。',
       pandocPath: 'Pandoc 路径',
       pandocPathPlaceholder: '（自动检测）',
       auto: '自动',

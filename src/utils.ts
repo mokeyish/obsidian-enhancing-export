@@ -1,8 +1,8 @@
+import { ExecOptions, exec as node_exec } from 'child_process';
 
-import { exec as node_exec } from 'child_process';
+export const env: { [k: string]: string; HOME?: string; PATH?: string } = {};
 
-export const env: { [k: string]: string, HOME?: string, PATH?: string } = {};
-
+// eslint-disable-next-line
 export function strTpl(strings: TemplateStringsArray, ...keys: number[]): (...values: any[]) => string {
   return function (...values) {
     const dict = values[values.length - 1] || {};
@@ -63,7 +63,7 @@ export class Watcher<T extends object> {
     (this.onChanged[key] ?? (this.onChanged[key] = [])).push(handler);
   }
 
-  set<K extends keyof T>(target: T, key: K, value: T[K], _receiver: T): boolean {
+  set<K extends keyof T>(target: T, key: K, value: T[K]): boolean {
     if (this._onChangingCallback && this._onChangingCallback(value, key, target) === false) {
       return false;
     }
@@ -119,10 +119,9 @@ export class Watcher<T extends object> {
   }
 }
 
-
-export function exec(cmd: string, options?: { env?: { [k: string]: any } }): Promise<string> {
-  options = options ?? { };
-  if (!options.env) {
+export function exec(cmd: string, options?: ExecOptions): Promise<string> {
+  options = options ?? {};
+  if (!options.env && Object.keys(env).length > 0) {
     options.env = env;
   }
 
@@ -133,11 +132,10 @@ export function exec(cmd: string, options?: { env?: { [k: string]: any } }): Pro
         return;
       }
       if (stderr && stderr !== '') {
-        reject(error);
+        reject(stderr);
         return;
       }
       resolve(stdout);
     });
   });
 }
-
