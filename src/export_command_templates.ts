@@ -126,7 +126,7 @@ export default {
     name: 'Bibliography',
     type: 'pandoc',
     arguments:
-      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/bibliography.lua" -o "${outputPath}" --to=bibtex "${currentPath}"',
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/citefilter.lua" -o "${outputPath}" --to=bibtex "${currentPath}"',
     extension: '.bib',
   },
   'Custom': {
