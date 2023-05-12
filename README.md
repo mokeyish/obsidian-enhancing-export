@@ -53,6 +53,11 @@ You can use `${variables}` in custom export command, their values are:
 | `${currentFileFullName}` | Filename with extension of currently edited file. It will be `readme.md` in above case.                                                                 |
 | `${vaultDir}`            | The obsidian current vaultDir.                                                                                                                          |
 
+## Related resources
+
+- **Tutorial**: [Obsidian Tutorial for Academic Writing](obsidian-tutorial-for-academic-writing-87b038060522) - exporting `.bib`
+- **Math latex editor**: [https://math.yish.org/](https://math.yish.org/)
+
 ## Finally
 
 - Welcome to provide more command templates to [here](src/export_command_templates.ts).
