@@ -31,7 +31,7 @@ Where `Markdown`,`Markdown (Hugo)`,`HTML` will export and its media resource tog
 
    See more details in [https://pandoc.org/installing.html](https://pandoc.org/installing.html)。
 
-2. Search `obsidian-enhancing-export` in the community plugin of obsidian, and install it.
+2. Search `obsidian-enhancing-export` in the community plugins of obsidian, and install it.
 
 ## Customize export commands
 
@@ -55,7 +55,7 @@ You can use `${variables}` in custom export command, their values are:
 
 ## Related resources
 
-- **Tutorial**: [Obsidian Tutorial for Academic Writing](obsidian-tutorial-for-academic-writing-87b038060522) - tutorial on how to setup this plugin and use it for academic writing (export to `.docx`, `.pdf`, `.tex`, `.bib`)
+- **Tutorial**: [Obsidian Tutorial for Academic Writing](https://betterhumans.pub/obsidian-tutorial-for-academic-writing-87b038060522) - tutorial on how to setup this plugin and use it for academic writing (export to `.docx`, `.pdf`, `.tex`, `.bib`)
 - **Math latex editor**: [https://math.yish.org/](https://math.yish.org/)
 
 ## Finally
