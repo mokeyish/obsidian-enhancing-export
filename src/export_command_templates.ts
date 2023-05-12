@@ -92,6 +92,12 @@ export default {
     arguments: '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t latex',
     extension: '.latex',
   },
+  'Latex (export with images)': {
+    name: 'Latex',
+    type: 'pandoc',
+    arguments: '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t latex --extract-media "${outputPath}/images/"',
+    extension: '.latex',
+  },
   'Media Wiki': {
     name: 'Media Wiki',
     type: 'pandoc',
@@ -115,6 +121,13 @@ export default {
     type: 'pandoc',
     arguments: '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t opml',
     extension: '.opml',
+  },
+  'Bibliography (.bib)': {
+    name: 'Bibliography',
+    type: 'pandoc',
+    arguments:
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/citefilter.lua" -o "${outputPath}" --to=bibtex "${currentPath}"',
+    extension: '.bib',
   },
   'Custom': {
     name: 'Custom',

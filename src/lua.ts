@@ -5,6 +5,7 @@ import math_block from 'lua/math_block.lua';
 import markdown from 'lua/markdown.lua';
 import markdown_hugo from 'lua/markdown+hugo.lua';
 import pdf from 'lua/pdf.lua';
+import citefilter from 'lua/citefilter.lua';
 
 const files = {
   'utf8_filenames.lua': utf8_filenames,
@@ -14,6 +15,7 @@ const files = {
   'markdown.lua': markdown,
   'markdown+hugo.lua': markdown_hugo,
   'pdf.lua': pdf,
+  'citefilter.lua': citefilter,
 };
 
 export default files;

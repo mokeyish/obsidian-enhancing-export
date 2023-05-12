@@ -5,11 +5,11 @@
 
 English | [中文](https://github.com/mokeyish/obsidian-enhancing-export/blob/master/README_zh-CN.md)
 
-This is an enhancing export plugin base on `Pandoc` for Obsidian ([https://obsidian.md/](https://obsidian.md/)). It's allow you to export to formats like `Markdown`、`Markdown (Hugo)`、`Html`、`docx`、`Latex` etc.
+This is an enhancing export plugin base on `Pandoc` for Obsidian ([https://obsidian.md/](https://obsidian.md/)). It's allow you to export to formats like `Markdown`,`Markdown (Hugo)`,`HTML`,`docx`,`Latex` etc.
 
-Where `Markdown`、`Markdown (Hugo)`、`Html` will export and its media resource together.
+Where `Markdown`,`Markdown (Hugo)`,`HTML` will export and its media resource together.
 
-**Note：**  `Markdown`、`Markdown (Hugo)`、`Html` are tested in Mac OS、Window、Linux as I used it for myself, others are not tested well.
+**Note：**  `Markdown`,`Markdown (Hugo)`,`HTML` are tested in Mac OS, Windows, and Linux as I used it for myself, others are not tested well.
 
 
 **Ads**: You might like my other plugins 🤪
@@ -55,7 +55,7 @@ You can use `${variables}` in custom export command, their values are:
 
 ## Related resources
 
-- **Tutorial**: [Obsidian Tutorial for Academic Writing](obsidian-tutorial-for-academic-writing-87b038060522) - exporting `.bib`
+- **Tutorial**: [Obsidian Tutorial for Academic Writing](obsidian-tutorial-for-academic-writing-87b038060522) - tutorial on how to setup this plugin and use it for academic writing (export to `.docx`, `.pdf`, `.tex`, `.bib`)
 - **Math latex editor**: [https://math.yish.org/](https://math.yish.org/)
 
 ## Finally
