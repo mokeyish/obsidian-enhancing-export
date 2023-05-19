@@ -38,6 +38,12 @@
 | `${currentFileName}` | 当前文件不带扩展名的名字，值是 `readme` |
 | `${currentFileFullName}` | 当前文件全名，值是 `readme.md`。 |
 | `${vaultDir}`            | Obsidian 当前的 vaultDir.        |
+| `${attachmentFolderPath}`| Obsidian 的附件目录 |
+
+## Related resources
+
+- **Pandoc 的 lua filters 集合**: [https://github.com/pandoc-ext](https://github.com/pandoc-ext) 
+- **Latex 数学公式编辑器**: [https://math.yish.org/](https://math.yish.org/)
 
 ## 最后
 

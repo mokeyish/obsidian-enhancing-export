@@ -52,6 +52,7 @@ You can use `${variables}` in custom export command, their values are:
 | `${currentFileName}`     | Filename without extension of currently edited file, It will be `readme` in above case.                                                                 |
 | `${currentFileFullName}` | Filename with extension of currently edited file. It will be `readme.md` in above case.                                                                 |
 | `${vaultDir}`            | The obsidian current vaultDir.                                                                                                                          |
+| `${attachmentFolderPath}`| The `attachmentFolderPath` of Obsidian.                                                                                                                 |
 
 ## Related resources
 
