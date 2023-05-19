@@ -143,7 +143,7 @@ export async function exportToOo(
     output: { type: 'string', alias: 'o' },
   }).argv;
   const actualOutputPath =
-    (args.output.startsWith('"') && args.output.endsWith('"')) || (args.output.startsWith('\'') && args.output.endsWith('\''))
+    (args.output.startsWith('"') && args.output.endsWith('"')) || (args.output.startsWith("'") && args.output.endsWith("'"))
       ? args.output.substring(1, args.output.length - 1)
       : args.output;
 

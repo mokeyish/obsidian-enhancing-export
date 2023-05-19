@@ -36,8 +36,8 @@ export function setTooltip(el: Element, tooltip?: string) {
 // noinspection SpellCheckingInspection
 export const nameofFactory =
   <T>() =>
-    (name: keyof T) =>
-      name;
+  (name: keyof T) =>
+    name;
 
 type TOnChangingHandler<T extends object, K extends keyof T> = (value: T[K], key: K, target: T) => boolean;
 type TOnChangedHandler<T extends object, K extends keyof T> = (value: T[K], key: K, target: T) => void;

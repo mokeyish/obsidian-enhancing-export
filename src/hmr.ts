@@ -4,11 +4,11 @@ import { normalize, join } from 'path';
 
 declare global {
   interface Window {
-    hmr(plugin: Plugin): void;
+    hmr(plugin: Plugin, watchFiles?: Array<'main.js' | 'manifest.json' | 'styles.css'> | string[]): void;
   }
 }
 
-Window.prototype.hmr = function (plugin: Plugin): void {
+Window.prototype.hmr = function (plugin: Plugin, watchFiles: string[] = ['main.js', 'manifest.json', 'styles.css']): void {
   if (Platform.isMobile) {
     return;
   }
@@ -40,6 +40,7 @@ Window.prototype.hmr = function (plugin: Plugin): void {
 
   adapter.startWatchPath(pluginDir);
   plugin.register(() => adapter.stopWatchPath(pluginDir));
+  adapter.startWatchPath(pluginDir);
 };
 
 export {};

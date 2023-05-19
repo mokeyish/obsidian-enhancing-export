@@ -95,7 +95,8 @@ export default {
   'Latex (export with images)': {
     name: 'Latex',
     type: 'pandoc',
-    arguments: '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t latex --extract-media "${outputPath}/images/"',
+    arguments:
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t latex --extract-media "${outputPath}/images/"',
     extension: '.latex',
   },
   'Media Wiki': {

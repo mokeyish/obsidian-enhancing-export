@@ -1,12 +1,19 @@
-import luaScripts from './lua';
 import ct from 'electron';
 import { App, Menu, Plugin, PluginManifest, TFile, Notice } from 'obsidian';
 import { UniversalExportPluginSettings, ExportSetting, DEFAULT_SETTINGS, getPlatformValue } from './settings';
 import { ExportDialog } from './ui/export_dialog';
 import { ExportSettingTab } from './ui/setting_tab';
-import lang, { Lang } from './lang';
 import { exportToOo } from './exporto0o';
 import { env } from './utils';
+import lang, { Lang } from './lang';
+import './styles.css';
+
+const luaScripts = Object.fromEntries(
+  Object.entries(import.meta.glob<{ default: Uint8Array }>('lua/*.lua', { eager: true })).map(([k, m]) => [
+    k.substring('/lua'.length),
+    m.default,
+  ])
+);
 
 export default class UniversalExportPlugin extends Plugin {
   settings: UniversalExportPluginSettings;
@@ -18,8 +25,6 @@ export default class UniversalExportPlugin extends Plugin {
   }
 
   async onload() {
-    window.hmr && window.hmr(this);
-
     switch (ct.remote.process.platform) {
       case 'darwin': {
         let envPath = ct.remote.process.env['PATH'];
@@ -96,6 +101,8 @@ export default class UniversalExportPlugin extends Plugin {
       })
     );
     // this.downloadLuaScripts().then();
+
+    window.hmr && window.hmr(this);
   }
 
   public async resetSettings(): Promise<void> {
@@ -139,9 +146,10 @@ export default class UniversalExportPlugin extends Plugin {
     const { adapter } = this.app.vault;
     const luaDir = `${this.manifest.dir}/lua`;
     await adapter.mkdir(luaDir);
-    for (const luaScript of Object.keys(luaScripts) as Array<keyof typeof luaScripts>) {
-      const luaFile = `${luaDir}/${luaScript}`;
-      await adapter.writeBinary(luaFile, luaScripts[luaScript]);
+    for (const scriptName of Object.keys(luaScripts) as Array<keyof typeof luaScripts>) {
+      const luaFile = `${luaDir}/${scriptName}`;
+      await adapter.writeBinary(luaFile, luaScripts[scriptName]);
+      delete luaScripts[scriptName];
     }
   }
 }
