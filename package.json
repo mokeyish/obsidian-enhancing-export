@@ -33,10 +33,13 @@
     "tslib": "2.3.1",
     "typescript": "4.6.3",
     "vite": "^4.3.6",
+    "vite-plugin-solid": "^2.7.0",
     "vite-plugin-static-copy": "^0.15.0"
   },
   "dependencies": {
+    "@solid-primitives/deep": "^0.0.102",
     "semver": "^7.5.1",
+    "solid-js": "^1.7.5",
     "yargs": "^17.7.2"
   }
 }

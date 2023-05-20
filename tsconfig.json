@@ -10,6 +10,10 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "importHelpers": true,
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "noEmit": true,
+    "isolatedModules": true,
     "lib": [
       "DOM",
       "ES5",
@@ -20,6 +24,6 @@
     "typeRoots": [ "./typings", "./node_modules/@types"]
   },
   "include": [
-    "**/*.ts"
+    "**/*.ts",  "**/*.tsx"
   ]
 }

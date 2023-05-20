@@ -1,8 +1,10 @@
 import ct from 'electron';
 import { App, Menu, Plugin, PluginManifest, TFile, Notice } from 'obsidian';
 import { UniversalExportPluginSettings, ExportSetting, DEFAULT_SETTINGS, getPlatformValue } from './settings';
-import { ExportDialog } from './ui/export_dialog';
-import { ExportSettingTab } from './ui/setting_tab';
+// import ExportDialog from './ui/export_dialog';
+import ExportDialog from './ui/ExportDialog';       // solidjs
+// import ExportSettingTab from './ui/setting_tab';
+import ExportSettingTab from './ui/SettingTab';     // solidjs
 import { exportToOo } from './exporto0o';
 import { env } from './utils';
 import lang, { Lang } from './lang';
@@ -48,7 +50,7 @@ export default class UniversalExportPlugin extends Plugin {
     await this.loadSettings();
     const { lang } = this;
 
-    this.addSettingTab(new ExportSettingTab(this.app, this));
+    this.addSettingTab(new ExportSettingTab(this));
 
     this.addCommand({
       id: 'obsidian-enhancing-export:export',
@@ -57,7 +59,7 @@ export default class UniversalExportPlugin extends Plugin {
       callback: () => {
         const file = this.app.workspace.getActiveFile();
         if (file) {
-          new ExportDialog(this.app, this, file).open();
+          ExportDialog.show(this, file);
         } else {
           new Notice(lang.pleaseOpenFile, 2000);
         }
@@ -77,7 +79,7 @@ export default class UniversalExportPlugin extends Plugin {
               return;
             }
           }
-          new ExportDialog(this.app, this, file).open();
+          ExportDialog.show(this, file);
         } else {
           new Notice(lang.pleaseOpenFile, 2000);
         }
@@ -93,7 +95,7 @@ export default class UniversalExportPlugin extends Plugin {
                 .setTitle(lang.exportToOo)
                 .setIcon('document')
                 .onClick((): void => {
-                  new ExportDialog(this.app, this, file).open();
+                  ExportDialog.show(this, file);
                 });
             })
             .addSeparator();

@@ -1,6 +1,7 @@
+import { exec } from 'child_process';
 import { defineConfig, loadEnv, Plugin } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-import { exec } from 'child_process';
+import solidPlugin from 'vite-plugin-solid';
 import builtins from 'builtin-modules';
 import path from 'path';
 import * as fsp from 'fs/promises';
@@ -22,14 +23,15 @@ export default defineConfig(async ({ mode }) => {
 
   let { OUT_DIR } = loadEnv(mode, process.cwd(), ['OUT_']);
 
-  await rm('dist', { force: true, recursive: true });
   OUT_DIR = normalize(OUT_DIR);
   if (OUT_DIR != 'dist' && OUT_DIR != path.join(process.cwd(), 'dist')) {
+    await rm('dist', { recursive: true });
     exec(process.platform === 'win32'? `mklink /J dist ${OUT_DIR}` : `ln -s ${OUT_DIR} dist`);
   }
 
   return {
     plugins: [
+      solidPlugin(),
       viteStaticCopy({
         targets: [{
           src: 'manifest.json',
@@ -54,6 +56,7 @@ export default defineConfig(async ({ mode }) => {
       minify: prod,
       sourcemap: prod ? false : 'inline',
       cssCodeSplit: false,
+      emptyOutDir: false,
       // outDir: '',
       rollupOptions: {
         output: {

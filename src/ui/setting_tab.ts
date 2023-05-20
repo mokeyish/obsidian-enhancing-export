@@ -1,6 +1,5 @@
 import { App, PluginSettingTab, Setting, TextComponent } from 'obsidian';
 import * as ct from 'electron';
-import { setTooltip, setVisible, Watcher } from '../utils';
 import type UniversalExportPlugin from '../main';
 import {
   CustomExportSetting,
@@ -10,19 +9,21 @@ import {
   getPlatformValue,
   UniversalExportPluginSettings,
 } from '../settings';
-import { RenemeModal } from './rename_modal';
-import { AddNewModal } from './add_new_modal';
 import { getPandocVersion } from '../pandoc';
 
-export class ExportSettingTab extends PluginSettingTab {
+import { Modal } from 'obsidian';
+import type ExportSettingTab from './setting_tab';
+import export_command_templates from '../export_command_templates';
+
+export default class extends PluginSettingTab {
   plugin: UniversalExportPlugin;
 
   public get lang() {
     return this.plugin.lang;
   }
 
-  constructor(app: App, plugin: UniversalExportPlugin) {
-    super(app, plugin);
+  constructor(plugin: UniversalExportPlugin) {
+    super(plugin.app, plugin);
     this.plugin = plugin;
     this.name = this.plugin.lang.settingTab.title;
   }
@@ -200,10 +201,10 @@ export class ExportSettingTab extends PluginSettingTab {
 
     // settings for export type
 
-    new Setting(containerEl).setName(lang.settingTab.title).setHeading();
+    new Setting(containerEl).setName(lang.settingTab.editCommandTemplate).setHeading();
 
     new Setting(containerEl)
-      .setName(lang.settingTab.chooseSetting)
+      .setName(lang.settingTab.chooseCommandTemplate)
       .addDropdown(cb => {
         cb.onChange(v => {
           if (globalSetting.lastEditName !== v) {
@@ -375,4 +376,202 @@ export class ExportSettingTab extends PluginSettingTab {
     globalSettingWatcher.fireChanged(globalSetting);
     settingWatcher.fireChanged(current);
   }
+}
+
+class AddNewModal extends Modal {
+  readonly settingTab: ExportSettingTab;
+  readonly callback: (setting: ExportSetting) => void;
+  get lang() {
+    return this.settingTab.lang;
+  }
+  constructor(app: App, settingTab: ExportSettingTab, callback: (setting: ExportSetting) => void) {
+    super(app);
+    this.settingTab = settingTab;
+    this.callback = callback;
+  }
+
+  onOpen() {
+    const { contentEl, titleEl, lang, callback } = this;
+    titleEl.setText(lang.new);
+    let tpl = Object.values(export_command_templates).first();
+    let tplName = tpl.name;
+    let name = tpl.name;
+
+    // eslint-disable-next-line prefer-const
+    let nameSetting: Setting;
+
+    new Setting(contentEl).setName(lang.template).addDropdown(cb => {
+      cb.addOptions(Object.fromEntries(Object.values(export_command_templates).map(o => [o.name, o.name])))
+        .setValue(tplName)
+        .onChange(v => {
+          tplName = v;
+          name = v;
+
+          (nameSetting.components.first() as TextComponent)?.setValue(name);
+        });
+    });
+
+    nameSetting = new Setting(contentEl).setName(lang.name).addText(cb => {
+      cb.setValue(name).onChange(v => (name = v));
+    });
+
+    contentEl.createEl('div', { cls: ['modal-button-container'], parent: contentEl }, el => {
+      el.createEl('button', {
+        text: lang.settingTab.add,
+        cls: ['mod-cta'],
+        parent: el,
+      }).onclick = async () => {
+        tpl = JSON.parse(JSON.stringify(export_command_templates[tplName]));
+        tpl.name = name;
+        callback(tpl);
+        this.close();
+      };
+    });
+  }
+
+  onClose() {
+    const { contentEl } = this;
+    contentEl.empty();
+  }
+}
+
+class RenemeModal extends Modal {
+  private readonly settingTab: ExportSettingTab;
+  private readonly setting: ExportSetting;
+  private readonly callback: (name: string) => void;
+  get lang() {
+    return this.settingTab.lang;
+  }
+  constructor(app: App, settingTab: ExportSettingTab, setting: ExportSetting, callback: (name: string) => void) {
+    super(app);
+    this.settingTab = settingTab;
+    this.setting = setting;
+    this.callback = callback;
+  }
+
+  onOpen() {
+    const { contentEl, titleEl, lang, setting } = this;
+    titleEl.setText(lang.settingTab.rename);
+
+    let name = setting.name;
+
+    new Setting(contentEl).setName(lang.name).addText(cb => {
+      cb.setValue(setting.name).onChange(v => (name = v));
+    });
+
+    contentEl.createEl('div', { cls: ['modal-button-container'], parent: contentEl }, el => {
+      el.createEl('button', {
+        text: lang.save,
+        cls: ['mod-cta'],
+        parent: el,
+      }).onclick = async () => {
+        // success
+        this.callback(name);
+        this.close();
+      };
+    });
+  }
+
+  onClose() {
+    const { contentEl } = this;
+    contentEl.empty();
+  }
+}
+
+type TOnChangingHandler<T extends object, K extends keyof T> = (value: T[K], key: K, target: T) => boolean;
+type TOnChangedHandler<T extends object, K extends keyof T> = (value: T[K], key: K, target: T) => void;
+
+export class Watcher<T extends object> {
+  onChanging: { [k in keyof T]?: TOnChangingHandler<T, keyof T>[] };
+  onChanged: { [k in keyof T]?: TOnChangedHandler<T, keyof T>[] };
+  private readonly _onChangingCallback: TOnChangingHandler<T, keyof T>;
+  private readonly _onChangedCallback: TOnChangedHandler<T, keyof T>;
+  constructor(options?: { onChangingCallback?: TOnChangingHandler<T, keyof T>; onChangedCallback?: TOnChangedHandler<T, keyof T> }) {
+    this.onChanging = {};
+    this.onChanged = {};
+    this._onChangingCallback = options?.onChangingCallback ?? (() => true);
+    this._onChangedCallback = options?.onChangedCallback ?? (() => void 0);
+  }
+  as<T extends object>(): Watcher<T> {
+    return this as unknown as Watcher<T>;
+  }
+  watchOnChanging<K extends keyof T>(key: K, handler: TOnChangingHandler<T, K>): void {
+    (this.onChanging[key] ?? (this.onChanging[key] = [])).push(handler);
+  }
+  watchOnChanged<K extends keyof T>(key: K, handler: TOnChangedHandler<T, K>): void {
+    (this.onChanged[key] ?? (this.onChanged[key] = [])).push(handler);
+  }
+
+  set<K extends keyof T>(target: T, key: K, value: T[K]): boolean {
+    if (this._onChangingCallback && this._onChangingCallback(value, key, target) === false) {
+      return false;
+    }
+    const onChangingHandlers = this.onChanging[key];
+    if (onChangingHandlers) {
+      let invalid = false;
+      for (const h of onChangingHandlers) {
+        if (!h(value, key, target)) {
+          invalid = true;
+        }
+      }
+      if (invalid) {
+        return false;
+      }
+    }
+
+    // The default behavior to store the value
+    target[key] = value;
+
+    const onChangedHandlers = this.onChanged[key];
+    if (onChangedHandlers) {
+      for (const h of onChangedHandlers) {
+        try {
+          h(value, key, target);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+
+    if (this._onChangedCallback) {
+      this._onChangedCallback(value, key, target);
+    }
+
+    // Indicate success
+    return true;
+  }
+
+  fireChanged(target: T) {
+    for (const key of Object.keys(this.onChanged)) {
+      const k = key as keyof T;
+      const onChangedHandlers = this.onChanged[k];
+      if (onChangedHandlers) {
+        for (const h of onChangedHandlers) {
+          try {
+            h(target[k], k, target);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }
+    }
+  }
+}
+
+export function setVisible(el: Element, visible: boolean) {
+  if (visible) {
+    el.removeAttribute('hidden');
+  } else {
+    el.setAttribute('hidden', '');
+  }
+  return el;
+}
+
+export function setTooltip(el: Element, tooltip?: string) {
+  if (tooltip && tooltip.trim() != '') {
+    el.setAttribute('title', tooltip);
+  } else {
+    el.removeAttribute('title');
+  }
+  return el;
 }
