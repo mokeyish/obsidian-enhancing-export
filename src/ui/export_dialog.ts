@@ -2,8 +2,8 @@ import { App, Modal, Setting, TFile, TextComponent } from 'obsidian';
 import * as ct from 'electron';
 import { extractDefaultExtension as extractExtension, getPlatformValue, setPlatformValue } from '../settings';
 import type UniversalExportPlugin from '../main';
-import { setTooltip, setVisible } from '../utils';
 import { exportToOo } from '../exporto0o';
+import { setTooltip, setVisible } from './setting_tab';
 
 export class ExportDialog extends Modal {
   readonly plugin: UniversalExportPlugin;
@@ -80,12 +80,12 @@ export class ExportDialog extends Modal {
 
     const candidateOutputDirectorySetting = new Setting(contentEl)
       .setName(lang.exportDialog.exportTo)
-      .setDisabled(true)
       .addText(cb => {
         cb.setValue(candidateOutputDirectory).onChange(v => {
           candidateOutputDirectory = v;
           setTooltip(cb.inputEl, candidateOutputDirectory);
         });
+        cb.setDisabled(true);
         setTooltip(cb.inputEl, candidateOutputDirectory);
       })
       .addExtraButton(cb => {
@@ -145,3 +145,13 @@ export class ExportDialog extends Modal {
     contentEl.empty();
   }
 }
+
+const show = (plugin: UniversalExportPlugin, currentFile: TFile) => {
+  const dialog = new ExportDialog(plugin.app, plugin, currentFile);
+  dialog.open();
+  return () => dialog.close();
+};
+
+export default {
+  show,
+};

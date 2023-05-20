@@ -26,19 +26,30 @@ Window.prototype.hmr = function (plugin: Plugin, watchFiles: string[] = ['main.j
     app: { vault },
   } = plugin;
   const entry = normalize(join(pluginDir, 'main.js'));
-  const onChange = async (file: string) => {
-    if (file.startsWith(pluginDir)) {
-      if (!(await adapter.exists(entry))) {
-        return;
+  const onChange = debounce(
+    async (file: string) => {
+      if (file.startsWith(pluginDir)) {
+        if (!(await adapter.exists(entry))) {
+          return;
+        }
+        if (file === pluginDir) {
+          // reload
+        } else if (watchFiles?.length > 0) {
+          if (!watchFiles.some(o => file.endsWith(o))) {
+            return;
+          }
+        }
+
+        await plugins.disablePlugin(id);
+        await plugins.enablePlugin(id);
       }
-      await plugins.disablePlugin(id);
-      await plugins.enablePlugin(id);
-    }
-  };
+    },
+    500,
+    true
+  );
 
-  plugin.registerEvent(vault.on('raw', debounce(onChange, 500)));
+  plugin.registerEvent(vault.on('raw', onChange));
 
-  adapter.startWatchPath(pluginDir);
   plugin.register(() => adapter.stopWatchPath(pluginDir));
   adapter.startWatchPath(pluginDir);
 };
