@@ -1,12 +1,12 @@
 {
   "name": "obsidian-enhancing-export",
-  "version": "1.4.1",
+  "version": "1.5.1",
   "description": "This is a enhancing export plugin for Obsidian. It allows to export to formats like Html, DOCX, ePub and PDF or Markdown(Hugo) etc.",
   "main": "dist/main.js",
   "scripts": {
     "dev": "vite build -w -m development",
     "build": "vite build",
-    "version": "node version-bump.mjs && git add manifest.json versions.json",
+    "version": "node version-bump.mjs",
     "lint": "eslint --ext .ts,.js src",
     "lint-fix": "eslint --fix --ext .ts,.js src",
     "format-check": "prettier --check \"src/**/*.ts\"",
