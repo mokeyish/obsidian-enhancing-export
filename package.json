@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite build -w -m development",
     "build": "vite build",
-    "version": "node version-bump.mjs && git add manifest.json versions.json",
+    "version": "node version-bump.mjs",
     "lint": "eslint --ext .ts,.js src",
     "lint-fix": "eslint --fix --ext .ts,.js src",
     "format-check": "prettier --check \"src/**/*.ts\"",
