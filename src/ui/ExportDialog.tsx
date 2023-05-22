@@ -27,7 +27,7 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
 
   const chooseFolder = async () => {
     const retval = await ct.remote.dialog.showOpenDialog({
-      title: lang.selectExportFolder,
+      title: lang.exportDialog.selectExportFolder,
       defaultPath: candidateOutputDirectory(),
       properties: ['createDirectory', 'openDirectory'],
     });
@@ -64,7 +64,7 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
 
   return <>
     <Modal app={app} title={title()} classList={{ hidden: hidden() }} onClose={props.onClose} >
-      <Setting name={lang.type}>
+      <Setting name={lang.exportDialog.type}>
         <DropDown options={exportTypes} onChange={(typ) => setExportType(typ)} />
       </Setting>
 

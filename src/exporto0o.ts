@@ -5,7 +5,7 @@ import { Notice, TFile } from 'obsidian';
 import * as fs from 'fs';
 import type ExportPlugin from './main';
 import path from 'path';
-import yargs from 'yargs/yargs';
+import argsParser from 'yargs-parser';
 import { exec } from './utils';
 
 export async function exportToOo(
@@ -138,10 +138,11 @@ export async function exportToOo(
       : setting.command;
 
   const cmd = cmdTpl.replace(/\${(.*?)}/g, (_, p1: string) => variables[p1 as keyof typeof variables]);
-
-  const args = await yargs(cmd.match(/(?:[^\s"]+|"[^"]*")+/g)).options({
-    output: { type: 'string', alias: 'o' },
-  }).argv;
+  const args = argsParser(cmd.match(/(?:[^\s"]+|"[^"]*")+/g), {
+    alias: {
+      output: ['o'],
+    },
+  });
   const actualOutputPath =
     (args.output.startsWith('"') && args.output.endsWith('"')) || (args.output.startsWith('\'') && args.output.endsWith('\''))
       ? args.output.substring(1, args.output.length - 1)

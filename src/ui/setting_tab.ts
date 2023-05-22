@@ -88,7 +88,7 @@ export default class extends PluginSettingTab {
 
     // General
     new Setting(containerEl)
-      .setName(lang.general)
+      .setName(lang.settingTab.general)
       .addExtraButton(cb => {
         cb.setIcon('reset')
           .setTooltip(lang.settingTab.reset)
@@ -131,11 +131,11 @@ export default class extends PluginSettingTab {
       });
     });
 
-    new Setting(containerEl).setName(lang.defaultFolderForExportedFile).addDropdown(cb => {
+    new Setting(containerEl).setName(lang.settingTab.defaultFolderForExportedFile).addDropdown(cb => {
       cb.addOptions({
         'Auto': lang.settingTab.auto,
-        'Same': lang.sameFolderWithCurrentFile,
-        'Custom': lang.customLocation,
+        'Same': lang.settingTab.sameFolderWithCurrentFile,
+        'Custom': lang.settingTab.customLocation,
       }).onChange((v: 'Auto' | 'Same' | 'Custom') => {
         if (globalSetting.defaultExportDirectoryMode !== v) {
           globalSetting.defaultExportDirectoryMode = v;
@@ -177,7 +177,7 @@ export default class extends PluginSettingTab {
       setVisible(customDefaultExportDirectorySetting.settingEl, value === 'Custom');
     });
 
-    new Setting(containerEl).setName(lang.openExportedFileLocation).addToggle(cb => {
+    new Setting(containerEl).setName(lang.settingTab.openExportedFileLocation).addToggle(cb => {
       cb.onChange(v => {
         if (globalSetting.openExportedFileLocation !== v) {
           globalSetting.openExportedFileLocation = v;
@@ -188,7 +188,7 @@ export default class extends PluginSettingTab {
       });
     });
 
-    new Setting(containerEl).setName(lang.openExportedFile).addToggle(cb => {
+    new Setting(containerEl).setName(lang.settingTab.openExportedFile).addToggle(cb => {
       cb.onChange(v => {
         if (globalSetting.openExportedFile !== v) {
           globalSetting.openExportedFile = v;
@@ -250,7 +250,7 @@ export default class extends PluginSettingTab {
         });
       });
 
-    const commandSetting = new Setting(containerEl).setName(lang.command).addText(cb => {
+    const commandSetting = new Setting(containerEl).setName(lang.settingTab.command).addText(cb => {
       cb.setDisabled(true);
       cb.onChange(v => {
         if (current.type === 'custom' && current.command !== v) {
@@ -268,7 +268,7 @@ export default class extends PluginSettingTab {
       setVisible(commandSetting.settingEl, value === 'custom');
     });
 
-    const argumentsSetting = new Setting(containerEl).setName(lang.arguments).addText(cb => {
+    const argumentsSetting = new Setting(containerEl).setName(lang.settingTab.arguments).addText(cb => {
       cb.setDisabled(true);
       cb.onChange(v => {
         if (current.type === 'pandoc' && current.arguments !== v) {
@@ -303,7 +303,7 @@ export default class extends PluginSettingTab {
       setVisible(targetFileExtensionsSetting.settingEl, value === 'custom');
     });
 
-    const customArgumentsSetting = new Setting(containerEl).setName(lang.extraArguments).addText(cb => {
+    const customArgumentsSetting = new Setting(containerEl).setName(lang.settingTab.extraArguments).addText(cb => {
       cb.onChange(v => {
         if (current.type === 'pandoc' && current.customArguments !== v) {
           current.customArguments = v;
@@ -318,9 +318,9 @@ export default class extends PluginSettingTab {
       setVisible(customArgumentsSetting.settingEl, value === 'pandoc');
     });
 
-    new Setting(containerEl).setName(lang.afterExport).setHeading();
+    new Setting(containerEl).setName(lang.settingTab.afterExport).setHeading();
 
-    const showCommandOutputSetting = new Setting(containerEl).setName(lang.showCommandOutput).addToggle(cb => {
+    const showCommandOutputSetting = new Setting(containerEl).setName(lang.settingTab.showCommandOutput).addToggle(cb => {
       if (current.type === 'custom') {
         cb.setValue(current.showCommandOutput);
       }
@@ -334,7 +334,7 @@ export default class extends PluginSettingTab {
       setVisible(showCommandOutputSetting.settingEl, value === 'custom');
     });
 
-    new Setting(containerEl).setName(lang.openExportedFileLocation).addToggle(cb => {
+    new Setting(containerEl).setName(lang.settingTab.openExportedFileLocation).addToggle(cb => {
       cb.onChange(v => {
         if (current.openExportedFileLocation !== v) {
           current.openExportedFileLocation = v;
@@ -346,7 +346,7 @@ export default class extends PluginSettingTab {
       });
     });
 
-    new Setting(containerEl).setName(lang.runCommand).addToggle(cb => {
+    new Setting(containerEl).setName(lang.settingTab.runCommand).addToggle(cb => {
       cb.onChange(v => {
         if (current.type === 'pandoc' && current.runCommand !== v) {
           current.runCommand = v;
@@ -392,7 +392,7 @@ class AddNewModal extends Modal {
 
   onOpen() {
     const { contentEl, titleEl, lang, callback } = this;
-    titleEl.setText(lang.new);
+    titleEl.setText(lang.settingTab.new);
     let tpl = Object.values(export_command_templates).first();
     let tplName = tpl.name;
     let name = tpl.name;
@@ -400,7 +400,7 @@ class AddNewModal extends Modal {
     // eslint-disable-next-line prefer-const
     let nameSetting: Setting;
 
-    new Setting(contentEl).setName(lang.template).addDropdown(cb => {
+    new Setting(contentEl).setName(lang.settingTab.template).addDropdown(cb => {
       cb.addOptions(Object.fromEntries(Object.values(export_command_templates).map(o => [o.name, o.name])))
         .setValue(tplName)
         .onChange(v => {
@@ -411,7 +411,7 @@ class AddNewModal extends Modal {
         });
     });
 
-    nameSetting = new Setting(contentEl).setName(lang.name).addText(cb => {
+    nameSetting = new Setting(contentEl).setName(lang.settingTab.name).addText(cb => {
       cb.setValue(name).onChange(v => (name = v));
     });
 
@@ -455,13 +455,13 @@ class RenemeModal extends Modal {
 
     let name = setting.name;
 
-    new Setting(contentEl).setName(lang.name).addText(cb => {
+    new Setting(contentEl).setName(lang.settingTab.name).addText(cb => {
       cb.setValue(setting.name).onChange(v => (name = v));
     });
 
     contentEl.createEl('div', { cls: ['modal-button-container'], parent: contentEl }, el => {
       el.createEl('button', {
-        text: lang.save,
+        text: lang.settingTab.save,
         cls: ['mod-cta'],
         parent: el,
       }).onclick = async () => {

@@ -2,9 +2,9 @@ import ct from 'electron';
 import { App, Menu, Plugin, PluginManifest, TFile, Notice } from 'obsidian';
 import { UniversalExportPluginSettings, ExportSetting, DEFAULT_SETTINGS, getPlatformValue } from './settings';
 // import ExportDialog from './ui/export_dialog';
-import ExportDialog from './ui/ExportDialog';       // solidjs
+import ExportDialog from './ui/ExportDialog'; // solidjs
 // import ExportSettingTab from './ui/setting_tab';
-import ExportSettingTab from './ui/SettingTab';     // solidjs
+import ExportSettingTab from './ui/SettingTab'; // solidjs
 import { exportToOo } from './exporto0o';
 import { env } from './utils';
 import lang, { Lang } from './lang';

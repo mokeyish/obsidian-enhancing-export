@@ -63,19 +63,19 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
       setModal(undefined);
     };
     return <>
-      <Modal app={app} title={lang.new} onClose={() => setModal(undefined)}>
-        <Setting name={lang.template}>
+      <Modal app={app} title={lang.settingTab.new} onClose={() => setModal(undefined)}>
+        <Setting name={lang.settingTab.template}>
           <DropDown
             options={Object.entries(export_command_templates).map(([k, v]) => ({ name: v.name, value: k }))}
             selected={name() ?? templateName()}
             onChange={v => setTemplateName(v)}
           />
         </Setting>
-        <Setting name={lang.name}>
+        <Setting name={lang.settingTab.name}>
           <Text value={name() ?? ''} onChange={(value) => setName(value)} />
         </Setting>
         <div class="modal-button-container">
-          <Button cta={true} onClick={doAdd}>{lang.settingTab.add}</Button>
+          <Button cta={true} onClick={doAdd}>{lang.settingTab.save}</Button>
         </div>
       </Modal>
     </>;
@@ -92,7 +92,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
     };
     return <>
       <Modal app={app} title={lang.settingTab.rename} onClose={() => setModal(undefined)}>
-        <Setting name={lang.name}>
+        <Setting name={lang.settingTab.name}>
           <Text value={name() ?? ''} onChange={(value) => setName(value)} />
         </Setting>
         <div class="modal-button-container">
@@ -108,21 +108,21 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
       updateCurrentEditCommandTemplate(prev => prev.type === 'pandoc' ? update(prev) : undefined);
     };
     return <>
-      <Setting name={lang.arguments}>
+      <Setting name={lang.settingTab.arguments}>
         <Text style="width: 100%" value={template().arguments ?? ''} onChange={(value) => updateTemplate(v => v.arguments = value)} />
       </Setting>
-      <Setting name={lang.extraArguments}>
+      <Setting name={lang.settingTab.extraArguments}>
         <Text style="width: 100%" value={template().customArguments ?? ''} title={template().customArguments} onChange={(value) => updateTemplate(v => v.customArguments = value)} />
       </Setting>
 
-      <Setting name={lang.afterExport} heading={true} />
-      <Setting name={lang.openExportedFileLocation}>
+      <Setting name={lang.settingTab.afterExport} heading={true} />
+      <Setting name={lang.settingTab.openExportedFileLocation}>
         <Toggle checked={template().openExportedFileLocation ?? false} onChange={(checked) => updateTemplate(v => v.openExportedFileLocation = checked)}/>
       </Setting>
-      <Setting name={lang.openExportedFile}>
+      <Setting name={lang.settingTab.openExportedFile}>
         <Toggle checked={template().openExportedFile ?? false} onChange={(checked) => updateTemplate(v => v.openExportedFile = checked)} />
       </Setting>
-      <Setting name={lang.runCommand}>
+      <Setting name={lang.settingTab.runCommand}>
         <Toggle checked={template().runCommand} onChange={(checked) => updateTemplate(v => v.runCommand = checked)} />
       </Setting>
       <Show when={template().runCommand}>
@@ -139,21 +139,21 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
       updateCurrentEditCommandTemplate(prev => prev.type === 'custom' ? update(prev) : undefined);
     };
     return <>
-      <Setting name={lang.command}>
+      <Setting name={lang.settingTab.command}>
         <Text style="width: 100%" value={template().command} onChange={(value) => updateTemplate(v => v.command = value)} />
       </Setting>
       <Setting name={lang.settingTab.targetFileExtensions}>
         <Text value={template().targetFileExtensions ?? ''} onChange={(value) => updateTemplate(v => v.targetFileExtensions = value)} />
       </Setting>
 
-      <Setting name={lang.afterExport} heading={true}/>
-      <Setting name={lang.showCommandOutput} >
+      <Setting name={lang.settingTab.afterExport} heading={true}/>
+      <Setting name={lang.settingTab.showCommandOutput} >
         <Toggle checked={template().showCommandOutput ?? false} onChange={(checked) => updateTemplate(v => v.showCommandOutput = checked)} />
       </Setting>
-      <Setting name={lang.openExportedFileLocation}>
+      <Setting name={lang.settingTab.openExportedFileLocation}>
         <Toggle checked={template().openExportedFileLocation ?? false} onChange={(checked) => updateTemplate(v => v.openExportedFileLocation = checked)} />
       </Setting>
-      <Setting name={lang.openExportedFile}>
+      <Setting name={lang.settingTab.openExportedFile}>
         <Toggle checked={template().openExportedFile ?? false} onChange={(checked) => updateTemplate(v => v.openExportedFile = checked)} />
       </Setting>
     </>;
@@ -193,8 +193,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
   });
 
   return <>
-    <h2>{lang.settingTab.title}</h2>
-    <Setting name={lang.general} heading={true}>
+    <Setting name={lang.settingTab.general} heading={true}>
       <ExtraButton icon='reset' onClick={resetSettings} />
     </Setting>
 
@@ -206,29 +205,30 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
       />
     </Setting>
 
-    <Setting name={lang.defaultFolderForExportedFile}>
+    <Setting name={lang.settingTab.defaultFolderForExportedFile}>
       <DropDown options={[
         { name: lang.settingTab.auto, value: 'Auto' },
-        { name: lang.sameFolderWithCurrentFile, value: 'Same' },
-        { name: lang.customLocation, value: 'Custom' }
+        { name: lang.settingTab.sameFolderWithCurrentFile, value: 'Same' },
+        { name: lang.settingTab.customLocation, value: 'Custom' }
       ]} onChange={(v: 'Auto' | 'Same' | 'Custom') => setSettings('defaultExportDirectoryMode', v)} />
+      
     </Setting>
 
     <Show when={settings.defaultExportDirectoryMode === 'Custom'}>
-      <Setting class="ex-setting-item">
+      <Setting>
         <Text value={customDefaultExportDirectory() ?? ''} title={customDefaultExportDirectory()} />
         <ExtraButton icon="folder" onClick={chooseCustomDefaultExportDirectory} />
       </Setting>
     </Show>
 
-    <Setting name={lang.openExportedFileLocation}>
+    <Setting name={lang.settingTab.openExportedFileLocation}>
       <Toggle
         checked={settings.openExportedFileLocation}
         onChange={(v) => setSettings('openExportedFileLocation', v)} 
       />
     </Setting>
 
-    <Setting name={lang.openExportedFile} >
+    <Setting name={lang.settingTab.openExportedFile} >
       <Toggle
         checked={settings.openExportedFile}
         onChange={(v) => setSettings('openExportedFile', v)} />

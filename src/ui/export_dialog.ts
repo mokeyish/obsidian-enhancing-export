@@ -49,7 +49,7 @@ export class ExportDialog extends Modal {
 
     titleEl.setText(lang.exportDialog.title(setting.name));
 
-    new Setting(contentEl).setName(lang.type).addDropdown(cb => {
+    new Setting(contentEl).setName(lang.exportDialog.type).addDropdown(cb => {
       cb.addOptions(Object.fromEntries(globalSetting.items.map(o => [o.name, o.name])))
         .onChange(v => {
           exportType = v;
@@ -91,7 +91,7 @@ export class ExportDialog extends Modal {
       .addExtraButton(cb => {
         cb.setIcon('folder').onClick(async () => {
           const retval = await ct.remote.dialog.showOpenDialog({
-            title: lang.selectExportFolder,
+            title: lang.exportDialog.selectExportFolder,
             defaultPath: candidateOutputDirectory,
             properties: ['createDirectory', 'openDirectory'],
           });

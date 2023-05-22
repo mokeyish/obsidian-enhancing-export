@@ -1,16 +1,21 @@
 import { strTpl } from '../utils';
 
 export default {
-  preparing: strTpl`generating "${0}" ......`,
   exportToOo: 'Export to ......',
-  selectExportFolder: 'Please select an export folder.',
   exportSuccessNotice: strTpl`Export file ${0} success！`,
   exportCommandOutputMessage: strTpl`Command: ${0}`,
   exportErrorOutputMessage: strTpl`Command: ${0}，Error：${1}`,
-  overwriteConfirmationDialog: {
-    replace: 'Replace',
-    title: strTpl`"${0}" already exists. Do you want to replace it?`,
-    message: strTpl`A file or folder with the same name already exists in the folder "${0}". Replacing it will overwrite its current contents.`,
+  exportWithPrevious: 'Export with Previous',
+  pleaseOpenFile: 'Please open a file first.',
+  preparing: strTpl`generating "${0}" ......`,
+  exportDialog: {
+    exportTo: 'Export to',
+    fileName: 'File Name',
+    title: strTpl`Export to ${0}`,
+    export: 'Export',
+    selectExportFolder: 'Please select an export folder.',
+    overwriteConfirmation: 'Overwrite confirmation',
+    type: 'Type',
   },
   messageBox: {
     yes: 'Yes',
@@ -18,54 +23,41 @@ export default {
     ok: 'Ok',
     cancel: 'Cancel',
   },
-
-  general: 'General',
-  name: 'Name',
-  new: 'New',
-
-  save: 'Save',
-
-  exportDialog: {
-    exportTo: 'Export to',
-    fileName: 'File Name',
-    title: strTpl`Export to ${0}`,
-    export: 'Export',
-    overwriteConfirmation: 'Overwrite confirmation',
+  overwriteConfirmationDialog: {
+    replace: 'Replace',
+    title: strTpl`"${0}" already exists. Do you want to replace it?`,
+    message: strTpl`A file or folder with the same name already exists in the folder "${0}". Replacing it will overwrite its current contents.`,
   },
-
-  template: 'Template',
-
-  type: 'Type',
-
-  defaultFolderForExportedFile: 'Default Folder for Exported File',
-  sameFolderWithCurrentFile: 'Same folder with current file',
-  customLocation: 'Custom location',
-  command: 'Command',
-
-  arguments: 'Arguments',
-  extraArguments: 'Extra arguments',
   settingTab: {
+    general: 'General',
+    name: 'Name',
     title: 'Export Settings',
     version: strTpl`Version: ${0}`,
     pandocNotFound: 'Pandoc not found, please fill in the Pandoc file path, or add it to the system environment variables.',
+    defaultFolderForExportedFile: 'Default Folder for Exported File',
+    openExportedFileLocation: 'Open exported file location',
+    openExportedFile: 'Open exported file',
     pandocPath: 'Pandoc path',
     pandocPathPlaceholder: '(Auto Detect)',
     editCommandTemplate: 'Edit Command Template',
     chooseCommandTemplate: 'Choose template',
+    customLocation: 'Custom location',
+    template: 'Template',
+    command: 'Command',
     reset: 'Reset',
     auto: 'Auto',
     add: 'Add',
     remove: 'Remove',
     rename: 'Rename',
+    sameFolderWithCurrentFile: 'Same folder with current file',
+    afterExport: 'After Export',
     targetFileExtensions: 'Target file extensions',
     targetFileExtensionsTip: '(Separated by whitespace)',
+    showCommandOutput: 'Show command output',
+    runCommand: 'Run command',
+    extraArguments: 'Extra arguments',
+    save: 'Save',
+    new: 'New',
+    arguments: 'Arguments',
   },
-  afterExport: 'After Export',
-
-  runCommand: 'Run command',
-  showCommandOutput: 'Show command output',
-  openExportedFileLocation: 'Open exported file location',
-  openExportedFile: 'Open exported file',
-  exportWithPrevious: 'Export with Previous',
-  pleaseOpenFile: 'Please open a file first.',
 };
