@@ -20,6 +20,6 @@ export class Pandoc {
 export async function getPandocVersion(path?: string): Promise<SemVer> {
   path = path ?? 'pandoc';
   let version = await exec(`${path} --version`);
-  version = version.substring(0, version.indexOf('\n')).replace('pandoc', '').trim();
+  version = version.substring(0, version.indexOf('\n')).replace('pandoc.exe', '').replace('pandoc', '').trim();
   return semver.parse(version);
 }

@@ -13,7 +13,7 @@ Window.prototype.hmr = function (plugin: Plugin, watchFiles: string[] = ['main.j
     return;
   }
 
-  console.log(`[hmr: ${plugin.manifest.name}]`);
+  console.log(`[hmr: ${plugin.manifest.name}]`, new Date());
 
   const {
     app: {
