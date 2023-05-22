@@ -1,12 +1,14 @@
 import zhCN from './zh-CN';
 import enUS from './en-US';
+import deDE from './de-DE';
 import { moment } from 'obsidian';
 
 export type Lang = typeof enUS;
 
 export default {
-  'zh-CN': zhCN,
+  'de-DE': deDE,
   'en-US': enUS,
+  'zh-CN': zhCN,
   get current() {
     const langIds = Object.keys(this);
     const locale = moment.locale().toLowerCase();

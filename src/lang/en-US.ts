@@ -2,9 +2,9 @@ import { strTpl } from '../utils';
 
 export default {
   exportToOo: 'Export to ......',
-  exportSuccessNotice: strTpl`Export file ${0} success！`,
+  exportSuccessNotice: strTpl`Export file ${0} success!`,
   exportCommandOutputMessage: strTpl`Command: ${0}`,
-  exportErrorOutputMessage: strTpl`Command: ${0}，Error：${1}`,
+  exportErrorOutputMessage: strTpl`Command: ${0}，Error:${1}`,
   exportWithPrevious: 'Export with Previous',
   pleaseOpenFile: 'Please open a file first.',
   preparing: strTpl`generating "${0}" ......`,
