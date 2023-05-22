@@ -1,6 +1,6 @@
 import * as ct from 'electron';
 import { TFile } from 'obsidian';
-import { createSignal, createRoot, onCleanup, createMemo, untrack } from 'solid-js';
+import { createSignal, createRoot, onCleanup, createMemo, untrack, createEffect } from 'solid-js';
 import { insert } from 'solid-js/web';
 import type UniversalExportPlugin from '../main';
 import { getPlatformValue, extractDefaultExtension as extractExtension, setPlatformValue } from '../settings';
@@ -22,6 +22,12 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
 
   const [candidateOutputDirectory, setCandidateOutputDirectory] = createSignal(`${getPlatformValue(globalSetting.lastExportDirectory) ?? ct.remote.app.getPath('documents')}`);
   const [candidateOutputFileName, setCandidateOutputFileName] = createSignal(`${currentFile.basename}${extension()}`);
+
+  createEffect(() => {
+    let fileName = untrack(candidateOutputFileName);
+    fileName =  fileName.includes('.') ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
+    setCandidateOutputFileName(`${fileName}${extension()}`);
+  });
 
   const exportTypes = globalSetting.items.map(o => ({ name: o.name, value: o.name }));
 
@@ -65,7 +71,7 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
   return <>
     <Modal app={app} title={title()} classList={{ hidden: hidden() }} onClose={props.onClose} >
       <Setting name={lang.exportDialog.type}>
-        <DropDown options={exportTypes} onChange={(typ) => setExportType(typ)} />
+        <DropDown options={exportTypes} onChange={(typ) => setExportType(typ)} selected={exportType()}/>
       </Setting>
 
       <Setting name={lang.exportDialog.fileName}>
