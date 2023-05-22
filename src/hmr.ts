@@ -39,9 +39,20 @@ Window.prototype.hmr = function (plugin: Plugin, watchFiles: string[] = ['main.j
             return;
           }
         }
+        const dbgKey = 'debug-plugin';
+        const oldDebug = localStorage.getItem(dbgKey);
 
-        await plugins.disablePlugin(id);
-        await plugins.enablePlugin(id);
+        try {
+          localStorage.setItem(dbgKey, '1');
+          await plugins.disablePlugin(id);
+          await plugins.enablePlugin(id);
+        } finally {
+          if (oldDebug) {
+            localStorage.setItem(dbgKey, oldDebug);
+          } else {
+            localStorage.removeItem(dbgKey);
+          }
+        }
       }
     },
     500,
