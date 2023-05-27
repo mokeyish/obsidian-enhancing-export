@@ -100,11 +100,19 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
 
 
 const show = (plugin: UniversalExportPlugin, currentFile: TFile) => createRoot(dispose => {
-  const el = insert(document.body, () => <Dialog onClose={dispose} plugin={plugin} currentFile={currentFile} />);
+  let disposed = false;
+  const cleanup = () => {
+    if (disposed) {
+      return;
+    }
+    disposed = true;
+    dispose();
+  };
+  const el = insert(document.body, () => <Dialog onClose={cleanup} plugin={plugin} currentFile={currentFile} />);
   onCleanup(() => {
     el instanceof Node && document.body.contains(el) && document.body.removeChild(el);
   });
-  return dispose;
+  return cleanup;
 });
 
 

@@ -31,7 +31,14 @@ export interface Variables {
   // date: new Date(currentFile.stat.ctime),
   // lastMod: new Date(currentFile.stat.mtime),
   // now: new Date()
+  metadata?: unknown
 }
+
+export const generateCommand = (cmdTpl: string, variables: Partial<Variables> = {}) => {
+  const keys = Object.keys(variables) as Array<keyof typeof variables>;
+  const values = keys.map(k => variables[k]);
+  return (new Function(...keys, `{ return \`${cmdTpl.replaceAll('\\', '\\\\')}\` }`).bind(variables))(...values);
+};
 
 export type PlatformValue<T> = { [k in typeof platform]?: T };
 
