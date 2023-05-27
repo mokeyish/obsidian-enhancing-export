@@ -3,17 +3,24 @@ import { debounce, Platform } from 'obsidian';
 import { normalize, join } from 'path';
 
 declare global {
+  interface HmrOptions {
+    watchFiles?: Array<'main.js' | 'manifest.json' | 'styles.css'> | string[],
+  }
   interface Window {
-    hmr(plugin: Plugin, watchFiles?: Array<'main.js' | 'manifest.json' | 'styles.css'> | string[]): void;
+    hmr(plugin: Plugin, options?: HmrOptions): void;
   }
 }
 
-Window.prototype.hmr = function (plugin: Plugin, watchFiles: string[] = ['main.js', 'manifest.json', 'styles.css']): void {
+Window.prototype.hmr = function (plugin: Plugin, options?: HmrOptions): void {
   if (Platform.isMobile) {
     return;
   }
 
   console.log(`[hmr: ${plugin.manifest.name}]`, new Date());
+
+  options ??= {};
+  options.watchFiles ??= ['main.js', 'manifest.json', 'styles.css'];
+  const { watchFiles } = options;
 
   const {
     app: {
@@ -25,6 +32,23 @@ Window.prototype.hmr = function (plugin: Plugin, watchFiles: string[] = ['main.j
   const {
     app: { vault },
   } = plugin;
+
+  const restartPlugin = async () => {
+    const dbgKey = 'debug-plugin';
+    const oldDebug = localStorage.getItem(dbgKey);
+    try {
+      localStorage.setItem(dbgKey, '1');
+      await plugins.disablePlugin(id);
+      await plugins.enablePlugin(id);
+    } finally {
+      if (oldDebug) {
+        localStorage.setItem(dbgKey, oldDebug);
+      } else {
+        localStorage.removeItem(dbgKey);
+      }
+    }
+  };
+
   const entry = normalize(join(pluginDir, 'main.js'));
   const onChange = debounce(
     async (file: string) => {
@@ -39,20 +63,7 @@ Window.prototype.hmr = function (plugin: Plugin, watchFiles: string[] = ['main.j
             return;
           }
         }
-        const dbgKey = 'debug-plugin';
-        const oldDebug = localStorage.getItem(dbgKey);
-
-        try {
-          localStorage.setItem(dbgKey, '1');
-          await plugins.disablePlugin(id);
-          await plugins.enablePlugin(id);
-        } finally {
-          if (oldDebug) {
-            localStorage.setItem(dbgKey, oldDebug);
-          } else {
-            localStorage.removeItem(dbgKey);
-          }
-        }
+        await restartPlugin();
       }
     },
     500,

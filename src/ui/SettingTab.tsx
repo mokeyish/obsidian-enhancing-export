@@ -1,5 +1,5 @@
 import * as ct from 'electron';
-import { debounce, PluginSettingTab} from 'obsidian';
+import { PluginSettingTab} from 'obsidian';
 import type UniversalExportPlugin from '../main';
 import {
   CustomExportSetting,
@@ -9,11 +9,9 @@ import {
   getPlatformValue,
 } from '../settings';
 
-import { createSignal, createRoot, onCleanup, createMemo, createEffect, Show, batch, Match, Switch } from 'solid-js';
+import { createSignal, createRoot, onCleanup, createMemo, createEffect, Show, batch, Match, Switch, JSX } from 'solid-js';
 import { createStore, produce } from 'solid-js/store';
 import { insert, Dynamic } from 'solid-js/web';
-import { deepTrack } from '@solid-primitives/deep';
-import type { JSX } from 'solid-js/jsx-runtime';
 import type { Lang } from '../lang';
 
 import { getPandocVersion } from '../pandoc';
@@ -25,8 +23,12 @@ import export_command_templates from '../export_command_templates';
 
 const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
   const { plugin, lang } = props;
-  const [settings, setSettings] = createStore(plugin.settings);
+  const [settings, setSettings0] = createStore(plugin.settings);
   const [pandocVersion, setPandocVersion] = createSignal<string>();
+  const setSettings: typeof setSettings0 = (...args: unknown[]) => {
+    (setSettings0 as ((...args: unknown[]) => void))(...args);
+    plugin.saveSettings();
+  };
 
   const currentCommandTemplate = createMemo(() => settings.items.find(v => v.name === settings.lastEditName) ?? settings.items.first());
   const currentEditCommandTemplate = <T extends 'custom' | 'pandoc'>(type?: T) => {
@@ -51,7 +53,8 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
   const [modal, setModal] = createSignal<() => JSX.Element>();
 
   const AddCommandTemplateModal = () => {
-    const [templateName, setTemplateName] = createSignal(Object.keys(export_command_templates)[0]);
+    type TemplateKey = keyof typeof export_command_templates;
+    const [templateName, setTemplateName] = createSignal(Object.keys(export_command_templates)[0] as TemplateKey);
     const [name, setName] = createSignal<string>();
     const doAdd = () => {
       const template = JSON.parse(JSON.stringify(export_command_templates[templateName()]));
@@ -68,7 +71,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
           <DropDown
             options={Object.entries(export_command_templates).map(([k, v]) => ({ name: v.name, value: k }))}
             selected={name() ?? templateName()}
-            onChange={v => setTemplateName(v)}
+            onChange={(v: TemplateKey) => setTemplateName(v)}
           />
         </Setting>
         <Setting name={lang.settingTab.name}>
@@ -181,15 +184,6 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
     } catch {
       setPandocVersion(undefined);
     }
-  });
-
-  const saveSettings = debounce(async () => {
-    await plugin.saveSettings();
-  });
-
-  createEffect(async () => {
-    deepTrack(settings);
-    saveSettings();
   });
 
   return <>

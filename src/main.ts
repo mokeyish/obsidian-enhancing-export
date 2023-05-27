@@ -1,5 +1,5 @@
 import ct from 'electron';
-import { App, Menu, Plugin, PluginManifest, TFile, Notice } from 'obsidian';
+import { App, Menu, Plugin, PluginManifest, TFile, Notice, debounce } from 'obsidian';
 import { UniversalExportPluginSettings, ExportSetting, DEFAULT_SETTINGS, getPlatformValue } from './settings';
 // import ExportDialog from './ui/export_dialog';
 import ExportDialog from './ui/ExportDialog'; // solidjs
@@ -24,6 +24,7 @@ export default class UniversalExportPlugin extends Plugin {
   constructor(app: App, manifest: PluginManifest) {
     super(app, manifest);
     this.lang = lang.current;
+    this.saveSettings = debounce(this.saveSettings.bind(this), 1000, true) as unknown as typeof this.saveSettings;
   }
 
   async onload() {
@@ -103,8 +104,9 @@ export default class UniversalExportPlugin extends Plugin {
       })
     );
     // this.downloadLuaScripts().then();
-
-    window.hmr && window.hmr(this);
+    if (import.meta.env.DEV) {
+      window.hmr && window.hmr(this);
+    }
   }
 
   public async resetSettings(): Promise<void> {
