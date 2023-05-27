@@ -9,10 +9,10 @@
 
 ## 界面截图
 - 导出界面，在文件菜单上点击 `导出为......`
-   
+  
    ![](https://raw.githubusercontent.com/mokeyish/obsidian-enhancing-export/master/screenshot/exportview_zh-CN.png)
 - 设置界面
-   
+  
    ![](https://raw.githubusercontent.com/mokeyish/obsidian-enhancing-export/master/screenshot/settingview_zh-CN.png)
 
 ## 安装
@@ -39,6 +39,7 @@
 | `${currentFileFullName}` | 当前文件全名，值是 `readme.md`。 |
 | `${vaultDir}`            | Obsidian 当前的 vaultDir.        |
 | `${attachmentFolderPath}`| Obsidian 的附件目录 |
+| 其他变量 | 你可以在 [YAML Front Matter](https://jekyllrb.com/docs/front-matter/) 中定义 `keyword: value` 变量，然后以 `${metadata.keyword}`引用它。 |
 
 ## Related resources
 

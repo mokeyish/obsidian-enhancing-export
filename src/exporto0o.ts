@@ -1,4 +1,4 @@
-import { getPlatformValue, Variables, ExportSetting, extractDefaultExtension as extractExtension } from './settings';
+import { getPlatformValue, Variables, ExportSetting, extractDefaultExtension as extractExtension, generateCommand } from './settings';
 import * as ct from 'electron';
 import { MessageBox } from './ui/message_box';
 import { Notice, TFile } from 'obsidian';
@@ -26,6 +26,7 @@ export async function exportToOo(
     app: {
       vault: { adapter, config: obsidianConfig },
       loadProgress: progress,
+      fileManager,
     },
   } = plugin;
 
@@ -69,7 +70,19 @@ export async function exportToOo(
   } else if (attachmentFolderPath.startsWith('.')) {
     attachmentFolderPath = path.join(currentDir, attachmentFolderPath.substring(1));
   }
-
+  
+  const frontMatter = await new Promise<unknown>((resolve, reject) => {
+    try {
+      fileManager.processFrontMatter(currentFile, (frontMatter) => {
+        resolve(frontMatter);
+        return frontMatter;
+      });
+    } catch (e) {
+      console.error(e);
+      resolve(undefined);
+    }
+  });
+  
   const variables: Variables = {
     pluginDir,
     luaDir,
@@ -86,6 +99,7 @@ export async function exportToOo(
     // date: new Date(currentFile.stat.ctime),
     // lastMod: new Date(currentFile.stat.mtime),
     // now: new Date()
+    metadata: frontMatter
   };
 
   const showCommandLineOutput = setting.type === 'custom' && setting.showCommandOutput;
@@ -136,8 +150,7 @@ export async function exportToOo(
     setting.type === 'pandoc'
       ? `${pandocPath} ${setting.arguments ?? ''} ${setting.customArguments ?? ''} "${currentPath}"`
       : setting.command;
-
-  const cmd = cmdTpl.replace(/\${(.*?)}/g, (_, p1: string) => variables[p1 as keyof typeof variables]);
+  const cmd = generateCommand(cmdTpl, variables);
   const args = argsParser(cmd.match(/(?:[^\s"]+|"[^"]*")+/g), {
     alias: {
       output: ['o'],
