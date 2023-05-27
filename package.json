@@ -38,7 +38,6 @@
     "vite-plugin-static-copy": "^0.15.0"
   },
   "dependencies": {
-    "@solid-primitives/deep": "^0.0.102",
     "semver": "^7.5.1",
     "solid-js": "^1.7.5",
     "yargs-parser": "^21.1.1"
