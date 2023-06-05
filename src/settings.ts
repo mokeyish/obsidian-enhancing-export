@@ -70,6 +70,8 @@ export interface UniversalExportPluginSettings {
 
   lastExportDirectory?: PlatformValue<string>;
   lastExportType?: string;
+  lastExportTemplate?: string;
+
 }
 
 interface CommonExportSetting {

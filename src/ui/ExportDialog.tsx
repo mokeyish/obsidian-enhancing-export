@@ -9,6 +9,13 @@ import Modal from './components/Modal';
 import Setting, {Text, DropDown, ExtraButton, Toggle} from './components/Setting';
 import Button from './components/Button';
 
+const templateOptions = [
+  { name: "None", value: "none", path: null },
+  { name: "Dissertation", value: "dissertation", path: "../../textemplate/dissertation.tex" },
+  { name: "Academic Paper", value: "academic-paper", path: "/path/to/academic_paper_template.tex" },
+  { name: "Academic Paper 2-Columns", value: "academic-paper-2-columns", path: "/path/to/academic_paper_2_columns_template.tex" },
+];
+
 
 const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onClose?: () => void }) => {
   const { plugin: { app, settings: globalSetting, lang }, currentFile } = props;
@@ -22,6 +29,7 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
 
   const [candidateOutputDirectory, setCandidateOutputDirectory] = createSignal(`${getPlatformValue(globalSetting.lastExportDirectory) ?? ct.remote.app.getPath('documents')}`);
   const [candidateOutputFileName, setCandidateOutputFileName] = createSignal(`${currentFile.basename}${extension()}`);
+  const [exportTemplate, setExportTemplate] = createSignal(globalSetting.lastExportTemplate ?? templateOptions[0].value);
 
   createEffect(() => {
     let fileName = untrack(candidateOutputFileName);
@@ -30,6 +38,10 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
   });
 
   const exportTypes = globalSetting.items.map(o => ({ name: o.name, value: o.name }));
+  const templateSelectOptions = templateOptions.map((option) => ({
+    name: option.name,
+    value: option.value,
+  }));
 
   const chooseFolder = async () => {
     const retval = await ct.remote.dialog.showOpenDialog({
@@ -50,12 +62,13 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
       untrack(candidateOutputDirectory),
       untrack(candidateOutputFileName),
       untrack(setting),
+      untrack(exportTemplate),
       untrack(showOverwriteConfirmation),
       async () => {
         globalSetting.showOverwriteConfirmation = untrack(showOverwriteConfirmation);
         globalSetting.lastExportDirectory = setPlatformValue(globalSetting.lastExportDirectory, untrack(candidateOutputDirectory));
-
         globalSetting.lastExportType = untrack(setting).name;
+        globalSetting.lastExportTemplate = exportTemplate();
         await plugin.saveSettings();
         props.onClose && props.onClose();
       },
@@ -79,6 +92,14 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
           title={candidateOutputFileName()}
           value={candidateOutputFileName()}
           onChange={(value) => setCandidateOutputFileName(value)}
+        />
+      </Setting>
+
+      <Setting name={lang.exportDialog.textemplate}>
+        <DropDown
+          options={templateSelectOptions}
+          onChange={(value) => setExportTemplate(value)}
+          selected={exportTemplate()}
         />
       </Setting>
 

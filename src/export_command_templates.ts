@@ -59,7 +59,6 @@ export default {
     type: 'pandoc',
     arguments:
       '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" --embed-resources --standalone --metadata title="${currentFileName}" -s -o "${outputPath}" -t pdf',
-    customArguments: '--pdf-engine=typst',
     extension: '.pdf',
   },
   'Word (.docx)': {
