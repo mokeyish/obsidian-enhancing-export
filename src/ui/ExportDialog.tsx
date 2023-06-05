@@ -9,11 +9,11 @@ import Modal from './components/Modal';
 import Setting, {Text, DropDown, ExtraButton, Toggle} from './components/Setting';
 import Button from './components/Button';
 
-const templateOptions = [
+export const templateOptions = [
   { name: "None", value: "none", path: null },
-  { name: "Dissertation", value: "dissertation", path: "../../textemplate/dissertation.tex" },
-  { name: "Academic Paper", value: "academic-paper", path: "/path/to/academic_paper_template.tex" },
-  { name: "Academic Paper 2-Columns", value: "academic-paper-2-columns", path: "/path/to/academic_paper_2_columns_template.tex" },
+  { name: "Dissertation", value: "dissertation", path: "dissertation.tex" },
+  { name: "Academic Paper", value: "academic-paper", path: "academic.tex" },
+  { name: "Academic Paper 2-Columns", value: "academic-paper-2-columns", path: "academic_2cols.tex" },
 ];
 
 
