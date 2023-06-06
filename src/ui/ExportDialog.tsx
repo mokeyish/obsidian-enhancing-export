@@ -12,10 +12,8 @@ import Button from './components/Button';
 export const templateOptions = [
   { name: "None", value: "none", path: null },
   { name: "Dissertation", value: "dissertation", path: "dissertation.tex" },
-  { name: "Academic Paper", value: "academic-paper", path: "academic.tex" },
-  { name: "Academic Paper 2-Columns", value: "academic-paper-2-columns", path: "academic_2cols.tex" },
+  { name: "Academic Paper", value: "academic", path: "academic.tex" },
 ];
-
 
 const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onClose?: () => void }) => {
   const { plugin: { app, settings: globalSetting, lang }, currentFile } = props;

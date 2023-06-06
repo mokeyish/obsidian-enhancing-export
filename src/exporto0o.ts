@@ -67,12 +67,6 @@ export async function exportToOo(
   const currentDir = currentPath.substring(0, currentPath.length - currentFile.name.length - 1);
   const currentFileName = currentFile.basename;
   const currentFileFullName = currentFile.name;
-  // const templateOptions = [
-  //   { name: "None", value: "none", path: null },
-  //   { name: "Dissertation", value: "dissertation", path: "../textemplate/dissertation.tex" },
-  //   { name: "Academic Paper", value: "academic-paper", path: "/path/to/academic_paper_template.tex" },
-  //   { name: "Academic Paper 2-Columns", value: "academic-paper-2-columns", path: "/path/to/academic_paper_2_columns_template.tex" },
-  // ];
 
   let attachmentFolderPath = obsidianConfig.attachmentFolderPath ?? '/';
   if (attachmentFolderPath === '/') {

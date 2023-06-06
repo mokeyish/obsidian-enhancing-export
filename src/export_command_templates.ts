@@ -58,7 +58,7 @@ export default {
     name: 'PDF',
     type: 'pandoc',
     arguments:
-      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" --embed-resources --standalone --metadata title="${currentFileName}" -s -o "${outputPath}" -t pdf',
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" --embed-resources --standalone -s -o "${outputPath}" -t pdf',
     extension: '.pdf',
   },
   'Word (.docx)': {
@@ -91,7 +91,7 @@ export default {
     arguments: '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t latex',
     extension: '.latex',
   },
-  // TODO: This should be an option
+  // TODO: This should be an option in the UI
   'Latex (export with images)': {
     name: 'Latex (export with images)',
     type: 'pandoc',
