@@ -46,6 +46,8 @@
 \PassOptionsToPackage{dvipsnames,svgnames,x11names,table}{xcolor}
 $if(CJKmainfont)$
 \PassOptionsToPackage{space}{xeCJK}
+\usepackage{datetime}
+
 $endif$
 %
 \documentclass[
@@ -527,7 +529,12 @@ $endif$
 \subtitle{$subtitle$}
 $endif$
 \author{$for(author)$$author$$sep$ \and $endfor$}
-\date{$date$}
+$if(date)$
+  \date{$date$}
+$else$
+  \date{\today}
+$endif$
+
 $if(beamer)$
 $if(institute)$
 \institute{$for(institute)$$institute$$sep$ \and $endfor$}
@@ -553,7 +560,9 @@ $endif$
 %
 % for the background color of the title page
 %
-$if(titlepage)$
+$if(notitlepage)$
+
+$else$
 \usepackage{pagecolor}
 \usepackage{afterpage}
 $if(titlepage-background)$
@@ -582,7 +591,7 @@ $endif$
 \definecolor{caption-color}{HTML}{777777}
 $if(beamer)$
 $else$
-\usepackage[font={stretch=1.2}, textfont={color=caption-color}, position=top, skip=4mm, labelfont=bf, singlelinecheck=false, justification=$if(caption-justification)$$caption-justification$$else$raggedright$endif$]{caption}
+\usepackage[font={stretch=1.2}, textfont={color=caption-color}, position=top, skip=4mm, labelfont=bf, singlelinecheck=false, justification=$if(caption-justification)$$caption-justification$$else$justified$endif$]{caption}
 \setcapindent{0em}
 $endif$
 
@@ -880,7 +889,8 @@ $endif$
 %%
 $if(beamer)$
 $else$
-$if(titlepage)$
+$if(notitlepage)$
+$else$
 \begin{titlepage}
 $if(titlepage-background)$
 \newgeometry{top=2cm, right=4cm, bottom=3cm, left=4cm}
@@ -897,8 +907,8 @@ $endif$
 \begin{flushleft}
 \noindent
 \\[-1em]
-\color[HTML]{$if(titlepage-text-color)$$titlepage-text-color$$else$5F5F5F$endif$}
-\makebox[0pt][l]{\colorRule[$if(titlepage-rule-color)$$titlepage-rule-color$$else$435488$endif$]{1.3\textwidth}{$if(titlepage-rule-height)$$titlepage-rule-height$$else$4$endif$pt}}
+\color[HTML]{$if(titlepage-text-color)$$titlepage-text-color$$else$000000$endif$}
+\makebox[0pt][l]{\colorRule[$if(titlepage-rule-color)$$titlepage-rule-color$$else$FFFFFF$endif$]{1.3\textwidth}{$if(titlepage-rule-height)$$titlepage-rule-height$$else$0$endif$pt}}
 \par
 \noindent
 
@@ -1010,7 +1020,27 @@ $acknowledgements$
 \end{justify}
 \end{abstract}
 \pagebreak
+
 $endif$
+
+\begin{center}
+ {\LARGE \textbf{\textsf{Declaration}}}
+\end{center}
+
+$if(declaration)$
+\begin{abstract}
+\begin{justify}
+I declare that this thesis was composed by myself,
+   that the work contained herein is my own 
+   except where explicitly stated otherwise in the text,
+   and that this work has not been submitted for any other degree or
+   professional qualification except as specified.\par
+   \vspace{1in}\raggedleft({\em $author$\/})
+\end{justify}
+\end{abstract}
+\pagebreak
+$endif$
+
 
 $endif$
 \pagenumbering{arabic} % set the numbering style to lowercase letter
@@ -1029,6 +1059,8 @@ $endfor$
 $if(toc)$
 $if(toc-title)$
 \renewcommand*\contentsname{$toc-title$}
+$else$
+\renewcommand*\contentsname{Table of Contents}
 $endif$
 $if(beamer)$
 \begin{frame}[allowframebreaks]
@@ -1037,9 +1069,7 @@ $if(toc-title)$
 $endif$
   \tableofcontents[hideallsubsections]
 \end{frame}
-$if(toc-own-page)$
 \newpage
-$endif$
 $else$
 {
 $if(colorlinks)$
@@ -1047,9 +1077,7 @@ $if(colorlinks)$
 $endif$
 \setcounter{tocdepth}{$toc-depth$}
 \tableofcontents
-$if(toc-own-page)$
 \newpage
-$endif$
 }
 $endif$
 $endif$

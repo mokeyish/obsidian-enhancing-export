@@ -36,7 +36,6 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
     fileName =  fileName.includes('.') ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
     setCandidateOutputFileName(`${fileName}${extension()}`);
   });
-
   const exportTypes = globalSetting.items.map(o => ({ name: o.name, value: o.name }));
   const templateSelectOptions = templateOptions.map((option) => ({
     name: option.name,
@@ -95,13 +94,15 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
         />
       </Setting>
 
-      <Setting name={lang.exportDialog.textemplate}>
-        <DropDown
-          options={templateSelectOptions}
-          onChange={(value) => setExportTemplate(value)}
-          selected={exportTemplate()}
-        />
-      </Setting>
+      {["PDF", "Latex", "Bibliography", "Word (.docx)"].includes(exportType()) && (
+          <Setting name={lang.exportDialog.textemplate}>
+            <DropDown
+              options={templateSelectOptions}
+              onChange={(value) => setExportTemplate(value)}
+              selected={exportTemplate()}
+            />
+          </Setting>
+        )}
 
       <Setting name={lang.exportDialog.exportTo}>
         <Text title={candidateOutputDirectory()} value={candidateOutputDirectory()} disabled />

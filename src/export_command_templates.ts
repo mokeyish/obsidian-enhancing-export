@@ -91,8 +91,9 @@ export default {
     arguments: '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t latex',
     extension: '.latex',
   },
+  // TODO: This should be an option
   'Latex (export with images)': {
-    name: 'Latex',
+    name: 'Latex (export with images)',
     type: 'pandoc',
     arguments:
       '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t latex --extract-media "${outputPath}/images/"',

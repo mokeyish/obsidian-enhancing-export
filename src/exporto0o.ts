@@ -148,10 +148,7 @@ export async function exportToOo(
       : setting.command;
   // if template is selected, append to command
   if (exportTemplate !== 'none') {
-    cmdTpl += `--resource-path="${textemplateDir}" --template="${textemplateDir}/${templatePath}"`;
-  }
-  if (exportTemplate == 'academic-paper') {
-    cmdTpl += `--metadata academicstyle="${textemplateDir}/neurips2023.sty"`;
+    cmdTpl += ` --resource-path="${textemplateDir}" --template="${templatePath}"`;
   }
   cmdTpl += ` "${currentPath}"`;
   const cmd = generateCommand(cmdTpl, variables);
