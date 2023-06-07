@@ -4,7 +4,7 @@ import { normalize, join } from 'path';
 
 declare global {
   interface HmrOptions {
-    watchFiles?: Array<'main.js' | 'manifest.json' | 'styles.css'> | string[],
+    watchFiles?: Array<'main.js' | 'manifest.json' | 'styles.css'> | string[];
   }
   interface Window {
     hmr(plugin: Plugin, options?: HmrOptions): void;

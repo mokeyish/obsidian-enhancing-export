@@ -1,4 +1,4 @@
-import { getPlatformValue, Variables, ExportSetting, extractDefaultExtension as extractExtension, generateCommand } from './settings';
+import { getPlatformValue, Variables, ExportSetting, extractDefaultExtension as extractExtension } from './settings';
 import * as ct from 'electron';
 import { MessageBox } from './ui/message_box';
 import { Notice, TFile } from 'obsidian';
@@ -6,9 +6,8 @@ import * as fs from 'fs';
 import type ExportPlugin from './main';
 import path from 'path';
 import argsParser from 'yargs-parser';
-import { exec } from './utils';
 import { templateOptions } from './ui/ExportDialog'; // Import templateOptions from export_dialog.ts
-
+import { exec, renderTemplate as generateCommand } from './utils';
 
 export async function exportToOo(
   plugin: ExportPlugin,
@@ -74,10 +73,10 @@ export async function exportToOo(
   } else if (attachmentFolderPath.startsWith('.')) {
     attachmentFolderPath = path.join(currentDir, attachmentFolderPath.substring(1));
   }
-  
-  const frontMatter = await new Promise<unknown>((resolve, reject) => {
+
+  const frontMatter = await new Promise<unknown>((resolve) => {
     try {
-      fileManager.processFrontMatter(currentFile, (frontMatter) => {
+      fileManager.processFrontMatter(currentFile, frontMatter => {
         resolve(frontMatter);
         return frontMatter;
       });
@@ -86,7 +85,7 @@ export async function exportToOo(
       resolve(undefined);
     }
   });
-  
+
   const variables: Variables = {
     pluginDir,
     luaDir,
@@ -103,7 +102,7 @@ export async function exportToOo(
     // date: new Date(currentFile.stat.ctime),
     // lastMod: new Date(currentFile.stat.mtime),
     // now: new Date()
-    metadata: frontMatter
+    metadata: frontMatter,
   };
 
   const showCommandLineOutput = setting.type === 'custom' && setting.showCommandOutput;
