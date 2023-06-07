@@ -51,7 +51,6 @@ export function exec(cmd: string, options?: ExecOptions): Promise<string> {
 }
 
 export function joinEnvPath(...paths: string[]) {
-  console.log('sss', platform);
   switch (platform) {
     case 'win32':
       return paths.join(';');
