@@ -8,6 +8,7 @@ import path from 'path';
 import argsParser from 'yargs-parser';
 import { templateOptions } from './ui/ExportDialog'; // Import templateOptions from export_dialog.ts
 import { exec, renderTemplate as generateCommand } from './utils';
+import { joinEnvPath } from './utils';
 
 export async function exportToOo(
   plugin: ExportPlugin,
@@ -162,6 +163,7 @@ export async function exportToOo(
   }
 
   try {
+    await exec(cmd, { cwd: variables.currentDir, env: { TEXINPUTS: joinEnvPath(`${textemplateDir}`, './') } }); 
     console.log(`[${plugin.manifest.name}]: export command: ${cmd}`);
     await exec(cmd, { cwd: variables.currentDir });
     progress.hide();
