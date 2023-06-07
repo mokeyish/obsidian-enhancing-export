@@ -167,7 +167,7 @@ export async function exportToOo(
     const path = require('path');
     console.log(`[${plugin.manifest.name}]: export command: ${cmd}`);
     // orginal `$TEXINPUTS` should be empty, so ignore it.
-    await exec(cmd, { cwd: variables.currentDir, env: { TEXINPUTS: joinEnvPath(`${textemplateDir}`, `${process.env.TEXINPUTS}`) } }); 
+    await exec(cmd, { cwd: variables.currentDir, env: { TEXINPUTS: joinEnvPath(textemplateDir, process.env.TEXINPUTS) } }); 
     progress.hide();
 
     const next = async () => {
