@@ -1,4 +1,4 @@
-import ct from 'electron';
+import process, { platform } from 'process';
 import { App, Menu, Plugin, PluginManifest, TFile, Notice, debounce } from 'obsidian';
 import { UniversalExportPluginSettings, ExportSetting, DEFAULT_SETTINGS, getPlatformValue } from './settings';
 // import ExportDialog from './ui/export_dialog';
@@ -6,7 +6,7 @@ import ExportDialog from './ui/ExportDialog'; // solidjs
 // import ExportSettingTab from './ui/setting_tab';
 import ExportSettingTab from './ui/SettingTab'; // solidjs
 import { exportToOo } from './exporto0o';
-import { env } from './utils';
+import { env, joinEnvPath } from './utils';
 import lang, { Lang } from './lang';
 import './styles.css';
 
@@ -28,13 +28,13 @@ export default class UniversalExportPlugin extends Plugin {
   }
 
   async onload() {
-    switch (ct.remote.process.platform) {
+    switch (platform) {
       case 'darwin': {
-        let envPath = ct.remote.process.env['PATH'];
+        let envPath = process.env['PATH'];
         const extraBins = ['/usr/local/bin', '/Library/TeX/texbin'];
         for (const bin of extraBins) {
           if (envPath.includes(bin)) continue;
-          envPath = `${bin}:${envPath}`;
+          envPath = joinEnvPath(bin, envPath);
         }
         env.PATH = envPath;
         break;
@@ -42,8 +42,8 @@ export default class UniversalExportPlugin extends Plugin {
       default:
         break;
     }
-    if (ct.remote.process.env['HOME']) {
-      env.HOME = ct.remote.process.env['HOME'];
+    if (process.env['HOME']) {
+      env.HOME = process.env['HOME'];
     }
 
     await this.releaseLuaScripts();
