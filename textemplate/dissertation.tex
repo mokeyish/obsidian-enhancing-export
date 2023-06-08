@@ -996,18 +996,50 @@ $if(beamer)$
 \pagenumbering{Roman} % set the numbering style to lowercase letter
 
 $endif$
-$if(abstract)$
+
 \begin{center}
  {\LARGE \textbf{\textsf{Abstract}}}
 \end{center}
 
 \begin{abstract}
 \begin{justify}
-$abstract$
+$if(abstract)$
+  $abstract$
+$else$
+Add your abstract at the beginning of your markdown file like this 
+\begin{verbatim}
+--- 
+title: "Your Title" 
+abstract: "your abstract here"
+authors:
+- name: Leonardo V. Castorina
+  affiliation: School of Informatics
+  institution: University of Edinburgh
+  email: justanemail@domain.ext
+  address: Edinburgh
+- name: Coauthor
+  affiliation: Affiliation
+  institution: Institution
+  email: coauthor@example.com
+  address: Address
+titlepage-logo: /absolute/path/to/logo.pdf
+text1: Doctor of Philosophy
+text2: School of Informatics
+text3: University of Edinburgh
+text4: 2023
+---
+\end{verbatim}
+This is called YAML frontmatter. If you set your abstract correctly you should not see this message.
+
+Make sure to set up a title and logo! Optionally you can set up `acknowledgements` and `declaration'.
+
+The text1 to text4 are text fields that appear above the logo.
+
+$endif$
+
 \end{justify}
 \end{abstract}
 \pagebreak
-$endif$
 
 $if(acknowledgements)$
 \begin{center}
