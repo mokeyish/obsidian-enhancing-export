@@ -79,7 +79,8 @@ $if(background-image)$
   \includegraphics[width=\paperwidth]{$background-image$}%
 }
 $endif$
-\usepackage{pgfpages}
+
+
 \setbeamertemplate{caption}[numbered]
 \setbeamertemplate{caption label separator}{: }
 \setbeamercolor{caption name}{fg=normal text.fg}
@@ -292,12 +293,9 @@ $else$
 \usepackage[margin=2.5cm,includehead=true,includefoot=true,centering,$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
 $endif$
 $endif$
-$if(titlepage-logo)$
-\usepackage[export]{adjustbox}
-\usepackage{graphicx}
-\usepackage{ragged2e}
+% $if(titlepage-logo)$
 
-$endif$
+% $endif$
 $if(beamer)$
 \newif\ifbibliography
 $endif$
@@ -512,9 +510,9 @@ $else$
   hidelinks,
 $endif$
   breaklinks=true,
-  pdfcreator={LaTeX via pandoc with the Eisvogel template}}
+  pdfcreator={Obsidian Enhancing Export via pandoc with the Eisvogel template}}
 $if(title)$
-\title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
+\title{$if(title)$$title$$else$Set up Title in Frontmatter (see abstract)$endif$}
 $endif$
 $if(subtitle)$
 $if(beamer)$
@@ -881,6 +879,11 @@ $endif$
 %%
 %% end added
 %%
+\usepackage{pgfpages}
+\usepackage[export]{adjustbox}
+\usepackage{graphicx}
+\usepackage{ragged2e}
+
 
 \begin{document}
 
@@ -986,16 +989,11 @@ $endif$
 
 $if(has-frontmatter)$
 \frontmatter
-$endif$
-$if(title)$
-$if(beamer)$
 \frame{\titlepage}
 % don't generate the default title
 % $else$
 % \maketitle
 \pagenumbering{Roman} % set the numbering style to lowercase letter
-
-$endif$
 
 \begin{center}
  {\LARGE \textbf{\textsf{Abstract}}}
@@ -1003,43 +1001,38 @@ $endif$
 
 \begin{abstract}
 \begin{justify}
-$if(abstract)$
+  $if(abstract)$
   $abstract$
-$else$
-Add your abstract at the beginning of your markdown file like this 
-\begin{verbatim}
---- 
-title: "Your Title" 
-abstract: "your abstract here"
-authors:
-- name: Leonardo V. Castorina
-  affiliation: School of Informatics
-  institution: University of Edinburgh
-  email: justanemail@domain.ext
-  address: Edinburgh
-- name: Coauthor
-  affiliation: Affiliation
-  institution: Institution
-  email: coauthor@example.com
-  address: Address
-titlepage-logo: /absolute/path/to/logo.pdf
-text1: Doctor of Philosophy
-text2: School of Informatics
-text3: University of Edinburgh
-text4: 2023
----
-\end{verbatim}
-This is called YAML frontmatter. If you set your abstract correctly you should not see this message.
+  $else$
+  Add your abstract at the beginning of your markdown file like this 
+  \begin{verbatim}
+  --- 
+  title: "Your Title" 
+  abstract: "your abstract here"
+  authors:
+  - name: Leonardo V. Castorina
+    affiliation: School of Informatics
+    institution: University of Edinburgh
+    email: justanemail@domain.ext
+    address: Edinburgh
+  - name: Coauthor
+    affiliation: Affiliation
+    institution: Institution
+    email: coauthor@example.com
+    address: Address
+  titlepage-logo: /absolute/path/to/logo.pdf
 
-Make sure to set up a title and logo! Optionally you can set up `acknowledgements` and `declaration'.
+  ---
+  \end{verbatim}
+  This is called YAML frontmatter. If you set your abstract correctly you should not see this message.
 
-The text1 to text4 are text fields that appear above the logo.
+  Make sure to set up a title and logo! Optionally you can set up `acknowledgements` and `declaration'.
 
-$endif$
-
+  $endif$
 \end{justify}
 \end{abstract}
 \pagebreak
+
 
 $if(acknowledgements)$
 \begin{center}
@@ -1055,23 +1048,19 @@ $acknowledgements$
 
 $endif$
 
+$if(declaration)$
 \begin{center}
  {\LARGE \textbf{\textsf{Declaration}}}
 \end{center}
 
-$if(declaration)$
 \begin{abstract}
 \begin{justify}
-I declare that this thesis was composed by myself,
-   that the work contained herein is my own 
-   except where explicitly stated otherwise in the text,
-   and that this work has not been submitted for any other degree or
-   professional qualification except as specified.\par
+  $declaration$ \par
    \vspace{1in}\raggedleft({\em $author$\/})
 \end{justify}
 \end{abstract}
 \pagebreak
-$endif$
+
 
 
 $endif$
@@ -1088,10 +1077,9 @@ $for(include-before)$
 $include-before$
 
 $endfor$
-$if(toc)$
-$if(toc-title)$
-\renewcommand*\contentsname{$toc-title$}
+$if(no-toc)$
 $else$
+\renewcommand*\contentsname{$toc-title$}
 \renewcommand*\contentsname{Table of Contents}
 $endif$
 $if(beamer)$
