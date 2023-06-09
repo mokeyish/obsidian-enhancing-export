@@ -1,10 +1,8 @@
 import process, { platform } from 'process';
 import { App, Menu, Plugin, PluginManifest, TFile, Notice, debounce } from 'obsidian';
 import { UniversalExportPluginSettings, ExportSetting, DEFAULT_SETTINGS, getPlatformValue } from './settings';
-// import ExportDialog from './ui/export_dialog';
-import ExportDialog from './ui/ExportDialog'; // solidjs
-// import ExportSettingTab from './ui/setting_tab';
-import ExportSettingTab from './ui/SettingTab'; // solidjs
+// import { ExportSettingTab, ExportDialog } from './ui/legacy';
+import { ExportSettingTab, ExportDialog } from './ui';
 import { exportToOo } from './exporto0o';
 import { env, joinEnvPath } from './utils';
 import lang, { Lang } from './lang';

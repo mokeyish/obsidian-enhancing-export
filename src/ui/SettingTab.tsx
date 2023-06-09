@@ -18,7 +18,7 @@ import { getPandocVersion } from '../pandoc';
 import Modal from './components/Modal';
 import Button from './components/Button';
 import Setting, { Text, Toggle, ExtraButton, DropDown } from './components/Setting';
-import export_command_templates from '../export_command_templates';
+import export_templates from '../export_templates';
 
 
 const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
@@ -53,11 +53,11 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
   const [modal, setModal] = createSignal<() => JSX.Element>();
 
   const AddCommandTemplateModal = () => {
-    type TemplateKey = keyof typeof export_command_templates;
-    const [templateName, setTemplateName] = createSignal(Object.keys(export_command_templates)[0] as TemplateKey);
+    type TemplateKey = keyof typeof export_templates;
+    const [templateName, setTemplateName] = createSignal(Object.keys(export_templates)[0] as TemplateKey);
     const [name, setName] = createSignal<string>();
     const doAdd = () => {
-      const template = JSON.parse(JSON.stringify(export_command_templates[templateName()]));
+      const template = JSON.parse(JSON.stringify(export_templates[templateName()]));
       template.name = name();
       batch(() => {
         setSettings('items', items => [...items, template]);
@@ -69,7 +69,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
       <Modal app={app} title={lang.settingTab.new} onClose={() => setModal(undefined)}>
         <Setting name={lang.settingTab.template}>
           <DropDown
-            options={Object.entries(export_command_templates).map(([k, v]) => ({ name: v.name, value: k }))}
+            options={Object.entries(export_templates).map(([k, v]) => ({ name: v.name, value: k }))}
             selected={name() ?? templateName()}
             onChange={(v: TemplateKey) => setTemplateName(v)}
           />

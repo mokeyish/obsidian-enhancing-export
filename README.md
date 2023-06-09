@@ -1,7 +1,7 @@
 # Obsidian Enhancing Export Plugin
 
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/mokeyish/obsidian-enhancing-export?display_name=tag&include_prereleases)
-![GitHub all releases](https://img.shields.io/github/downloads/mokeyish/obsidian-enhancing-export/total?style=flat-square)
+![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%27obsidian-enhancing-export%27%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
 
 English | [中文](https://github.com/mokeyish/obsidian-enhancing-export/blob/master/README_zh-CN.md)
 
@@ -63,5 +63,5 @@ You can use `${variables}` in custom export command, their values are:
 
 ## Finally
 
-- Welcome to provide more command templates to [here](src/export_command_templates.ts).
+- Welcome to provide more command templates to [here](src/export_templates.ts).
 - Feel free to file an issue for any questions.

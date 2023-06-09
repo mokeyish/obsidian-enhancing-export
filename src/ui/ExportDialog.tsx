@@ -1,13 +1,14 @@
 import * as ct from 'electron';
 import { TFile } from 'obsidian';
-import { createSignal, createRoot, onCleanup, createMemo, untrack, createEffect } from 'solid-js';
+import { createSignal, createRoot, onCleanup, createMemo, untrack, createEffect, Show } from 'solid-js';
 import { insert } from 'solid-js/web';
 import type UniversalExportPlugin from '../main';
 import { getPlatformValue, extractDefaultExtension as extractExtension, setPlatformValue } from '../settings';
 import { exportToOo } from '../exporto0o';
 import Modal from './components/Modal';
-import Setting, {Text, DropDown, ExtraButton, Toggle} from './components/Setting';
 import Button from './components/Button';
+import PropertyGrid, { createDefaultObject } from './components/PropertyGrid';
+import Setting, {Text, DropDown, ExtraButton, Toggle} from './components/Setting';
 
 export const templateOptions = [
   { name: "None", value: "none", path: null },
@@ -21,13 +22,20 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
   const [hidden, setHidden] = createSignal(false);
   const [showOverwriteConfirmation, setShowOverwriteConfirmation] = createSignal(globalSetting.showOverwriteConfirmation);
   const [exportType, setExportType] = createSignal(globalSetting.lastExportType ?? globalSetting.items.first()?.name);
+  const [options, setOptions] = createSignal({});
   const setting = createMemo(() => globalSetting.items.find(o => o.name === exportType()));
   const extension = createMemo(() => extractExtension(setting()));
   const title = createMemo(() => lang.exportDialog.title(setting().name));
+  const optionsMeta = createMemo(() => setting().optionsMeta);
 
   const [candidateOutputDirectory, setCandidateOutputDirectory] = createSignal(`${getPlatformValue(globalSetting.lastExportDirectory) ?? ct.remote.app.getPath('documents')}`);
   const [candidateOutputFileName, setCandidateOutputFileName] = createSignal(`${currentFile.basename}${extension()}`);
   const [exportTemplate, setExportTemplate] = createSignal(globalSetting.lastExportTemplate ?? templateOptions[0].value);
+
+  createEffect(() => {
+    const meta = optionsMeta();
+    setOptions(meta ? createDefaultObject(meta) : {});
+  });
 
   createEffect(() => {
     let fileName = untrack(candidateOutputFileName);
@@ -61,6 +69,7 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
       untrack(setting),
       untrack(exportTemplate),
       untrack(showOverwriteConfirmation),
+      options(),
       async () => {
         globalSetting.showOverwriteConfirmation = untrack(showOverwriteConfirmation);
         globalSetting.lastExportDirectory = setPlatformValue(globalSetting.lastExportDirectory, untrack(candidateOutputDirectory));
@@ -92,20 +101,15 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
         />
       </Setting>
 
-      {["PDF", "Latex", "Bibliography", "Word (.docx)"].includes(exportType()) && (
-          <Setting name={lang.exportDialog.textemplate}>
-            <DropDown
-              options={templateSelectOptions}
-              onChange={(value) => setExportTemplate(value)}
-              selected={exportTemplate()}
-            />
-          </Setting>
-        )}
+      <Show when={optionsMeta()}>
+        <PropertyGrid meta={optionsMeta()} value={options()} onChange={ (o) => setOptions(o)}/>
+      </Show>
 
       <Setting name={lang.exportDialog.exportTo}>
         <Text title={candidateOutputDirectory()} value={candidateOutputDirectory()} disabled />
         <ExtraButton icon='folder' onClick={chooseFolder} />
       </Setting>
+
 
       <Setting name={lang.exportDialog.overwriteConfirmation} class="mod-toggle">
         <Toggle checked={showOverwriteConfirmation()} onChange={setShowOverwriteConfirmation} />

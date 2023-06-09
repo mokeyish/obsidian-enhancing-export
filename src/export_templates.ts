@@ -58,7 +58,18 @@ export default {
     name: 'PDF',
     type: 'pandoc',
     arguments:
-      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" --embed-resources --standalone -s -o "${outputPath}" -t pdf',
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" --embed-resources --standalone --metadata title="${currentFileName}" -s -o "${outputPath}" -t pdf',
+    customArguments: '--pdf-engine=typst',
+    // optionsMeta: {
+    //   'textemplate': {
+    //     title: 'Latex Template',
+    //     type: 'dropdown',
+    //     options: [
+    //       { name: 'None', value: null },
+    //       { name: 'Dissertation', value: 'dissertation.tex' },
+    //       { name: 'Academic Paper', value: 'academic.tex' }]
+    //   }
+    // },
     extension: '.pdf',
   },
   'Word (.docx)': {
@@ -91,9 +102,8 @@ export default {
     arguments: '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t latex',
     extension: '.latex',
   },
-  // TODO: This should be an option in the UI
   'Latex (export with images)': {
-    name: 'Latex (export with images)',
+    name: 'Latex',
     type: 'pandoc',
     arguments:
       '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t latex --extract-media "${outputPath}/images/"',

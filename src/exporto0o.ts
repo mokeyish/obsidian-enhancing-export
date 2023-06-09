@@ -18,6 +18,7 @@ export async function exportToOo(
   setting: ExportSetting,
   exportTemplate: string,
   showOverwriteConfirmation?: boolean,
+  options?: unknown,
   onSuccess?: () => void,
   onFailure?: () => void,
   beforeExport?: () => void
@@ -75,7 +76,7 @@ export async function exportToOo(
     attachmentFolderPath = path.join(currentDir, attachmentFolderPath.substring(1));
   }
 
-  const frontMatter = await new Promise<unknown>((resolve) => {
+  const frontMatter = await new Promise<unknown>(resolve => {
     try {
       fileManager.processFrontMatter(currentFile, frontMatter => {
         resolve(frontMatter);
@@ -104,6 +105,7 @@ export async function exportToOo(
     // lastMod: new Date(currentFile.stat.mtime),
     // now: new Date()
     metadata: frontMatter,
+    options,
   };
 
   const showCommandLineOutput = setting.type === 'custom' && setting.showCommandOutput;
