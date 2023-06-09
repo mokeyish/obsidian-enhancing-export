@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import type ExportPlugin from './main';
 import path from 'path';
 import argsParser from 'yargs-parser';
-import { exec, renderTemplate as generateCommand } from './utils';
+import { exec, renderTemplate } from './utils';
 
 export async function exportToOo(
   plugin: ExportPlugin,
@@ -141,6 +141,8 @@ export async function exportToOo(
     variables.outputFileName = variables.outputFileFullName.substring(0, variables.outputFileFullName.lastIndexOf('.'));
   }
 
+  const env = Object.fromEntries(Object.entries(setting.env ?? {}).map(([n, v]) => [n, renderTemplate(v, variables)]));
+
   // show progress
   progress.setMessage(lang.preparing(outputFileFullName));
   beforeExport && beforeExport();
@@ -152,7 +154,7 @@ export async function exportToOo(
     setting.type === 'pandoc'
       ? `${pandocPath} ${setting.arguments ?? ''} ${setting.customArguments ?? ''} "${currentPath}"`
       : setting.command;
-  const cmd = generateCommand(cmdTpl, variables);
+  const cmd = renderTemplate(cmdTpl, variables);
   const args = argsParser(cmd.match(/(?:[^\s"]+|"[^"]*")+/g), {
     alias: {
       output: ['o'],
@@ -170,7 +172,7 @@ export async function exportToOo(
 
   try {
     console.log(`[${plugin.manifest.name}]: export command: ${cmd}`);
-    await exec(cmd, { cwd: variables.currentDir });
+    await exec(cmd, { cwd: variables.currentDir, env });
     progress.hide();
 
     const next = async () => {

@@ -66,6 +66,8 @@ export interface UniversalExportPluginSettings {
 
   lastExportDirectory?: PlatformValue<string>;
   lastExportType?: string;
+  lastExportTemplate?: string;
+
 }
 
 interface CommonExportSetting {
@@ -74,6 +76,7 @@ interface CommonExportSetting {
   openExportedFileLocation?: boolean; // open exported file location after export
   openExportedFile?: boolean; // open exported file after export
   optionsMeta?: PropertyGridMeta;
+  env?: Record<string, string>
 }
 
 export interface PandocExportSetting extends CommonExportSetting {
