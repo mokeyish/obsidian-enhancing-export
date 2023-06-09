@@ -921,7 +921,13 @@ $if(titlepage-background)$
   \setstretch{2}
   \vfill
   \vskip -8em
-  \noindent {\huge \textbf{\textsf{$title$}}}
+  \noindent {\huge \textbf{\textsf{
+  $if(title)$
+    $title$
+  $else$
+    Set up Title in Frontmatter (see Abstract)
+  $endif$
+}}}
   $if(subtitle)$
   \vskip 1em
   {\Large \textsf{$subtitle$}}
@@ -935,7 +941,13 @@ $else$
   \begin{center}
   \setstretch{1.4}
   \vfill
-  \noindent {\huge \textbf{\textsf{$title$}}}
+  \noindent {\huge \textbf{\textsf{
+  $if(title)$
+    $title$
+  $else$
+    Set up Title in Frontmatter (see Abstract)
+  $endif$
+}}}
   $if(subtitle)$
   \vskip 1em
   {\Large \textsf{$subtitle$}}
@@ -1006,27 +1018,18 @@ $if(has-frontmatter)$
   $else$
   Add your abstract at the beginning of your markdown file like this 
   \begin{verbatim}
-  --- 
+  ---
   title: "Your Title" 
   abstract: "your abstract here"
-  authors:
-  - name: Leonardo V. Castorina
-    affiliation: School of Informatics
-    institution: University of Edinburgh
-    email: justanemail@domain.ext
-    address: Edinburgh
-  - name: Coauthor
-    affiliation: Affiliation
-    institution: Institution
-    email: coauthor@example.com
-    address: Address
+  author: Leonardo V. Castorina, Another 1, Another 2
   titlepage-logo: /absolute/path/to/logo.pdf
-
+  acknowledgements: "I would like to thank my dog Data."
+  declaration: "I declare that this thesis was composed by myself."
   ---
   \end{verbatim}
-  This is called YAML frontmatter. If you set your abstract correctly you should not see this message.
+  This is called YAML frontmatter.  Make sure to set up a title! If you set your abstract correctly you should not see this message.
 
-  Make sure to set up a title and logo! Optionally you can set up `acknowledgements` and `declaration'.
+  Optionally you can set up \texttt{titlepage-logo} for a logo in the cover page, \texttt{acknowledgements} section, and  \texttt{declaration} section.
 
   $endif$
 \end{justify}
