@@ -73,7 +73,7 @@ interface CommonExportSetting {
 
   openExportedFileLocation?: boolean; // open exported file location after export
   openExportedFile?: boolean; // open exported file after export
-  optionsMeta?: PropertyGridMeta
+  optionsMeta?: PropertyGridMeta;
 }
 
 export interface PandocExportSetting extends CommonExportSetting {

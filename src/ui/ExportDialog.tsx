@@ -17,18 +17,18 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
   const [hidden, setHidden] = createSignal(false);
   const [showOverwriteConfirmation, setShowOverwriteConfirmation] = createSignal(globalSetting.showOverwriteConfirmation);
   const [exportType, setExportType] = createSignal(globalSetting.lastExportType ?? globalSetting.items.first()?.name);
+  const [options, setOptions] = createSignal({});
   const setting = createMemo(() => globalSetting.items.find(o => o.name === exportType()));
   const extension = createMemo(() => extractExtension(setting()));
   const title = createMemo(() => lang.exportDialog.title(setting().name));
   const optionsMeta = createMemo(() => setting().optionsMeta);
-  let options = { };
 
   const [candidateOutputDirectory, setCandidateOutputDirectory] = createSignal(`${getPlatformValue(globalSetting.lastExportDirectory) ?? ct.remote.app.getPath('documents')}`);
   const [candidateOutputFileName, setCandidateOutputFileName] = createSignal(`${currentFile.basename}${extension()}`);
 
   createEffect(() => {
     const meta = optionsMeta();
-    options = meta ? createDefaultObject(meta) : {};
+    setOptions(meta ? createDefaultObject(meta) : {});
   });
 
   createEffect(() => {
@@ -59,7 +59,7 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
       untrack(candidateOutputFileName),
       untrack(setting),
       untrack(showOverwriteConfirmation),
-      options,
+      options(),
       async () => {
         globalSetting.showOverwriteConfirmation = untrack(showOverwriteConfirmation);
         globalSetting.lastExportDirectory = setPlatformValue(globalSetting.lastExportDirectory, untrack(candidateOutputDirectory));
@@ -92,7 +92,7 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
       </Setting>
 
       <Show when={optionsMeta()}>
-        <PropertyGrid meta={optionsMeta()} value={options}/>
+        <PropertyGrid meta={optionsMeta()} value={options()} onChange={ (o) => setOptions(o)}/>
       </Show>
 
       <Setting name={lang.exportDialog.exportTo}>

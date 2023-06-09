@@ -1,5 +1,5 @@
 
-import { For, JSX, onMount } from 'solid-js';
+import { For, JSX, createEffect, onMount } from 'solid-js';
 import Setting, { Toggle, DropDown, Text } from './Setting';
 
 const getdefaultEditor = (meta: AnyPropertyGridControl, onChange?: (value: unknown) => void) => {
@@ -67,7 +67,8 @@ export type PropertyGridProps = {
 
 export default (props: PropertyGridProps) => {
 
-  const obj: Record<string, unknown> = props.value ?? createDefaultObject(props.meta);
+  let obj: Record<string, unknown> = { };
+  createEffect(() => obj = props.value ?? createDefaultObject(props.meta));
 
   const onChange = (key: string, value: unknown) => {
     obj[key] = value;
