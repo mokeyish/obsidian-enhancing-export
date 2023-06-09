@@ -92,7 +92,7 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
       <Setting name={lang.exportDialog.type}>
         <DropDown options={exportTypes} onChange={(typ) => setExportType(typ)} selected={exportType()}/>
       </Setting>
-
+    
       <Setting name={lang.exportDialog.fileName}>
         <Text
           title={candidateOutputFileName()}
@@ -104,6 +104,16 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
       <Show when={optionsMeta()}>
         <PropertyGrid meta={optionsMeta()} value={options()} onChange={ (o) => setOptions(o)}/>
       </Show>
+
+      {["PDF", "Latex", "Bibliography", "Word (.docx)"].includes(exportType()) && (
+          <Setting name={lang.exportDialog.textemplate}>
+            <DropDown
+              options={templateSelectOptions}
+              onChange={(value) => setExportTemplate(value)}
+              selected={exportTemplate()}
+            />
+          </Setting>
+        )}
 
       <Setting name={lang.exportDialog.exportTo}>
         <Text title={candidateOutputDirectory()} value={candidateOutputDirectory()} disabled />
