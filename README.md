@@ -63,5 +63,5 @@ You can use `${variables}` in custom export command, their values are:
 
 ## Finally
 
-- Welcome to provide more command templates to [here](src/export_command_templates.ts).
+- Welcome to provide more command templates to [here](src/export_templates.ts).
 - Feel free to file an issue for any questions.

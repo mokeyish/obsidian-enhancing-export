@@ -1,5 +1,6 @@
 import { platform } from 'process';
-import export_command_templates from './export_command_templates';
+import export_templates from './export_templates';
+import type { PropertyGridMeta } from './ui/components/PropertyGrid';
 
 /*
  * Variables
@@ -32,6 +33,7 @@ export interface Variables {
   // lastMod: new Date(currentFile.stat.mtime),
   // now: new Date()
   metadata?: unknown;
+  options?: unknown;
 }
 
 export type PlatformValue<T> = { [k in typeof platform]?: T };
@@ -71,6 +73,7 @@ interface CommonExportSetting {
 
   openExportedFileLocation?: boolean; // open exported file location after export
   openExportedFile?: boolean; // open exported file after export
+  optionsMeta?: PropertyGridMeta
 }
 
 export interface PandocExportSetting extends CommonExportSetting {
@@ -94,7 +97,7 @@ export interface CustomExportSetting extends CommonExportSetting {
 export type ExportSetting = PandocExportSetting | CustomExportSetting;
 
 export const DEFAULT_SETTINGS: UniversalExportPluginSettings = {
-  items: Object.values(export_command_templates).filter(o => o.type !== 'custom'),
+  items: Object.values(export_templates).filter(o => o.type !== 'custom'),
   pandocPath: undefined,
   defaultExportDirectoryMode: 'Auto',
   openExportedFile: true,

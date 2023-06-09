@@ -60,6 +60,16 @@ export default {
     arguments:
       '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" --embed-resources --standalone --metadata title="${currentFileName}" -s -o "${outputPath}" -t pdf',
     customArguments: '--pdf-engine=typst',
+    // optionsMeta: {
+    //   'textemplate': {
+    //     title: 'Latex Template',
+    //     type: 'dropdown',
+    //     options: [
+    //       { name: 'None', value: null },
+    //       { name: 'Dissertation', value: 'dissertation.tex' },
+    //       { name: 'Academic Paper', value: 'academic.tex' }]
+    //   }
+    // },
     extension: '.pdf',
   },
   'Word (.docx)': {

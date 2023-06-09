@@ -48,5 +48,5 @@
 
 ## 最后
 
-- 欢迎提供更多命令模板到[这里](src/export_command_templates.ts).。
+- 欢迎提供更多命令模板到[这里](src/export_templates.ts).。
 - 有问题可以提交 Issue 给我。

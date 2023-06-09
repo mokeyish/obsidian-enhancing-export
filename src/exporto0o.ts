@@ -15,6 +15,7 @@ export async function exportToOo(
   candidateOutputFileName: string | undefined,
   setting: ExportSetting,
   showOverwriteConfirmation?: boolean,
+  options?: unknown,
   onSuccess?: () => void,
   onFailure?: () => void,
   beforeExport?: () => void
@@ -100,6 +101,7 @@ export async function exportToOo(
     // lastMod: new Date(currentFile.stat.mtime),
     // now: new Date()
     metadata: frontMatter,
+    options
   };
 
   const showCommandLineOutput = setting.type === 'custom' && setting.showCommandOutput;
