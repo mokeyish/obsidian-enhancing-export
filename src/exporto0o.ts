@@ -6,7 +6,6 @@ import * as fs from 'fs';
 import type ExportPlugin from './main';
 import path from 'path';
 import argsParser from 'yargs-parser';
-import { templateOptions } from './ui/ExportDialog'; // Import templateOptions from export_dialog.ts
 import { joinEnvPath } from './utils';
 import { exec, renderTemplate } from './utils';
 
@@ -144,10 +143,6 @@ export async function exportToOo(
     setting.type === 'pandoc'
       ? `${pandocPath} ${setting.arguments ?? ''} ${setting.customArguments ?? ''}`
       : setting.command;
-  // if template is selected, append to command
-  if (exportTemplate !== 'none') {
-    cmdTpl += ` --resource-path="${textemplateDir}" --template="${templatePath}"`;
-  }
   cmdTpl += ` "${currentPath}"`;
   const cmd = renderTemplate(cmdTpl, variables);
   const args = argsParser(cmd.match(/(?:[^\s"]+|"[^"]*")+/g), {
