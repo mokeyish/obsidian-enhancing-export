@@ -105,16 +105,6 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
         <PropertyGrid meta={optionsMeta()} value={options()} onChange={ (o) => setOptions(o)}/>
       </Show>
 
-      {["PDF", "Latex", "Bibliography", "Word (.docx)"].includes(exportType()) && (
-          <Setting name={lang.exportDialog.textemplate}>
-            <DropDown
-              options={templateSelectOptions}
-              onChange={(value) => setExportTemplate(value)}
-              selected={exportTemplate()}
-            />
-          </Setting>
-        )}
-
       <Setting name={lang.exportDialog.exportTo}>
         <Text title={candidateOutputDirectory()} value={candidateOutputDirectory()} disabled />
         <ExtraButton icon='folder' onClick={chooseFolder} />
