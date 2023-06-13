@@ -15,7 +15,6 @@ export async function exportToOo(
   candidateOutputDirectory: string,
   candidateOutputFileName: string | undefined,
   setting: ExportSetting,
-  exportTemplate: string,
   showOverwriteConfirmation?: boolean,
   options?: unknown,
   onSuccess?: () => void,
@@ -32,7 +31,6 @@ export async function exportToOo(
       fileManager,
     },
   } = plugin;
-
   if (!candidateOutputFileName) {
     const extension = extractExtension(setting);
     candidateOutputFileName = `${currentFile.basename}${extension}`;
@@ -137,8 +135,6 @@ export async function exportToOo(
 
   const pandocPath = getPlatformValue(globalSetting.pandocPath) ?? 'pandoc';
 
-  const templateOption = templateOptions.find((option) => option.value === exportTemplate); // Use exportTemplate parameter
-  const templatePath = templateOption ? templateOption.path : '';
   let cmdTpl =
     setting.type === 'pandoc'
       ? `${pandocPath} ${setting.arguments ?? ''} ${setting.customArguments ?? ''}`
