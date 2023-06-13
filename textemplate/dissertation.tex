@@ -254,6 +254,11 @@ $endif$
 }{}
 $if(indent)$
 $else$
+
+\usepackage{pgfpages} 
+\usepackage[export]{adjustbox}
+\usepackage{graphicx}
+\usepackage{ragged2e}
 \makeatletter
 \@ifundefined{KOMAClassName}{% if non-KOMA class
   \IfFileExists{parskip.sty}{%
@@ -293,9 +298,7 @@ $else$
 \usepackage[margin=2.5cm,includehead=true,includefoot=true,centering,$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
 $endif$
 $endif$
-% $if(titlepage-logo)$
 
-% $endif$
 $if(beamer)$
 \newif\ifbibliography
 $endif$
@@ -510,7 +513,7 @@ $else$
   hidelinks,
 $endif$
   breaklinks=true,
-  pdfcreator={Obsidian Enhancing Export via pandoc with the Eisvogel template}}
+  pdfcreator={LaTeX via pandoc with the Eisvogel template}}
 $if(title)$
 \title{$if(title)$$title$$else$Set up Title in Frontmatter (see abstract)$endif$}
 $endif$
