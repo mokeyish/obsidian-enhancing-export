@@ -75,11 +75,13 @@ export const Text = (props: { placeholder?: string,
   value?: string,
   style?: string,
   disabled?: boolean, 
-  spellcheck?: boolean, 
+  readOnly?: boolean,
+  spellcheck?: boolean,
   onChange?: (value: string) => void }) => {
   return <input
     type="text"
     title={props.title} 
+    readOnly={props.readOnly}
     placeholder={props.placeholder}
     spellcheck={props.spellcheck ?? false}
     style={props.style}
