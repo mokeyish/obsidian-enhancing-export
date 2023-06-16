@@ -1,5 +1,5 @@
-import { platform } from 'process';
 import export_templates from './export_templates';
+import { setPlatformValue, PlatformValue } from './utils';
 import type { PropertyGridMeta } from './ui/components/PropertyGrid';
 
 /*
@@ -34,22 +34,7 @@ export interface Variables {
   // now: new Date()
   metadata?: unknown;
   options?: unknown;
-}
-
-export type PlatformValue<T> = { [k in typeof platform]?: T };
-
-export function setPlatformValue<T>(obj: { [k in typeof platform]?: T }, value: T): { [k in typeof platform]?: T } {
-  if (typeof value === 'string' && value.trim() === '') {
-    value = undefined;
-  }
-  return {
-    ...(obj ?? {}),
-    [platform]: value,
-  };
-}
-
-export function getPlatformValue<T>(obj: { [k in typeof platform]?: T }): T {
-  return (obj ?? {})[platform];
+  env?: Record<string, string>;
 }
 
 export interface UniversalExportPluginSettings {
@@ -58,11 +43,13 @@ export interface UniversalExportPluginSettings {
   showOverwriteConfirmation?: boolean;
   defaultExportDirectoryMode: 'Auto' | 'Same' | 'Custom';
   customDefaultExportDirectory?: PlatformValue<string>;
-  lastEditName?: string;
+  env: PlatformValue<Record<string, string>>;
   items: ExportSetting[];
 
   openExportedFile?: boolean; // open exported file after export
   openExportedFileLocation?: boolean; // open exported file location after export
+
+  lastEditName?: string;
 
   lastExportDirectory?: PlatformValue<string>;
   lastExportType?: string;
@@ -96,11 +83,38 @@ export interface CustomExportSetting extends CommonExportSetting {
 
 export type ExportSetting = PandocExportSetting | CustomExportSetting;
 
+const createDefaultEnv = () => {
+  let env: PlatformValue<Record<string, string>> = {};
+
+  env = setPlatformValue(
+    env,
+    {
+      'PATH': '/usr/local/bin:/Library/TeX/texbin:${PATH}',
+    },
+    'darwin'
+  );
+
+  const allPlatforms = ['aix', 'android', 'darwin', 'freebsd', 'haiku', 'linux', 'openbsd', 'sunos', 'win32', 'cygwin', 'netbsd'] as const;
+
+  for (const platform of allPlatforms) {
+    env = setPlatformValue(
+      env,
+      {
+        ...(env[platform] ?? {}),
+        'HOME': '${HOME}',
+      },
+      platform
+    );
+  }
+  return env;
+};
+
 export const DEFAULT_SETTINGS: UniversalExportPluginSettings = {
   items: Object.values(export_templates).filter(o => o.type !== 'custom'),
   pandocPath: undefined,
   defaultExportDirectoryMode: 'Auto',
   openExportedFile: true,
+  env: createDefaultEnv(),
 };
 
 export function extractDefaultExtension(s: ExportSetting): string {

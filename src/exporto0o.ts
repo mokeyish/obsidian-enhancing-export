@@ -1,12 +1,13 @@
-import { getPlatformValue, Variables, ExportSetting, extractDefaultExtension as extractExtension } from './settings';
 import * as ct from 'electron';
-import { MessageBox } from './ui/message_box';
-import { Notice, TFile } from 'obsidian';
 import * as fs from 'fs';
-import type ExportPlugin from './main';
+import process from 'process';
 import path from 'path';
 import argsParser from 'yargs-parser';
-import { exec, renderTemplate as generateCommand } from './utils';
+import { Variables, ExportSetting, extractDefaultExtension as extractExtension } from './settings';
+import { MessageBox } from './ui/message_box';
+import { Notice, TFile } from 'obsidian';
+import { exec, renderTemplate, getPlatformValue } from './utils';
+import type ExportPlugin from './main';
 
 export async function exportToOo(
   plugin: ExportPlugin,
@@ -104,6 +105,12 @@ export async function exportToOo(
     options,
   };
 
+  // process Environment variables..
+  const processEnv = Object.assign({ HOME: process.env['HOME'] ?? process.env['USERPROFILE'] }, process.env, variables);
+  const env = (variables.env = Object.fromEntries(
+    Object.entries(getPlatformValue(globalSetting.env) ?? {}).map(([n, v]) => [n, renderTemplate(v, processEnv)])
+  ));
+
   const showCommandLineOutput = setting.type === 'custom' && setting.showCommandOutput;
   const openExportedFileLocation = setting.openExportedFileLocation ?? globalSetting.openExportedFileLocation;
   const openExportedFile = setting.openExportedFile ?? globalSetting.openExportedFile;
@@ -152,7 +159,8 @@ export async function exportToOo(
     setting.type === 'pandoc'
       ? `${pandocPath} ${setting.arguments ?? ''} ${setting.customArguments ?? ''} "${currentPath}"`
       : setting.command;
-  const cmd = generateCommand(cmdTpl, variables);
+
+  const cmd = renderTemplate(cmdTpl, variables);
   const args = argsParser(cmd.match(/(?:[^\s"]+|"[^"]*")+/g), {
     alias: {
       output: ['o'],
@@ -170,7 +178,7 @@ export async function exportToOo(
 
   try {
     console.log(`[${plugin.manifest.name}]: export command: ${cmd}`);
-    await exec(cmd, { cwd: variables.currentDir });
+    await exec(cmd, { cwd: variables.currentDir, env });
     progress.hide();
 
     const next = async () => {

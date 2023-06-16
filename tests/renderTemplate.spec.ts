@@ -6,6 +6,14 @@ test('test Template rendering', async () => {
   expect(out).toBe('sw123e');
 });
 
+test('test Template rendering 2', async () => {
+  const out = renderTemplate('${HOME}', {
+    'HOME': 'C:\\Users\\Admin',
+    'CommonProgramFiles(x86)': 'C:\\Program Files (x86)\\Common Files',
+  });
+  expect(out).toBe('C:\\Users\\Admin');
+});
+
 
 test('test Template rendering options.textemplate', async () => {
   expect(renderTemplate('pandoc ${ options.textemplate ? `--template="${options.textemplate}"` : `` }',
