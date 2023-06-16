@@ -59,5 +59,9 @@ export default {
     save: 'Save',
     new: 'New',
     arguments: 'Arguments',
+
+    advanced: 'Advanced',
+    environmentVariables: 'Environment Variables',
+    environmentVariablesDesc: 'Define the Environment Variables for exporting.',
   },
 };

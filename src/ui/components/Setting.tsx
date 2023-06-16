@@ -89,6 +89,23 @@ export const Text = (props: { placeholder?: string,
   />;
 };
 
+export const TextArea = (props: { placeholder?: string, 
+  title?: string, 
+  value?: string,
+  style?: string,
+  disabled?: boolean, 
+  spellcheck?: boolean, 
+  onChange?: (value: string) => void }) => {
+  return <textarea
+    placeholder={props.placeholder}
+    spellcheck={props.spellcheck ?? false}
+    style={props.style}
+    value={props.value}
+    onChange={(e) => props.onChange && props.onChange(e.target.value)}
+    disabled={props.disabled}
+  />;
+};
+
 
 export const DropDown = (props: {
   options: { name?: string, value: string }[],

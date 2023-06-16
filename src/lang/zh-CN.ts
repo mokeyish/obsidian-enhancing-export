@@ -60,5 +60,9 @@ export default {
     save: '保存',
     new: '新建',
     template: '模板',
+
+    advanced: '高级',
+    environmentVariables: '环境变量',
+    environmentVariablesDesc: '定义导出的环境变量.',
   },
 } satisfies Lang;

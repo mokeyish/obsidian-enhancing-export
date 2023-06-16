@@ -146,4 +146,4 @@ export default {
     command: 'your command',
     targetFileExtensions: '.ext',
   },
-} satisfies Record<string, ExportSetting>;
+} satisfies Record<string, ExportSetting> as Record<string, ExportSetting>;

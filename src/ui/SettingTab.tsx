@@ -1,13 +1,13 @@
 import * as ct from 'electron';
-import { PluginSettingTab} from 'obsidian';
+import { PluginSettingTab } from 'obsidian';
 import type UniversalExportPlugin from '../main';
 import {
   CustomExportSetting,
   ExportSetting,
   PandocExportSetting,
-  setPlatformValue,
-  getPlatformValue,
+
 } from '../settings';
+import { setPlatformValue, getPlatformValue, } from '../utils';
 
 import { createSignal, createRoot, onCleanup, createMemo, createEffect, Show, batch, Match, Switch, JSX } from 'solid-js';
 import { createStore, produce } from 'solid-js/store';
@@ -17,7 +17,7 @@ import type { Lang } from '../lang';
 import { getPandocVersion } from '../pandoc';
 import Modal from './components/Modal';
 import Button from './components/Button';
-import Setting, { Text, Toggle, ExtraButton, DropDown } from './components/Setting';
+import Setting, { Text, Toggle, ExtraButton, DropDown, TextArea } from './components/Setting';
 import export_templates from '../export_templates';
 
 
@@ -25,10 +25,31 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
   const { plugin, lang } = props;
   const [settings, setSettings0] = createStore(plugin.settings);
   const [pandocVersion, setPandocVersion] = createSignal<string>();
+  const envVars = createMemo(() => Object.entries(getPlatformValue(settings.env) ?? {}).map(([n, v]) => `${n}="${v}"`).join('\n'));
   const setSettings: typeof setSettings0 = (...args: unknown[]) => {
     (setSettings0 as ((...args: unknown[]) => void))(...args);
     plugin.saveSettings();
   };
+  const setEnvVars = (envItems: string) => {
+    try {
+      const env: Record<string, string> = {};
+      for (let line of envItems.split('\n')) {
+        line = line.trim();
+        const sepIdx = line.indexOf('=');
+        if (sepIdx > 0) {
+          const name = line.substring(0, sepIdx);
+          let value = line.substring(sepIdx + 1).trim();
+          if (value.startsWith('"') && value.endsWith('"')) {
+            value = value.substring(1, value.length - 1);
+          }
+          env[name] = value;
+        }
+      }
+      setSettings('env', setPlatformValue(settings.env ?? {}, env));
+    } catch (e) {
+      alert(e);
+    }
+  }
 
   const currentCommandTemplate = createMemo(() => settings.items.find(v => v.name === settings.lastEditName) ?? settings.items.first());
   const currentEditCommandTemplate = <T extends 'custom' | 'pandoc'>(type?: T) => {
@@ -120,7 +141,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
 
       <Setting name={lang.settingTab.afterExport} heading={true} />
       <Setting name={lang.settingTab.openExportedFileLocation}>
-        <Toggle checked={template().openExportedFileLocation ?? false} onChange={(checked) => updateTemplate(v => v.openExportedFileLocation = checked)}/>
+        <Toggle checked={template().openExportedFileLocation ?? false} onChange={(checked) => updateTemplate(v => v.openExportedFileLocation = checked)} />
       </Setting>
       <Setting name={lang.settingTab.openExportedFile}>
         <Toggle checked={template().openExportedFile ?? false} onChange={(checked) => updateTemplate(v => v.openExportedFile = checked)} />
@@ -149,7 +170,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
         <Text value={template().targetFileExtensions ?? ''} onChange={(value) => updateTemplate(v => v.targetFileExtensions = value)} />
       </Setting>
 
-      <Setting name={lang.settingTab.afterExport} heading={true}/>
+      <Setting name={lang.settingTab.afterExport} heading={true} />
       <Setting name={lang.settingTab.showCommandOutput} >
         <Toggle checked={template().showCommandOutput ?? false} onChange={(checked) => updateTemplate(v => v.showCommandOutput = checked)} />
       </Setting>
@@ -205,7 +226,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
         { name: lang.settingTab.sameFolderWithCurrentFile, value: 'Same' },
         { name: lang.settingTab.customLocation, value: 'Custom' }
       ]} onChange={(v: 'Auto' | 'Same' | 'Custom') => setSettings('defaultExportDirectoryMode', v)} />
-      
+
     </Setting>
 
     <Show when={settings.defaultExportDirectoryMode === 'Custom'}>
@@ -218,7 +239,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
     <Setting name={lang.settingTab.openExportedFileLocation}>
       <Toggle
         checked={settings.openExportedFileLocation}
-        onChange={(v) => setSettings('openExportedFileLocation', v)} 
+        onChange={(v) => setSettings('openExportedFileLocation', v)}
       />
     </Setting>
 
@@ -261,7 +282,19 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
         <CustomCommandTempateEditBlock />
       </Match>
     </Switch>
-    
+
+
+    <Setting name={lang.settingTab.advanced} heading={true} />
+
+    {/* TODO:// optimize UI as https://www.jetbrains.com/help/idea/absolute-path-variables.html */}
+    <Setting name={lang.settingTab.environmentVariables} description={lang.settingTab.environmentVariablesDesc}>
+      <TextArea
+        style='width: 100%;height: 5em'
+        value={envVars()}
+        onChange={setEnvVars}
+      />
+    </Setting>
+
     <Show when={modal()}>
       <Dynamic component={modal()} ref={(el: Node) => document.body.appendChild(el)} />
     </Show>
