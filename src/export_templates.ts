@@ -58,18 +58,15 @@ export default {
     name: 'PDF',
     type: 'pandoc',
     arguments:
-      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" --embed-resources --standalone --metadata title="${currentFileName}" -s -o "${outputPath}" -t pdf',
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" ${ options.textemplate ? `--template="${options.textemplate}"` : `` } --embed-resources --standalone --metadata title="${currentFileName}" -s -o "${outputPath}" -t pdf',
     customArguments: '--pdf-engine=typst',
-    // optionsMeta: {
-    //   'textemplate': {
-    //     title: 'Latex Template',
-    //     type: 'dropdown',
-    //     options: [
-    //       { name: 'None', value: null },
-    //       { name: 'Dissertation', value: 'dissertation.tex' },
-    //       { name: 'Academic Paper', value: 'academic.tex' }]
-    //   }
-    // },
+    optionsMeta: {
+      'textemplate': {
+        title: 'Latex Template',
+        type: 'fileSelectDialog',
+        filters: [{ name: 'Latex', extensions: ['tex'] }],
+      },
+    },
     extension: '.pdf',
   },
   'Word (.docx)': {
