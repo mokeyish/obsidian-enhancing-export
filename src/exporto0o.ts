@@ -6,8 +6,8 @@ import * as fs from 'fs';
 import type ExportPlugin from './main';
 import path from 'path';
 import argsParser from 'yargs-parser';
+import { exec, renderTemplate as generateCommand } from './utils';
 import { joinEnvPath } from './utils';
-import { exec, renderTemplate } from './utils';
 
 export async function exportToOo(
   plugin: ExportPlugin,
@@ -31,6 +31,7 @@ export async function exportToOo(
       fileManager,
     },
   } = plugin;
+  
   if (!candidateOutputFileName) {
     const extension = extractExtension(setting);
     candidateOutputFileName = `${currentFile.basename}${extension}`;
@@ -110,6 +111,21 @@ export async function exportToOo(
   const openExportedFile = setting.openExportedFile ?? globalSetting.openExportedFile;
 
   if (showOverwriteConfirmation && fs.existsSync(outputPath)) {
+    // const msgBox = new MessageBox(this.app, {
+    //   message: lang.overwriteConfirmationDialog.message(outputDir),
+    //   title: lang.overwriteConfirmationDialog.title(outputFileFullName),
+    //   buttons: 'OkCancel',
+    //   buttonsLabel: {
+    //     ok: lang.overwriteConfirmationDialog.replace,
+    //   },
+    //   buttonsClass: {
+    //     ok: 'mod-warning'
+    //   },
+    //   callback: {
+    //     ok: () => doExport()
+    //   }
+    // });
+    // msgBox.open();
     const result = await ct.remote.dialog.showSaveDialog({
       title: lang.overwriteConfirmationDialog.title(outputFileFullName),
       defaultPath: outputPath,
@@ -126,7 +142,7 @@ export async function exportToOo(
     variables.outputFileName = variables.outputFileFullName.substring(0, variables.outputFileFullName.lastIndexOf('.'));
   }
 
-  const env = Object.fromEntries(Object.entries(setting.env ?? {}).map(([n, v]) => [n, renderTemplate(v, variables)]));
+  const env = Object.fromEntries(Object.entries(setting.env ?? {}).map(([n, v]) => [n, generateCommand(v, variables)]));
 
   // show progress
   progress.setMessage(lang.preparing(outputFileFullName));
@@ -137,10 +153,9 @@ export async function exportToOo(
 
   let cmdTpl =
     setting.type === 'pandoc'
-      ? `${pandocPath} ${setting.arguments ?? ''} ${setting.customArguments ?? ''}`
+      ? `${pandocPath} ${setting.arguments ?? ''} ${setting.customArguments ?? ''} "${currentPath}"`
       : setting.command;
-  cmdTpl += ` "${currentPath}"`;
-  const cmd = renderTemplate(cmdTpl, variables);
+  const cmd = generateCommand(cmdTpl, variables);
   const args = argsParser(cmd.match(/(?:[^\s"]+|"[^"]*")+/g), {
     alias: {
       output: ['o'],
