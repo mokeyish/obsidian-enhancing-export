@@ -58,14 +58,17 @@ export default {
     name: 'PDF',
     type: 'pandoc',
     arguments:
-      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" ${ options.textemplate ? `--template="${options.textemplate}"` : `` } --embed-resources --standalone --metadata title="${currentFileName}" -s -o "${outputPath}" -t pdf',
-    customArguments: '--pdf-engine=typst',
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" ${ options.textemplate ? `--resource-path="${pluginDir}/textemplate" --template="${options.textemplate}"` : ` ` } --embed-resources --standalone -s -o "${outputPath}" -t pdf',
+    customArguments: '--pdf-engine=pdflatex',
     optionsMeta: {
       'textemplate': {
         title: 'Latex Template',
-        type: 'fileSelectDialog',
-        filters: [{ name: 'Latex', extensions: ['tex'] }],
-      },
+        type: 'dropdown',
+        options: [
+          { name: 'None', value: null },
+          { name: 'Dissertation', value: 'dissertation.tex' },
+          { name: 'Academic Paper', value: 'neurips.tex' }]
+      }
     },
     extension: '.pdf',
   },
@@ -96,14 +99,17 @@ export default {
   'Latex': {
     name: 'Latex',
     type: 'pandoc',
-    arguments: '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t latex',
-    extension: '.latex',
-  },
-  'Latex (export with images)': {
-    name: 'Latex',
-    type: 'pandoc',
-    arguments:
-      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t latex --extract-media "${outputPath}/images/"',
+    arguments: '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" ${ options.textemplate ? `--resource-path="${pluginDir}/textemplate" --template="${options.textemplate}"` : ` ` } -s -o "${outputPath}" -t latex',
+    optionsMeta: {
+      'textemplate': {
+        title: 'Latex Template',
+        type: 'dropdown',
+        options: [
+          { name: 'None', value: null },
+          { name: 'Dissertation', value: 'dissertation.tex' },
+          { name: 'Academic Paper', value: 'academic.tex' }]
+      },
+    },
     extension: '.latex',
   },
   'Media Wiki': {

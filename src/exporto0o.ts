@@ -6,7 +6,7 @@ import argsParser from 'yargs-parser';
 import { Variables, ExportSetting, extractDefaultExtension as extractExtension } from './settings';
 import { MessageBox } from './ui/message_box';
 import { Notice, TFile } from 'obsidian';
-import { exec, renderTemplate, getPlatformValue } from './utils';
+import { exec, renderTemplate, getPlatformValue, joinEnvPath } from './utils';
 import type ExportPlugin from './main';
 
 export async function exportToOo(
@@ -56,6 +56,7 @@ export async function exportToOo(
   const vaultDir = adapter.getBasePath();
   const pluginDir = `${vaultDir}/${manifest.dir}`;
   const luaDir = `${pluginDir}/lua`;
+  const textemplateDir = `${pluginDir}/textemplate`;
   const outputDir = candidateOutputDirectory;
   const outputPath = `${outputDir}/${candidateOutputFileName}`;
   const outputFileName = candidateOutputFileName.substring(0, candidateOutputFileName.lastIndexOf('.'));
@@ -178,7 +179,8 @@ export async function exportToOo(
 
   try {
     console.log(`[${plugin.manifest.name}]: export command: ${cmd}`);
-    await exec(cmd, { cwd: variables.currentDir, env });
+    // It is necessary to **append** to the current TEXINPUTS - NOT REPLACE. TEXINPUTS contains the basic latex classes. 
+    await exec(cmd, { cwd: variables.currentDir, env: { TEXINPUTS: joinEnvPath(textemplateDir, process.env.TEXINPUTS) } }); 
     progress.hide();
 
     const next = async () => {
