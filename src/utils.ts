@@ -1,22 +1,7 @@
 import { ExecOptions, exec as node_exec } from 'child_process';
-import process from 'process';
+import { platform } from 'process';
 
-export type PlatformValue<T> = { [k in typeof process.platform]?: T };
-
-export function setPlatformValue<T>(obj: PlatformValue<T>, value: T, platform?: keyof PlatformValue<T>): PlatformValue<T> {
-  if (typeof value === 'string' && value.trim() === '') {
-    value = undefined;
-  }
-  platform ??= process.platform;
-  return {
-    ...(obj ?? {}),
-    [platform]: value,
-  };
-}
-
-export function getPlatformValue<T>(obj: PlatformValue<T>): T {
-  return (obj ?? {})[process.platform];
-}
+export const env: { [k: string]: string; HOME?: string; PATH?: string } = {};
 
 // eslint-disable-next-line
 export function strTpl(strings: TemplateStringsArray, ...keys: number[]): (...values: any[]) => string {
@@ -33,6 +18,23 @@ export function strTpl(strings: TemplateStringsArray, ...keys: number[]): (...va
 
 export function exec(cmd: string, options?: ExecOptions): Promise<string> {
   options = options ?? {};
+
+  if (Object.keys(env).length > 0) {
+    if (!options.env) {
+      options.env = env;
+    } else {
+      for (const [name, value] of Object.entries(env)) {
+        if (options.env[name]) {
+          if (name.toUpperCase() === 'PATH') {
+            options.env[name] = joinEnvPath(options.env[name], value);
+            continue;
+          }
+        }
+        options.env[name] = value;
+      }
+    }
+  }
+
   return new Promise((resolve, reject) => {
     node_exec(cmd, options, (error, stdout, stderr) => {
       if (error) {
@@ -49,7 +51,7 @@ export function exec(cmd: string, options?: ExecOptions): Promise<string> {
 }
 
 export function joinEnvPath(...paths: string[]) {
-  switch (process.platform) {
+  switch (platform) {
     case 'win32':
       return paths.join(';');
     default:
@@ -66,24 +68,7 @@ export function joinEnvPath(...paths: string[]) {
  * @returns {string}
  */
 export function renderTemplate(template: string, variables: object = {}): string {
-  const keys = Object.keys(variables).filter(isVarName) as Array<keyof typeof variables>;
+  const keys = Object.keys(variables) as Array<keyof typeof variables>;
   const values = keys.map(k => variables[k]);
   return new Function(...keys, `{ return \`${template.replaceAll('\\', '\\\\')}\` }`).bind(variables)(...values);
 }
-
-const isVarName = (str: string) => {
-  if (typeof str !== 'string') {
-    return false;
-  }
-
-  if (str.trim() !== str) {
-    return false;
-  }
-
-  try {
-    new Function(str, 'var ' + str);
-  } catch {
-    return false;
-  }
-  return true;
-};

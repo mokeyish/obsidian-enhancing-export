@@ -61,9 +61,5 @@ export default {
     save: 'Speichern',
     new: 'Neu',
     arguments: 'Parameter',
-
-    advanced: 'Advanced',
-    environmentVariables: 'Environment Variables',
-    environmentVariablesDesc: 'Define the Environment Variables for exporting.',
   },
 } satisfies Lang;

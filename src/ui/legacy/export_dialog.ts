@@ -1,10 +1,9 @@
 import { App, Modal, Setting, TFile, TextComponent } from 'obsidian';
 import * as ct from 'electron';
-import { extractDefaultExtension as extractExtension } from '../../settings';
-import { setPlatformValue, getPlatformValue } from '../../utils';
+import { extractDefaultExtension as extractExtension, getPlatformValue, setPlatformValue } from '../../settings';
+import type UniversalExportPlugin from '../../main';
 import { exportToOo } from '../../exporto0o';
 import { setTooltip, setVisible } from './setting_tab';
-import type UniversalExportPlugin from '../../main';
 
 export class ExportDialog extends Modal {
   readonly plugin: UniversalExportPlugin;

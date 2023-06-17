@@ -75,30 +75,11 @@ export const Text = (props: { placeholder?: string,
   value?: string,
   style?: string,
   disabled?: boolean, 
-  readOnly?: boolean,
-  spellcheck?: boolean,
+  spellcheck?: boolean, 
   onChange?: (value: string) => void }) => {
   return <input
     type="text"
     title={props.title} 
-    readOnly={props.readOnly}
-    placeholder={props.placeholder}
-    spellcheck={props.spellcheck ?? false}
-    style={props.style}
-    value={props.value}
-    onChange={(e) => props.onChange && props.onChange(e.target.value)}
-    disabled={props.disabled}
-  />;
-};
-
-export const TextArea = (props: { placeholder?: string, 
-  title?: string, 
-  value?: string,
-  style?: string,
-  disabled?: boolean, 
-  spellcheck?: boolean, 
-  onChange?: (value: string) => void }) => {
-  return <textarea
     placeholder={props.placeholder}
     spellcheck={props.spellcheck ?? false}
     style={props.style}

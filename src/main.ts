@@ -1,9 +1,10 @@
+import process, { platform } from 'process';
 import { App, Menu, Plugin, PluginManifest, TFile, Notice, debounce } from 'obsidian';
-import { UniversalExportPluginSettings, ExportSetting, DEFAULT_SETTINGS } from './settings';
+import { UniversalExportPluginSettings, ExportSetting, DEFAULT_SETTINGS, getPlatformValue } from './settings';
 // import { ExportSettingTab, ExportDialog } from './ui/legacy';
 import { ExportSettingTab, ExportDialog } from './ui';
 import { exportToOo } from './exporto0o';
-import { getPlatformValue } from './utils';
+import { env, joinEnvPath } from './utils';
 import lang, { Lang } from './lang';
 import './styles.css';
 
@@ -25,6 +26,24 @@ export default class UniversalExportPlugin extends Plugin {
   }
 
   async onload() {
+    switch (platform) {
+      case 'darwin': {
+        let envPath = process.env['PATH'];
+        const extraBins = ['/usr/local/bin', '/Library/TeX/texbin'];
+        for (const bin of extraBins) {
+          if (envPath.includes(bin)) continue;
+          envPath = joinEnvPath(bin, envPath);
+        }
+        env.PATH = envPath;
+        break;
+      }
+      default:
+        break;
+    }
+    if (process.env['HOME']) {
+      env.HOME = process.env['HOME'];
+    }
+
     await this.releaseLuaScripts();
 
     await this.loadSettings();

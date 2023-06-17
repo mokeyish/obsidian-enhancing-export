@@ -16,6 +16,7 @@ export default {
     selectExportFolder: 'Please select an export folder.',
     overwriteConfirmation: 'Overwrite confirmation',
     type: 'Type',
+    textemplate: "Latex Template"
   },
   messageBox: {
     yes: 'Yes',
@@ -39,8 +40,8 @@ export default {
     openExportedFile: 'Open exported file',
     pandocPath: 'Pandoc path',
     pandocPathPlaceholder: '(Auto Detect)',
-    editCommandTemplate: 'Edit Command Template',
-    chooseCommandTemplate: 'Choose template',
+    editCommandTemplate: 'Edit Command',
+    chooseCommandTemplate: 'Choose Format',
     customLocation: 'Custom location',
     template: 'Template',
     command: 'Command',
@@ -59,9 +60,5 @@ export default {
     save: 'Save',
     new: 'New',
     arguments: 'Arguments',
-
-    advanced: 'Advanced',
-    environmentVariables: 'Environment Variables',
-    environmentVariablesDesc: 'Define the Environment Variables for exporting.',
   },
 };

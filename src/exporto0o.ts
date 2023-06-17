@@ -1,13 +1,13 @@
+import { getPlatformValue, Variables, ExportSetting, extractDefaultExtension as extractExtension } from './settings';
 import * as ct from 'electron';
-import * as fs from 'fs';
-import process from 'process';
-import path from 'path';
-import argsParser from 'yargs-parser';
-import { Variables, ExportSetting, extractDefaultExtension as extractExtension } from './settings';
 import { MessageBox } from './ui/message_box';
 import { Notice, TFile } from 'obsidian';
-import { exec, renderTemplate, getPlatformValue } from './utils';
+import * as fs from 'fs';
 import type ExportPlugin from './main';
+import path from 'path';
+import argsParser from 'yargs-parser';
+import { exec, renderTemplate as generateCommand } from './utils';
+import { joinEnvPath } from './utils';
 
 export async function exportToOo(
   plugin: ExportPlugin,
@@ -31,7 +31,7 @@ export async function exportToOo(
       fileManager,
     },
   } = plugin;
-
+  
   if (!candidateOutputFileName) {
     const extension = extractExtension(setting);
     candidateOutputFileName = `${currentFile.basename}${extension}`;
@@ -56,6 +56,7 @@ export async function exportToOo(
   const vaultDir = adapter.getBasePath();
   const pluginDir = `${vaultDir}/${manifest.dir}`;
   const luaDir = `${pluginDir}/lua`;
+  const textemplateDir = `${pluginDir}/textemplate`;
   const outputDir = candidateOutputDirectory;
   const outputPath = `${outputDir}/${candidateOutputFileName}`;
   const outputFileName = candidateOutputFileName.substring(0, candidateOutputFileName.lastIndexOf('.'));
@@ -105,12 +106,6 @@ export async function exportToOo(
     options,
   };
 
-  // process Environment variables..
-  const processEnv = Object.assign({ HOME: process.env['HOME'] ?? process.env['USERPROFILE'] }, process.env, variables);
-  const env = (variables.env = Object.fromEntries(
-    Object.entries(getPlatformValue(globalSetting.env) ?? {}).map(([n, v]) => [n, renderTemplate(v, processEnv)])
-  ));
-
   const showCommandLineOutput = setting.type === 'custom' && setting.showCommandOutput;
   const openExportedFileLocation = setting.openExportedFileLocation ?? globalSetting.openExportedFileLocation;
   const openExportedFile = setting.openExportedFile ?? globalSetting.openExportedFile;
@@ -131,7 +126,6 @@ export async function exportToOo(
     //   }
     // });
     // msgBox.open();
-
     const result = await ct.remote.dialog.showSaveDialog({
       title: lang.overwriteConfirmationDialog.title(outputFileFullName),
       defaultPath: outputPath,
@@ -148,6 +142,8 @@ export async function exportToOo(
     variables.outputFileName = variables.outputFileFullName.substring(0, variables.outputFileFullName.lastIndexOf('.'));
   }
 
+  const env = Object.fromEntries(Object.entries(setting.env ?? {}).map(([n, v]) => [n, generateCommand(v, variables)]));
+
   // show progress
   progress.setMessage(lang.preparing(outputFileFullName));
   beforeExport && beforeExport();
@@ -155,17 +151,17 @@ export async function exportToOo(
 
   const pandocPath = getPlatformValue(globalSetting.pandocPath) ?? 'pandoc';
 
-  const cmdTpl =
+  let cmdTpl =
     setting.type === 'pandoc'
       ? `${pandocPath} ${setting.arguments ?? ''} ${setting.customArguments ?? ''} "${currentPath}"`
       : setting.command;
-
-  const cmd = renderTemplate(cmdTpl, variables);
+  const cmd = generateCommand(cmdTpl, variables);
   const args = argsParser(cmd.match(/(?:[^\s"]+|"[^"]*")+/g), {
     alias: {
       output: ['o'],
     },
   });
+
   const actualOutputPath =
     (args.output.startsWith('"') && args.output.endsWith('"')) || (args.output.startsWith('\'') && args.output.endsWith('\''))
       ? args.output.substring(1, args.output.length - 1)
@@ -178,7 +174,8 @@ export async function exportToOo(
 
   try {
     console.log(`[${plugin.manifest.name}]: export command: ${cmd}`);
-    await exec(cmd, { cwd: variables.currentDir, env });
+    // It is necessary to **append** to the current TEXINPUTS - NOT REPLACE. TEXINPUTS contains the basic latex classes. 
+    await exec(cmd, { cwd: variables.currentDir, env: { TEXINPUTS: joinEnvPath(textemplateDir, process.env.TEXINPUTS) } }); 
     progress.hide();
 
     const next = async () => {

@@ -1,13 +1,19 @@
 import { App, PluginSettingTab, Setting, TextComponent } from 'obsidian';
 import * as ct from 'electron';
-import { CustomExportSetting, ExportSetting, PandocExportSetting, UniversalExportPluginSettings } from '../../settings';
-import { setPlatformValue, getPlatformValue } from '../../utils';
+import type UniversalExportPlugin from '../../main';
+import {
+  CustomExportSetting,
+  ExportSetting,
+  PandocExportSetting,
+  setPlatformValue,
+  getPlatformValue,
+  UniversalExportPluginSettings,
+} from '../../settings';
 import { getPandocVersion } from '../../pandoc';
 
 import { Modal } from 'obsidian';
-import export_command_templates from '../../export_templates';
 import type ExportSettingTab from './setting_tab';
-import type UniversalExportPlugin from '../../main';
+import export_command_templates from '../../export_templates';
 
 export default class extends PluginSettingTab {
   plugin: UniversalExportPlugin;
