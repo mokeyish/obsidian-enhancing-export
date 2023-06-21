@@ -85,27 +85,22 @@ export type ExportSetting = PandocExportSetting | CustomExportSetting;
 
 const createDefaultEnv = () => {
   let env: PlatformValue<Record<string, string>> = {};
+  env = setPlatformValue(
+    env,
+    {
+      'HOME': '${HOME}',
+    },
+    '*' // available for all platforms.
+  );
 
   env = setPlatformValue(
     env,
     {
-      'PATH': '/usr/local/bin:/Library/TeX/texbin:${PATH}',
+      'PATH': '/usr/local/bin:/Library/TeX/texbin:${PATH}', // Add HomebrewBin and TexBin
     },
-    'darwin'
+    'darwin' // for MacOS only.
   );
 
-  const allPlatforms = ['aix', 'android', 'darwin', 'freebsd', 'haiku', 'linux', 'openbsd', 'sunos', 'win32', 'cygwin', 'netbsd'] as const;
-
-  for (const platform of allPlatforms) {
-    env = setPlatformValue(
-      env,
-      {
-        ...(env[platform] ?? {}),
-        'HOME': '${HOME}',
-      },
-      platform
-    );
-  }
   return env;
 };
 

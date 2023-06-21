@@ -1,7 +1,9 @@
 import { ExecOptions, exec as node_exec } from 'child_process';
 import process from 'process';
 
-export type PlatformValue<T> = { [k in typeof process.platform]?: T };
+export type PlatformKey = typeof process.platform | '*';
+
+export type PlatformValue<T> = { [k in PlatformKey]?: T };
 
 export function setPlatformValue<T>(obj: PlatformValue<T>, value: T, platform?: keyof PlatformValue<T>): PlatformValue<T> {
   if (typeof value === 'string' && value.trim() === '') {
@@ -15,7 +17,13 @@ export function setPlatformValue<T>(obj: PlatformValue<T>, value: T, platform?: 
 }
 
 export function getPlatformValue<T>(obj: PlatformValue<T>): T {
-  return (obj ?? {})[process.platform];
+  obj ??= {};
+  const val = obj[process.platform];
+  const all = obj['*'];
+  if (all && typeof all === 'object') {
+    return Object.assign({}, all, val);
+  }
+  return val ?? all;
 }
 
 // eslint-disable-next-line
@@ -46,6 +54,11 @@ export function exec(cmd: string, options?: ExecOptions): Promise<string> {
       resolve(stdout);
     });
   });
+}
+
+export function createEnv(env: Record<string, string>, envVars?: object) {
+  envVars = Object.assign({ HOME: process.env['HOME'] ?? process.env['USERPROFILE'] }, process.env, envVars ?? {});
+  return Object.fromEntries(Object.entries(env).map(([n, v]) => [n, renderTemplate(v, envVars)]));
 }
 
 export function joinEnvPath(...paths: string[]) {

@@ -7,7 +7,7 @@ import {
   PandocExportSetting,
 
 } from '../settings';
-import { setPlatformValue, getPlatformValue, } from '../utils';
+import { setPlatformValue, getPlatformValue, createEnv } from '../utils';
 
 import { createSignal, createRoot, onCleanup, createMemo, createEffect, Show, batch, Match, Switch, JSX } from 'solid-js';
 import { createStore, produce } from 'solid-js/store';
@@ -49,7 +49,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
     } catch (e) {
       alert(e);
     }
-  }
+  };
 
   const currentCommandTemplate = createMemo(() => settings.items.find(v => v.name === settings.lastEditName) ?? settings.items.first());
   const currentEditCommandTemplate = <T extends 'custom' | 'pandoc'>(type?: T) => {
@@ -201,7 +201,8 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
 
   createEffect(async () => {
     try {
-      setPandocVersion((await getPandocVersion(getPlatformValue(settings.pandocPath))).version);
+      const env = createEnv(getPlatformValue(settings.env) ?? {});
+      setPandocVersion((await getPandocVersion(getPlatformValue(settings.pandocPath), env)).version);
     } catch {
       setPandocVersion(undefined);
     }

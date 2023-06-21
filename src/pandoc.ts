@@ -11,15 +11,15 @@ export class Pandoc {
     this.version = version;
   }
 
-  static async new(path?: string): Promise<Pandoc> {
+  static async new(path?: string, env?: Record<string, string>): Promise<Pandoc> {
     path = path ?? 'pandoc';
-    return new Pandoc(path, await getPandocVersion(path));
+    return new Pandoc(path, await getPandocVersion(path, env));
   }
 }
 
-export async function getPandocVersion(path?: string): Promise<SemVer> {
+export async function getPandocVersion(path?: string, env?: Record<string, string>): Promise<SemVer> {
   path = path ?? 'pandoc';
-  let version = await exec(`${path} --version`);
+  let version = await exec(`${path} --version`, { env });
   version = version.substring(0, version.indexOf('\n')).replace('pandoc.exe', '').replace('pandoc', '').trim();
   return semver.parse(version);
 }
