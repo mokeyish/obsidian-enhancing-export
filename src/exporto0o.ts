@@ -6,7 +6,7 @@ import argsParser from 'yargs-parser';
 import { Variables, ExportSetting, extractDefaultExtension as extractExtension } from './settings';
 import { MessageBox } from './ui/message_box';
 import { Notice, TFile } from 'obsidian';
-import { exec, renderTemplate, getPlatformValue, joinEnvPath } from './utils';
+import { exec, renderTemplate, getPlatformValue } from './utils';
 import type ExportPlugin from './main';
 
 export async function exportToOo(
@@ -180,7 +180,7 @@ export async function exportToOo(
   try {
     console.log(`[${plugin.manifest.name}]: export command: ${cmd}`);
     // It is necessary to **append** to the current TEXINPUTS - NOT REPLACE. TEXINPUTS contains the basic latex classes. 
-    await exec(cmd, { cwd: variables.currentDir, env: { TEXINPUTS: joinEnvPath(textemplateDir, process.env.TEXINPUTS) } }); 
+    await exec(cmd, { cwd: variables.currentDir, env });
     progress.hide();
 
     const next = async () => {

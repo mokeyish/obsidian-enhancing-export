@@ -90,6 +90,7 @@ const createDefaultEnv = () => {
     env,
     {
       'PATH': '/usr/local/bin:/Library/TeX/texbin:${PATH}',
+      'TEXINPUTS': '${pluginDir}/textemplate:${TEXINPUTS}'
     },
     'darwin'
   );
