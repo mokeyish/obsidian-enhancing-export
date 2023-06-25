@@ -97,6 +97,7 @@ const createDefaultEnv = () => {
     env,
     {
       'PATH': '/usr/local/bin:/Library/TeX/texbin:${PATH}', // Add HomebrewBin and TexBin
+      'TEXINPUTS': '${pluginDir}/textemplate/:'   // It is necessary to **append** to the current TEXINPUTS wtih ":" - NOT REPLACE. TEXINPUTS contains the basic latex classes. 
     },
     'darwin' // for MacOS only.
   );
