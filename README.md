@@ -18,7 +18,7 @@ Where `Markdown`,`Markdown (Hugo)`,`HTML` will export and its media resource tog
 
 ## Screen shot
 
-- Export view，click on `Export to ......` on file menu.
+- Export view，click on `Export to...` on file menu.
 
   ![](https://raw.githubusercontent.com/mokeyish/obsidian-enhancing-export/master/screenshot/exportview_en-US.png)
 - Setting view

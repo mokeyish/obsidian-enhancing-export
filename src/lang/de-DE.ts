@@ -2,13 +2,13 @@ import { strTpl } from '../utils';
 import type { Lang } from '.';
 
 export default {
-  exportToOo: 'Export to ......',
+  exportToOo: 'Export to...',
   exportSuccessNotice: strTpl`Export der Datei ${0} erfolgreich!`,
   exportCommandOutputMessage: strTpl`Command: ${0}`,
   exportErrorOutputMessage: strTpl`Command: ${0}，Fehler:${1}`,
   exportWithPrevious: 'Exportiere mit Vorherigem',
   pleaseOpenFile: 'Bitte öffne zunächst eine Datei.',
-  preparing: strTpl`generating "${0}" ......`,
+  preparing: strTpl`generating "${0}"...`,
   exportDialog: {
     exportTo: 'Exportiere nach',
     fileName: 'Dateiname',
