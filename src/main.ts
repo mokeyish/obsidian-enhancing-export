@@ -5,14 +5,9 @@ import { ExportSettingTab, ExportDialog } from './ui';
 import { exportToOo } from './exporto0o';
 import { getPlatformValue } from './utils';
 import lang, { Lang } from './lang';
+import path from 'path';
+import resources from './resources';
 import './styles.css';
-
-const luaScripts = Object.fromEntries(
-  Object.entries(import.meta.glob<{ default: Uint8Array }>('lua/*.lua', { eager: true })).map(([k, m]) => [
-    k.substring('/lua'.length),
-    m.default,
-  ])
-);
 
 export default class UniversalExportPlugin extends Plugin {
   settings: UniversalExportPluginSettings;
@@ -25,7 +20,7 @@ export default class UniversalExportPlugin extends Plugin {
   }
 
   async onload() {
-    await this.releaseLuaScripts();
+    await this.releaseResources();
 
     await this.loadSettings();
     const { lang } = this;
@@ -125,14 +120,16 @@ export default class UniversalExportPlugin extends Plugin {
     await this.saveData(settings);
   }
 
-  async releaseLuaScripts(): Promise<void> {
+  async releaseResources(): Promise<void> {
     const { adapter } = this.app.vault;
-    const luaDir = `${this.manifest.dir}/lua`;
-    await adapter.mkdir(luaDir);
-    for (const scriptName of Object.keys(luaScripts) as Array<keyof typeof luaScripts>) {
-      const luaFile = `${luaDir}/${scriptName}`;
-      await adapter.writeBinary(luaFile, luaScripts[scriptName]);
-      delete luaScripts[scriptName];
+    for (const [dir, res] of resources) {
+      const resDir = path.join(this.manifest.dir, dir);
+      await adapter.mkdir(resDir);
+      for (const [fileName, bytes] of res) {
+        const filePath = path.join(resDir, fileName);
+        await adapter.writeBinary(filePath, bytes);
+      }
     }
+    resources.length = 0;
   }
 }
