@@ -1,12 +1,11 @@
 import * as ct from 'electron';
 import * as fs from 'fs';
-import process from 'process';
 import path from 'path';
 import argsParser from 'yargs-parser';
-import { Variables, ExportSetting, extractDefaultExtension as extractExtension } from './settings';
+import { Variables, ExportSetting, extractDefaultExtension as extractExtension, DEFAULT_ENV } from './settings';
 import { MessageBox } from './ui/message_box';
 import { Notice, TFile } from 'obsidian';
-import { exec, renderTemplate, getPlatformValue } from './utils';
+import { exec, renderTemplate, getPlatformValue, createEnv } from './utils';
 import type ExportPlugin from './main';
 
 export async function exportToOo(
@@ -106,9 +105,9 @@ export async function exportToOo(
   };
 
   // process Environment variables..
-  const processEnv = Object.assign({ HOME: process.env['HOME'] ?? process.env['USERPROFILE'] }, process.env, variables);
-  const env = (variables.env = Object.fromEntries(
-    Object.entries(getPlatformValue(globalSetting.env) ?? {}).map(([n, v]) => [n, renderTemplate(v, processEnv)])
+  const env = (variables.env = createEnv(
+    Object.assign({}, getPlatformValue(DEFAULT_ENV), getPlatformValue(globalSetting.env) ?? {}),
+    variables
   ));
 
   const showCommandLineOutput = setting.type === 'custom' && setting.showCommandOutput;
