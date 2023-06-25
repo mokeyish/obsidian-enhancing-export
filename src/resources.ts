@@ -5,6 +5,5 @@ const embed = (dir: string, res: Record<string, { default: Uint8Array }>) =>
 export default [
   // For other file types, the Loader must be configured in the <root>/vite.config.ts.
   embed('lua', import.meta.glob<{ default: Uint8Array }>('lua/*.lua', { eager: true })),
-  embed('tex', import.meta.glob<{ default: Uint8Array }>('textemplate/*.tex', { eager: true })),
-  embed('sty', import.meta.glob<{ default: Uint8Array }>('textemplate/*.sty', { eager: true })),
+  embed('textemplate', import.meta.glob<{ default: Uint8Array }>('tex/*.{tex,sty}', { eager: true })),
 ];
