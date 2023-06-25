@@ -104,12 +104,14 @@ const createDefaultEnv = () => {
   return env;
 };
 
+export const DEFAULT_ENV = createDefaultEnv();
+
 export const DEFAULT_SETTINGS: UniversalExportPluginSettings = {
   items: Object.values(export_templates).filter(o => o.type !== 'custom'),
   pandocPath: undefined,
   defaultExportDirectoryMode: 'Auto',
   openExportedFile: true,
-  env: createDefaultEnv(),
+  env: DEFAULT_ENV,
 };
 
 export function extractDefaultExtension(s: ExportSetting): string {

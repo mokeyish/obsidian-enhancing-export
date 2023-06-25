@@ -5,7 +5,7 @@ import {
   CustomExportSetting,
   ExportSetting,
   PandocExportSetting,
-
+  DEFAULT_ENV
 } from '../settings';
 import { setPlatformValue, getPlatformValue, createEnv } from '../utils';
 
@@ -25,7 +25,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
   const { plugin, lang } = props;
   const [settings, setSettings0] = createStore(plugin.settings);
   const [pandocVersion, setPandocVersion] = createSignal<string>();
-  const envVars = createMemo(() => Object.entries(getPlatformValue(settings.env) ?? {}).map(([n, v]) => `${n}="${v}"`).join('\n'));
+  const envVars = createMemo(() => Object.entries(Object.assign({}, getPlatformValue(DEFAULT_ENV), getPlatformValue(settings.env) ?? {})).map(([n, v]) => `${n}="${v}"`).join('\n'));
   const setSettings: typeof setSettings0 = (...args: unknown[]) => {
     (setSettings0 as ((...args: unknown[]) => void))(...args);
     plugin.saveSettings();
@@ -201,7 +201,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
 
   createEffect(async () => {
     try {
-      const env = createEnv(getPlatformValue(settings.env) ?? {});
+      const env = createEnv(Object.assign({}, getPlatformValue(DEFAULT_ENV) , getPlatformValue(settings.env) ?? {}));
       setPandocVersion((await getPandocVersion(getPlatformValue(settings.pandocPath), env)).version);
     } catch {
       setPandocVersion(undefined);

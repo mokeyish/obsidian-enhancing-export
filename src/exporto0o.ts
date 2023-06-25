@@ -2,7 +2,7 @@ import * as ct from 'electron';
 import * as fs from 'fs';
 import path from 'path';
 import argsParser from 'yargs-parser';
-import { Variables, ExportSetting, extractDefaultExtension as extractExtension } from './settings';
+import { Variables, ExportSetting, extractDefaultExtension as extractExtension, DEFAULT_ENV } from './settings';
 import { MessageBox } from './ui/message_box';
 import { Notice, TFile } from 'obsidian';
 import { exec, renderTemplate, getPlatformValue, createEnv } from './utils';
@@ -105,7 +105,10 @@ export async function exportToOo(
   };
 
   // process Environment variables..
-  const env = (variables.env = createEnv(getPlatformValue(globalSetting.env) ?? {}, variables));
+  const env = (variables.env = createEnv(
+    Object.assign({}, getPlatformValue(DEFAULT_ENV), getPlatformValue(globalSetting.env) ?? {}),
+    variables
+  ));
 
   const showCommandLineOutput = setting.type === 'custom' && setting.showCommandOutput;
   const openExportedFileLocation = setting.openExportedFileLocation ?? globalSetting.openExportedFileLocation;
