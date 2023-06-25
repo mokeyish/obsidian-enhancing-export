@@ -39,11 +39,14 @@ export default defineConfig(async ({ mode }) => {
         }]
       }),
       loader({ '.lua': 'binary' }), // src/resources.ts
+      loader({ '.tex': 'binary' }), 
+      loader({ '.sty': 'binary' }), 
       prod ? undefined : inject(['src/hmr.ts']),
     ],
     resolve: {
       alias: {
-        'lua': resolve(__dirname, './lua')
+        'lua': resolve(__dirname, './lua'),
+        'tex': resolve(__dirname, './textemplate'),
       },
     },
     build: {
