@@ -90,7 +90,7 @@ const createDefaultEnv = () => {
     env,
     {
       'PATH': '/usr/local/bin:/Library/TeX/texbin:${PATH}',
-      'TEXINPUTS': '${templateDir}:'   // It is necessary to **append** to the current TEXINPUTS wtih ":" - NOT REPLACE. TEXINPUTS contains the basic latex classes. 
+      'TEXINPUTS': '${pluginDir}/textemplate/:'   // It is necessary to **append** to the current TEXINPUTS wtih ":" - NOT REPLACE. TEXINPUTS contains the basic latex classes. 
     },
     'darwin'
   );

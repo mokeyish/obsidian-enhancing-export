@@ -56,7 +56,6 @@ export async function exportToOo(
   const vaultDir = adapter.getBasePath();
   const pluginDir = `${vaultDir}/${manifest.dir}`;
   const luaDir = `${pluginDir}/lua`;
-  const textemplateDir = `${pluginDir}/textemplate`;
   const outputDir = candidateOutputDirectory;
   const outputPath = `${outputDir}/${candidateOutputFileName}`;
   const outputFileName = candidateOutputFileName.substring(0, candidateOutputFileName.lastIndexOf('.'));
