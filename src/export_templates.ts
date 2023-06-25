@@ -107,7 +107,7 @@ export default {
         options: [
           { name: 'None', value: null },
           { name: 'Dissertation', value: 'dissertation.tex' },
-          { name: 'Academic Paper', value: 'academic.tex' }]
+          { name: 'Academic Paper', value: 'neurips.tex' }]
       },
     },
     extension: '.latex',
