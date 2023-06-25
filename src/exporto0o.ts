@@ -179,7 +179,6 @@ export async function exportToOo(
 
   try {
     console.log(`[${plugin.manifest.name}]: export command: ${cmd}`);
-    // It is necessary to **append** to the current TEXINPUTS - NOT REPLACE. TEXINPUTS contains the basic latex classes. 
     await exec(cmd, { cwd: variables.currentDir, env });
     progress.hide();
 
