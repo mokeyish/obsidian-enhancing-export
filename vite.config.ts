@@ -38,7 +38,7 @@ export default defineConfig(async ({ mode }) => {
           dest: '.'
         }]
       }),
-      loader({ '.lua': 'binary' }),
+      loader({ '.lua': 'binary' }), // src/resources.ts
       prod ? undefined : inject(['src/hmr.ts']),
     ],
     resolve: {
