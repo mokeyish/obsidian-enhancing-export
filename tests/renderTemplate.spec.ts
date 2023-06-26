@@ -24,3 +24,9 @@ test('test Template rendering options.textemplate', async () => {
     { options: { textemplate: null } }))
     .toBe('pandoc ');
 });
+
+
+test('test Template rendering with undefined variable', async () => {
+  expect(renderTemplate('Hi ${user}', { }))
+    .toBe('Hi ${user}');
+});

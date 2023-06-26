@@ -5,9 +5,10 @@ import {
   CustomExportSetting,
   ExportSetting,
   PandocExportSetting,
+  createEnv,
   DEFAULT_ENV
 } from '../settings';
-import { setPlatformValue, getPlatformValue, createEnv } from '../utils';
+import { setPlatformValue, getPlatformValue } from '../utils';
 
 import { createSignal, createRoot, onCleanup, createMemo, createEffect, Show, batch, Match, Switch, JSX } from 'solid-js';
 import { createStore, produce } from 'solid-js/store';
@@ -201,7 +202,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
 
   createEffect(async () => {
     try {
-      const env = createEnv(Object.assign({}, getPlatformValue(DEFAULT_ENV) , getPlatformValue(settings.env) ?? {}));
+      const env = createEnv(getPlatformValue(settings.env) ?? {});
       setPandocVersion((await getPandocVersion(getPlatformValue(settings.pandocPath), env)).version);
     } catch {
       setPandocVersion(undefined);

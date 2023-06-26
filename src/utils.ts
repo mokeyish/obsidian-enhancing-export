@@ -5,20 +5,26 @@ export type PlatformKey = typeof process.platform | '*';
 
 export type PlatformValue<T> = { [k in PlatformKey]?: T };
 
-export function setPlatformValue<T>(obj: PlatformValue<T>, value: T, platform?: keyof PlatformValue<T>): PlatformValue<T> {
+export function setPlatformValue<T>(obj: PlatformValue<T>, value: T, platform?: PlatformKey | PlatformKey[]): PlatformValue<T> {
   if (typeof value === 'string' && value.trim() === '') {
     value = undefined;
   }
+
+  if (platform instanceof Array) {
+    return platform.reduce((o, p) => setPlatformValue(o, value, p), obj);
+  }
+
   platform ??= process.platform;
+
   return {
     ...(obj ?? {}),
     [platform]: value,
   };
 }
 
-export function getPlatformValue<T>(obj: PlatformValue<T>): T {
+export function getPlatformValue<T>(obj: PlatformValue<T>, platform?: PlatformKey): T {
   obj ??= {};
-  const val = obj[process.platform];
+  const val = obj[platform ?? process.platform];
   const all = obj['*'];
   if (all && typeof all === 'object') {
     return Object.assign({}, all, val);
@@ -56,11 +62,6 @@ export function exec(cmd: string, options?: ExecOptions): Promise<string> {
   });
 }
 
-export function createEnv(env: Record<string, string>, envVars?: object) {
-  envVars = Object.assign({ HOME: process.env['HOME'] ?? process.env['USERPROFILE'] }, process.env, envVars ?? {});
-  return Object.fromEntries(Object.entries(env).map(([n, v]) => [n, renderTemplate(v, envVars)]));
-}
-
 export function joinEnvPath(...paths: string[]) {
   switch (process.platform) {
     case 'win32':
@@ -78,10 +79,21 @@ export function joinEnvPath(...paths: string[]) {
  * @param variables
  * @returns {string}
  */
-export function renderTemplate(template: string, variables: object = {}): string {
-  const keys = Object.keys(variables).filter(isVarName) as Array<keyof typeof variables>;
-  const values = keys.map(k => variables[k]);
-  return new Function(...keys, `{ return \`${template.replaceAll('\\', '\\\\')}\` }`).bind(variables)(...values);
+export function renderTemplate(template: string, variables: Record<string, unknown> = {}): string {
+  while (true) {
+    try {
+      const keys = Object.keys(variables).filter(isVarName) as Array<keyof typeof variables>;
+      const values = keys.map(k => variables[k]);
+      return new Function(...keys, `{ return \`${template.replaceAll('\\', '\\\\')}\` }`).bind(variables)(...values);
+    } catch (e: unknown) {
+      if (e instanceof ReferenceError && e.message.endsWith('is not defined')) {
+        const name = e.message.substring(0, e.message.indexOf(' '));
+        variables[name] = `\${${name}}`;
+      } else {
+        throw e;
+      }
+    }
+  }
 }
 
 const isVarName = (str: string) => {

@@ -29,13 +29,22 @@
     ],
     "quotes": [
       "error",
-      "single"
+      "single",
+      {
+        "avoidEscape": true
+      }
     ],
     "semi": [
       "error",
       "always"
     ],
-    "no-prototype-builtins": "off"
+    "no-prototype-builtins": "off",
+    "no-constant-condition": [
+      "error",
+      {
+        "checkLoops": false
+      }
+    ]
   },
   "ignorePatterns": [
     "dist/*"

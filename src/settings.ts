@@ -1,5 +1,5 @@
 import export_templates from './export_templates';
-import { setPlatformValue, PlatformValue } from './utils';
+import { setPlatformValue, PlatformValue, renderTemplate, getPlatformValue } from './utils';
 import type { PropertyGridMeta } from './ui/components/PropertyGrid';
 
 /*
@@ -16,7 +16,7 @@ import type { PropertyGridMeta } from './ui/components/PropertyGrid';
  * - ${CurrentFileName}       --> test
  * - ${CurrentFileFullName}   --> test.pdf
  */
-export interface Variables {
+export interface Variables extends Record<string, unknown> {
   attachmentFolderPath: string;
   pluginDir: string;
   luaDir: string;
@@ -97,7 +97,7 @@ const createDefaultEnv = () => {
     env,
     {
       'PATH': '/usr/local/bin:/Library/TeX/texbin:${PATH}', // Add HomebrewBin and TexBin
-      'TEXINPUTS': '${pluginDir}/textemplate/:'   // It is necessary to **append** to the current TEXINPUTS wtih ":" - NOT REPLACE. TEXINPUTS contains the basic latex classes. 
+      'TEXINPUTS': '${pluginDir}/textemplate/:', // It is necessary to **append** to the current TEXINPUTS wtih ":" - NOT REPLACE. TEXINPUTS contains the basic latex classes.
     },
     'darwin' // for MacOS only.
   );
@@ -122,4 +122,10 @@ export function extractDefaultExtension(s: ExportSetting): string {
     return s.targetFileExtensions?.split(',')[0];
   }
   return '';
+}
+
+export function createEnv(env: Record<string, string>, envVars?: Record<string, unknown>) {
+  env = Object.assign({}, getPlatformValue(DEFAULT_ENV), env);
+  envVars = Object.assign({ HOME: process.env['HOME'] ?? process.env['USERPROFILE'] }, process.env, envVars ?? {});
+  return Object.fromEntries(Object.entries(env).map(([n, v]) => [n, renderTemplate(v, envVars)]));
 }
