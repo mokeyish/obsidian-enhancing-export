@@ -77,17 +77,14 @@ $endif$
 \title{$title$}
 
 
-% The \author macro works with any number of authors. There are two commands
-% used to separate the names and addresses of multiple authors: \And and \AND.
-%
-% Using \And between authors leaves it to LaTeX to determine where to break the
-% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
-% authors names on the first line, and the last on the second line, try using
-% \AND instead of \And before the third author name.
+% Iterate through the authors except last to add \And. 
 
 \author{%
-$for(authors)$
+$for(authors/allbutlast)$
   $authors.name$\\$authors.affiliation$\\$authors.institution$\\$authors.email$\\$authors.address$ \And
+$endfor$
+$for(authors/last)$
+  $authors.name$\\$authors.affiliation$\\$authors.institution$\\$authors.email$\\$authors.address$
 $endfor$
 }
 
