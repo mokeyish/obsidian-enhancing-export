@@ -89,7 +89,8 @@ const createDefaultEnv = () => {
     env,
     {
       'HOME': '${HOME}',
-      'TEXINPUTS': '${pluginDir}/textemplate/:'
+      'PATH': '${PATH}',
+      'TEXINPUTS': '${pluginDir}/textemplate/:', // It is necessary to **append** to the current TEXINPUTS wtih ":" - NOT REPLACE. TEXINPUTS contains the basic latex classes.
     },
     '*' // available for all platforms.
   );
@@ -97,9 +98,9 @@ const createDefaultEnv = () => {
   env = setPlatformValue(
     env,
     {
-      'TEXINPUTS': '${pluginDir}/textemplate/;' // Windows uses ; rather than : for appending
+      'TEXINPUTS': '${pluginDir}/textemplate/;', // Windows uses ; rather than : for appending
     },
-    'win32' // available for windows only. 
+    'win32' // available for windows only.
   );
 
   env = setPlatformValue(

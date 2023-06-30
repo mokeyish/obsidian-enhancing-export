@@ -88,7 +88,12 @@ export function renderTemplate(template: string, variables: Record<string, unkno
     } catch (e: unknown) {
       if (e instanceof ReferenceError && e.message.endsWith('is not defined')) {
         const name = e.message.substring(0, e.message.indexOf(' '));
-        variables[name] = `\${${name}}`;
+        const value =
+          Object.keys(variables)
+            .filter(n => n.toLowerCase() === name.toLowerCase())
+            .map(n => variables[n])
+            .first() ?? `\${${name}}`;
+        variables[name] = value;
       } else {
         throw e;
       }

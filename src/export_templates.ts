@@ -67,8 +67,9 @@ export default {
         options: [
           { name: 'None', value: null },
           { name: 'Dissertation', value: 'dissertation.tex' },
-          { name: 'Academic Paper', value: 'neurips.tex' }]
-      }
+          { name: 'Academic Paper', value: 'neurips.tex' },
+        ],
+      },
     },
     extension: '.pdf',
   },
@@ -99,7 +100,8 @@ export default {
   'Latex': {
     name: 'Latex',
     type: 'pandoc',
-    arguments: '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" ${ options.textemplate ? `--resource-path="${pluginDir}/textemplate" --template="${options.textemplate}"` : ` ` } -s -o "${outputPath}" -t latex',
+    arguments:
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" ${ options.textemplate ? `--resource-path="${pluginDir}/textemplate" --template="${options.textemplate}"` : ` ` } -s -o "${outputPath}" -t latex',
     optionsMeta: {
       'textemplate': {
         title: 'Latex Template',
@@ -107,7 +109,8 @@ export default {
         options: [
           { name: 'None', value: null },
           { name: 'Dissertation', value: 'dissertation.tex' },
-          { name: 'Academic Paper', value: 'neurips.tex' }]
+          { name: 'Academic Paper', value: 'neurips.tex' },
+        ],
       },
     },
     extension: '.latex',

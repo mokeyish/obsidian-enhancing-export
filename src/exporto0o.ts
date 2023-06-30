@@ -104,9 +104,6 @@ export async function exportToOo(
     options,
   };
 
-  // process Environment variables..
-  const env = (variables.env = createEnv(getPlatformValue(globalSetting.env) ?? {}, variables));
-
   const showCommandLineOutput = setting.type === 'custom' && setting.showCommandOutput;
   const openExportedFileLocation = setting.openExportedFileLocation ?? globalSetting.openExportedFileLocation;
   const openExportedFile = setting.openExportedFile ?? globalSetting.openExportedFile;
@@ -149,6 +146,9 @@ export async function exportToOo(
   beforeExport && beforeExport();
   progress.show();
 
+  // process Environment variables..
+  const env = (variables.env = createEnv(getPlatformValue(globalSetting.env) ?? {}, variables));
+
   const pandocPath = getPlatformValue(globalSetting.pandocPath) ?? 'pandoc';
 
   const cmdTpl =
@@ -173,7 +173,10 @@ export async function exportToOo(
   }
 
   try {
-    console.log(`[${plugin.manifest.name}]: export command: ${cmd}`);
+    console.log(`[${plugin.manifest.name}]: export command and options:`, {
+      cmd,
+      options: { cwd: variables.currentDir, env },
+    });
     await exec(cmd, { cwd: variables.currentDir, env });
     progress.hide();
 
