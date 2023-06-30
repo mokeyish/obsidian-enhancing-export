@@ -3,7 +3,7 @@ import { TFile } from 'obsidian';
 import { createSignal, createRoot, onCleanup, createMemo, untrack, createEffect, Show } from 'solid-js';
 import { insert } from 'solid-js/web';
 import type UniversalExportPlugin from '../main';
-import { extractDefaultExtension as extractExtension } from '../settings';
+import { extractDefaultExtension as extractExtension, finalizeOptionsMeta } from '../settings';
 import { setPlatformValue, getPlatformValue, } from '../utils';
 import { exportToOo } from '../exporto0o';
 import Modal from './components/Modal';
@@ -22,7 +22,7 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
   const setting = createMemo(() => globalSetting.items.find(o => o.name === exportType()));
   const extension = createMemo(() => extractExtension(setting()));
   const title = createMemo(() => lang.exportDialog.title(setting().name));
-  const optionsMeta = createMemo(() => setting().optionsMeta);
+  const optionsMeta = createMemo(() => finalizeOptionsMeta(setting().optionsMeta));
 
   const [candidateOutputDirectory, setCandidateOutputDirectory] = createSignal(`${getPlatformValue(globalSetting.lastExportDirectory) ?? ct.remote.app.getPath('documents')}`);
   const [candidateOutputFileName, setCandidateOutputFileName] = createSignal(`${currentFile.basename}${extension()}`);

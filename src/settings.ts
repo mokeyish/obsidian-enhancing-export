@@ -55,12 +55,16 @@ export interface UniversalExportPluginSettings {
   lastExportType?: string;
 }
 
+export type OptionsMeta = {
+  [optionsName: string]: PropertyGridMeta[string] | `preset:${keyof typeof PRESET_OPTIONS_META}`;
+};
+
 interface CommonExportSetting {
   name: string;
 
   openExportedFileLocation?: boolean; // open exported file location after export
   openExportedFile?: boolean; // open exported file after export
-  optionsMeta?: PropertyGridMeta;
+  optionsMeta?: OptionsMeta;
 }
 
 export interface PandocExportSetting extends CommonExportSetting {
@@ -83,7 +87,19 @@ export interface CustomExportSetting extends CommonExportSetting {
 
 export type ExportSetting = PandocExportSetting | CustomExportSetting;
 
-const createDefaultEnv = () => {
+export const PRESET_OPTIONS_META: PropertyGridMeta = {
+  'textemplate': {
+    title: 'Latex Template',
+    type: 'dropdown',
+    options: [
+      { name: 'None', value: null },
+      { name: 'Dissertation', value: 'dissertation.tex' },
+      { name: 'Academic Paper', value: 'neurips.tex' },
+    ],
+  },
+};
+
+export const DEFAULT_ENV = (() => {
   let env: PlatformValue<Record<string, string>> = {};
   env = setPlatformValue(
     env,
@@ -112,9 +128,7 @@ const createDefaultEnv = () => {
   );
 
   return env;
-};
-
-export const DEFAULT_ENV = createDefaultEnv();
+})();
 
 export const DEFAULT_SETTINGS: UniversalExportPluginSettings = {
   items: Object.values(export_templates).filter(o => o.type !== 'custom'),
@@ -137,4 +151,18 @@ export function createEnv(env: Record<string, string>, envVars?: Record<string, 
   env = Object.assign({}, getPlatformValue(DEFAULT_ENV), env);
   envVars = Object.assign({ HOME: process.env['HOME'] ?? process.env['USERPROFILE'] }, process.env, envVars ?? {});
   return Object.fromEntries(Object.entries(env).map(([n, v]) => [n, renderTemplate(v, envVars)]));
+}
+
+export function finalizeOptionsMeta(meta?: OptionsMeta): PropertyGridMeta {
+  if (meta) {
+    return Object.fromEntries(
+      Object.entries(meta).map(([optionsName, optionsMetaOrPresetName]) => [
+        optionsName,
+        typeof optionsMetaOrPresetName === 'string'
+          ? PRESET_OPTIONS_META[optionsMetaOrPresetName.startsWith('preset:') ? optionsMetaOrPresetName.substring(7) : '']
+          : optionsMetaOrPresetName,
+      ])
+    );
+  }
+  return {};
 }
