@@ -1,9 +1,9 @@
 import { App, Menu, Plugin, PluginManifest, TFile, Notice, debounce } from 'obsidian';
-import { UniversalExportPluginSettings, ExportSetting, DEFAULT_SETTINGS } from './settings';
+import { UniversalExportPluginSettings, ExportSetting, DEFAULT_SETTINGS, DEFAULT_ENV } from './settings';
 // import { ExportSettingTab, ExportDialog } from './ui/legacy';
 import { ExportSettingTab, ExportDialog } from './ui';
 import { exportToOo } from './exporto0o';
-import { getPlatformValue } from './utils';
+import { getPlatformValue, PlatformKey } from './utils';
 import lang, { Lang } from './lang';
 import path from 'path';
 import resources from './resources';
@@ -94,7 +94,7 @@ export default class UniversalExportPlugin extends Plugin {
   public async loadSettings(): Promise<void> {
     const settings: UniversalExportPluginSettings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
     settings.items.forEach(v => {
-      Object.assign(v, DEFAULT_SETTINGS.items.find(o => o.name === v.name) ?? {}, v);
+      Object.assign(v, Object.assign(DEFAULT_SETTINGS.items.find(o => o.name === v.name) ?? {}, v));
     });
     for (const item of DEFAULT_SETTINGS.items) {
       if (settings.items.every(o => o.name !== item.name)) {
@@ -111,12 +111,30 @@ export default class UniversalExportPlugin extends Plugin {
       const def = DEFAULT_SETTINGS.items.find(o => o.name === v.name);
       if (def) {
         Object.keys(v).forEach((k: keyof ExportSetting) => {
-          if (k !== 'name' && v[k] === def[k]) {
+          if (k !== 'name' && JSON.stringify(v[k]) === JSON.stringify(def[k])) {
             delete v[k];
           }
         });
       }
     });
+    if (settings.env) {
+      for (const platform of Object.keys(settings.env) as PlatformKey[]) {
+        const env = settings.env[platform];
+        if (JSON.stringify(env) === JSON.stringify(DEFAULT_ENV[platform])) {
+          delete settings.env[platform];
+          continue;
+        }
+        const refEnv = getPlatformValue(DEFAULT_ENV, platform);
+        for (const [name, value] of Object.entries(env)) {
+          if (value === refEnv[name]) {
+            delete env[name];
+          }
+        }
+        if (Object.keys(env).length === 0) {
+          delete settings.env[platform];
+        }
+      }
+    }
     await this.saveData(settings);
   }
 
