@@ -190,7 +190,8 @@ export async function exportToOo(
         await ct.remote.shell.openPath(actualOutputPath);
       }
       if (setting.type === 'pandoc' && setting.runCommand === true && setting.command) {
-        await exec(setting.command);
+        const extCmd = renderTemplate(setting.command, variables);
+        await exec(extCmd, { cwd: variables.currentDir, env });
       }
       // success
       onSuccess && onSuccess();
