@@ -94,7 +94,7 @@ export default class UniversalExportPlugin extends Plugin {
   public async loadSettings(): Promise<void> {
     const settings: UniversalExportPluginSettings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
     settings.items.forEach(v => {
-      Object.assign(v, Object.assign(DEFAULT_SETTINGS.items.find(o => o.name === v.name) ?? {}, v));
+      Object.assign(v, Object.assign({}, DEFAULT_SETTINGS.items.find(o => o.name === v.name) ?? {}, v));
     });
     for (const item of DEFAULT_SETTINGS.items) {
       if (settings.items.every(o => o.name !== item.name)) {
