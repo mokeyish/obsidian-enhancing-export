@@ -61,7 +61,7 @@ export async function exportToOo(
   const outputFileFullName = candidateOutputFileName;
 
   const currentPath = adapter.getFullPath(currentFile.path);
-  const currentDir = currentPath.substring(0, currentPath.length - currentFile.name.length - 1);
+  const currentDir = path.dirname(currentPath);
   const currentFileName = currentFile.basename;
   const currentFileFullName = currentFile.name;
 
