@@ -91,8 +91,7 @@ export function renderTemplate(template: string, variables: Record<string, unkno
         const value =
           Object.keys(variables)
             .filter(n => n.toLowerCase() === name.toLowerCase())
-            .map(n => variables[n])
-            .first() ?? `\${${name}}`;
+            .map(n => variables[n])[0] ?? `\${${name}}`;
         variables[name] = value;
       } else {
         throw e;

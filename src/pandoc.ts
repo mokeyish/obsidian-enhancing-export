@@ -21,5 +21,10 @@ export async function getPandocVersion(path?: string, env?: Record<string, strin
   path = path ?? 'pandoc';
   let version = await exec(`${path} --version`, { env });
   version = version.substring(0, version.indexOf('\n')).replace('pandoc.exe', '').replace('pandoc', '').trim();
+  let dotCount = [...version].filter(c => c === '.').length;
+  while(dotCount > 2) {
+    version = version.substring(0, version.lastIndexOf('.'));
+    dotCount -= 1;
+  }
   return semver.parse(version);
 }
