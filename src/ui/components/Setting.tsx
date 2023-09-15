@@ -86,7 +86,7 @@ export const Text = (props: { placeholder?: string,
     spellcheck={props.spellcheck ?? false}
     style={props.style}
     value={props.value}
-    onChange={(e) => props.onChange && props.onChange(e.target.value)}
+    onChange={(e) => props.onChange?.(e.target.value)}
     disabled={props.disabled}
   />;
 };
@@ -103,7 +103,7 @@ export const TextArea = (props: { placeholder?: string,
     spellcheck={props.spellcheck ?? false}
     style={props.style}
     value={props.value}
-    onChange={(e) => props.onChange && props.onChange(e.target.value)}
+    onChange={(e) => props.onChange?.(e.target.value)}
     disabled={props.disabled}
   />;
 };
@@ -115,7 +115,7 @@ export const DropDown = (props: {
   onChange?: (value: string, index: number) => void
 }) => {
   return <>
-    <select class="dropdown" onChange={(e) => props.onChange && props.onChange(e.target.value, e.target.selectedIndex)} autofocus={true}>
+    <select class="dropdown" onChange={(e) => props.onChange?.(e.target.value, e.target.selectedIndex)} autofocus={true}>
       <For each={props.options}>
         {(item) => <option value={item.value} selected={item.value === props.selected}>{item.name ?? item.value}</option>}
       </For>

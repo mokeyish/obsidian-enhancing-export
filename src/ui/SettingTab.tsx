@@ -227,7 +227,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
         { name: lang.settingTab.auto, value: 'Auto' },
         { name: lang.settingTab.sameFolderWithCurrentFile, value: 'Same' },
         { name: lang.settingTab.customLocation, value: 'Custom' }
-      ]} onChange={(v: 'Auto' | 'Same' | 'Custom') => setSettings('defaultExportDirectoryMode', v)} />
+      ]} selected={settings.defaultExportDirectoryMode} onChange={(v: 'Auto' | 'Same' | 'Custom') => setSettings('defaultExportDirectoryMode', v)} />
 
     </Setting>
 
