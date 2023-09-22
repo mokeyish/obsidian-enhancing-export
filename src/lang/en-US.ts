@@ -36,6 +36,7 @@ export default {
     pandocNotFound: 'Pandoc not found, please fill in the Pandoc file path, or add it to the system environment variables.',
     defaultFolderForExportedFile: 'Default Folder for Exported File',
     openExportedFileLocation: 'Open exported file location',
+    ShowExportProgressBar: 'Show export progress bar',
     openExportedFile: 'Open exported file',
     pandocPath: 'Pandoc path',
     pandocPathPlaceholder: '(Auto Detect)',

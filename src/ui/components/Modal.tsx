@@ -9,6 +9,7 @@ export default (props: {
   classList?: {
     [k: string]: boolean;
   },
+  hidden?: boolean,
   onClose?: () => void
 }) => {
   const modal = new Modal(props.app);
@@ -29,6 +30,9 @@ export default (props: {
       modal.containerEl.addClasses(newClasses);
     }
     classes = newClasses;
+  });
+  createEffect(() => {
+    modal.containerEl.style.display = props.hidden ? 'None' : '';
   });
 
   modal.onClose = () => {

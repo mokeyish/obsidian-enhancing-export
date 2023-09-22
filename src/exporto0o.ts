@@ -39,6 +39,8 @@ export async function exportToOo(
     showOverwriteConfirmation = globalSetting.showOverwriteConfirmation;
   }
 
+  const showExportProgressBar = globalSetting.showExportProgressBar;
+
   /* Variables
    *   /User/aaa/Documents/test.pdf
    * - ${outputDir}             --> /User/aaa/Documents/
@@ -137,9 +139,11 @@ export async function exportToOo(
   }
 
   // show progress
-  progress.setMessage(lang.preparing(outputFileFullName));
-  beforeExport && beforeExport();
-  progress.show();
+  if (showExportProgressBar) {
+    progress.setMessage(lang.preparing(outputFileFullName));
+    beforeExport?.();
+    progress.show();
+  }
 
   // process Environment variables..
   const env = (variables.env = createEnv(getPlatformValue(globalSetting.env) ?? {}, variables));
@@ -173,7 +177,9 @@ export async function exportToOo(
       options: { cwd: variables.currentDir, env },
     });
     await exec(cmd, { cwd: variables.currentDir, env });
-    progress.hide();
+    if (showExportProgressBar) {
+      progress.hide();
+    }
 
     const next = async () => {
       if (openExportedFileLocation) {

@@ -53,6 +53,7 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
 
   const doExport = async () => {
     const plugin = props.plugin;
+    setHidden(true);
     await exportToOo(
       plugin,
       currentFile,
@@ -71,15 +72,12 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
       },
       () => {
         setHidden(false);
-      },
-      () => {
-        setHidden(true);
       }
     );
   };
 
   return <>
-    <Modal app={app} title={title()} classList={{ hidden: hidden() }} onClose={props.onClose} >
+    <Modal app={app} title={title()} hidden={hidden()} onClose={props.onClose} >
       <Setting name={lang.exportDialog.type}>
         <DropDown options={exportTypes} onChange={(typ) => setExportType(typ)} selected={exportType()}/>
       </Setting>

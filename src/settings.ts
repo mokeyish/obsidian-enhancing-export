@@ -53,6 +53,8 @@ export interface UniversalExportPluginSettings {
 
   lastExportDirectory?: PlatformValue<string>;
   lastExportType?: string;
+
+  showExportProgressBar?: boolean;
 }
 
 export type OptionsMeta = {
@@ -136,6 +138,7 @@ export const DEFAULT_SETTINGS: UniversalExportPluginSettings = {
   defaultExportDirectoryMode: 'Auto',
   openExportedFile: true,
   env: DEFAULT_ENV,
+  showExportProgressBar: true,
 };
 
 export function extractDefaultExtension(s: ExportSetting): string {

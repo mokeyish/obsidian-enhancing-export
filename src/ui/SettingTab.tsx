@@ -251,6 +251,14 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
         onChange={(v) => setSettings('openExportedFile', v)} />
     </Setting>
 
+    
+    <Setting name={lang.settingTab.ShowExportProgressBar}>
+      <Toggle
+        checked={settings.showExportProgressBar}
+        onChange={(v) => setSettings('showExportProgressBar', v)}
+      />
+    </Setting>
+
     <Setting name={lang.settingTab.editCommandTemplate} heading={true} />
 
     <Setting name={lang.settingTab.chooseCommandTemplate}>
