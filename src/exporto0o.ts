@@ -72,17 +72,12 @@ export async function exportToOo(
     attachmentFolderPath = path.join(currentDir, attachmentFolderPath.substring(1));
   }
 
-  const frontMatter = await new Promise<unknown>(resolve => {
-    try {
-      fileManager.processFrontMatter(currentFile, frontMatter => {
-        resolve(frontMatter);
-        return frontMatter;
-      });
-    } catch (e) {
-      console.error(e);
-      resolve(undefined);
-    }
-  });
+  let frontMatter: unknown = null;
+  try {
+    await fileManager.processFrontMatter(currentFile, fm => frontMatter = fm);
+  } catch (e) {
+    console.error(e);
+  }
 
   const variables: Variables = {
     pluginDir,
