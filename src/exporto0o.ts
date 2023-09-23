@@ -133,14 +133,14 @@ export async function exportToOo(
     }
 
     variables.outputPath = result.filePath;
-    variables.outputDir = variables.outputPath.substring(0, variables.outputPath.lastIndexOf('/'));
-    variables.outputFileFullName = variables.outputPath.substring(variables.outputDir.length + 1);
-    variables.outputFileName = variables.outputFileFullName.substring(0, variables.outputFileFullName.lastIndexOf('.'));
+    variables.outputDir = path.dirname(variables.outputPath);
+    variables.outputFileFullName = path.basename(variables.outputPath);
+    variables.outputFileName = path.basename(variables.outputFileFullName, path.extname(variables.outputFileFullName));
   }
 
   // show progress
   if (showExportProgressBar) {
-    progress.setMessage(lang.preparing(outputFileFullName));
+    progress.setMessage(lang.preparing(variables.outputFileFullName));
     beforeExport?.();
     progress.show();
   }
@@ -161,12 +161,13 @@ export async function exportToOo(
       output: ['o'],
     },
   });
-  const actualOutputPath =
+  const actualOutputPath = path.normalize(
     (args.output.startsWith('"') && args.output.endsWith('"')) || (args.output.startsWith("'") && args.output.endsWith("'"))
       ? args.output.substring(1, args.output.length - 1)
-      : args.output;
+      : args.output
+  );
 
-  const actualOutputDir = actualOutputPath.substring(0, actualOutputPath.lastIndexOf('/'));
+  const actualOutputDir = path.dirname(actualOutputPath);
   if (!fs.existsSync(actualOutputDir)) {
     fs.mkdirSync(actualOutputDir);
   }
@@ -203,7 +204,7 @@ export async function exportToOo(
       box.onClose = next;
       box.open();
     } else {
-      new Notice(lang.exportSuccessNotice(outputFileFullName), 1500);
+      new Notice(lang.exportSuccessNotice(variables.outputFileFullName), 1500);
       await next();
     }
   } catch (err) {
