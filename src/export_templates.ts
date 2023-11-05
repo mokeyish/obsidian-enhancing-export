@@ -97,7 +97,7 @@ export default {
     optionsMeta: {
       'textemplate': 'preset:textemplate', // reference from `PresetOptionsMeta` in `src/settings.ts`
     },
-    extension: '.latex',
+    extension: '.tex',
   },
   'Media Wiki': {
     name: 'Media Wiki',
