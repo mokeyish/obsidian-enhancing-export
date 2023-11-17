@@ -58,7 +58,7 @@ export default {
     name: 'PDF',
     type: 'pandoc',
     arguments:
-      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" ${ options.textemplate ? `--resource-path="${pluginDir}/textemplate" --template="${options.textemplate}"` : ` ` } --embed-resources --standalone -s -o "${outputPath}" -t pdf',
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" ${ options.textemplate ? `--resource-path="${pluginDir}/textemplate" --template="${options.textemplate}"` : ` ` } -s -o "${outputPath}" -t pdf',
     customArguments: '--pdf-engine=pdflatex',
     optionsMeta: {
       'textemplate': 'preset:textemplate', // reference from `PresetOptionsMeta` in `src/settings.ts`
@@ -93,7 +93,7 @@ export default {
     name: 'Latex',
     type: 'pandoc',
     arguments:
-      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" ${ options.textemplate ? `--resource-path="${pluginDir}/textemplate" --template="${options.textemplate}"` : ` ` } -s -o "${outputPath}" -t latex',
+      '-f markdown --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" ${ options.textemplate ? `--resource-path="${pluginDir}/textemplate" --template="${options.textemplate}"` : ` ` } --extract-media="${outputDir}" -s -o "${outputPath}" -t latex',
     optionsMeta: {
       'textemplate': 'preset:textemplate', // reference from `PresetOptionsMeta` in `src/settings.ts`
     },
