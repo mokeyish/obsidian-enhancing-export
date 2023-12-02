@@ -27,7 +27,7 @@ export async function exportToOo(
     app: {
       vault: { adapter, config: obsidianConfig },
       loadProgress: progress,
-      fileManager,
+      metadataCache,
     },
   } = plugin;
 
@@ -76,7 +76,7 @@ export async function exportToOo(
 
   let frontMatter: unknown = null;
   try {
-    await fileManager.processFrontMatter(currentFile, fm => frontMatter = fm);
+	  frontMatter = metadataCache.getCache(currentFile.path).frontmatter;
   } catch (e) {
     console.error(e);
   }
