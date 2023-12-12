@@ -124,7 +124,7 @@ export const DEFAULT_ENV = (() => {
   env = setPlatformValue(
     env,
     {
-      'PATH': '/usr/local/bin:/Library/TeX/texbin:${PATH}', // Add HomebrewBin and TexBin
+      'PATH': '/opt/homebrew/bin:/usr/local/bin:/Library/TeX/texbin:${PATH}', // Add HomebrewBin and TexBin. see: https://docs.brew.sh/Installation
     },
     'darwin' // for MacOS only.
   );
