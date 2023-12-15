@@ -64,6 +64,6 @@ export default {
     advanced: '高级',
     environmentVariables: '环境变量',
     environmentVariablesDesc: '定义导出的环境变量.',
-    ShowExportProgressBar: '显示导出进度条'
+    ShowExportProgressBar: '显示导出进度条',
   },
 } satisfies Lang;

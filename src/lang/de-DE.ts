@@ -34,7 +34,8 @@ export default {
     name: 'Name',
     title: 'Export-Einstellungen',
     version: strTpl`Version: ${0}`,
-    pandocNotFound: 'Pandoc.exe wurde nicht gefunden. Bitte geben Sie den Pfad zur Pandoc.exe ein oder fügen Sie ihn den Window Systemumgebungsvariablen hinzu.',
+    pandocNotFound:
+      'Pandoc.exe wurde nicht gefunden. Bitte geben Sie den Pfad zur Pandoc.exe ein oder fügen Sie ihn den Window Systemumgebungsvariablen hinzu.',
     defaultFolderForExportedFile: 'Standardordner für exportierte Dateien',
     openExportedFileLocation: 'Speicherort der exportierten Datei öffnen',
     openExportedFile: 'Exportierte Datei öffnen',
@@ -64,6 +65,6 @@ export default {
     advanced: 'Advanced',
     environmentVariables: 'Environment Variables',
     environmentVariablesDesc: 'Define the Environment Variables for exporting.',
-    ShowExportProgressBar: 'Show export progressBar'
+    ShowExportProgressBar: 'Show export progressBar',
   },
 } satisfies Lang;
