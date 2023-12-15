@@ -7,6 +7,7 @@ import { MessageBox } from './ui/message_box';
 import { Notice, TFile } from 'obsidian';
 import { exec, renderTemplate, getPlatformValue } from './utils';
 import type ExportPlugin from './main';
+import { normalizePandocPath } from './pandoc';
 
 export async function exportToOo(
   plugin: ExportPlugin,
@@ -76,7 +77,7 @@ export async function exportToOo(
 
   let frontMatter: unknown = null;
   try {
-	  frontMatter = metadataCache.getCache(currentFile.path).frontmatter;
+    frontMatter = metadataCache.getCache(currentFile.path).frontmatter;
   } catch (e) {
     console.error(e);
   }
@@ -148,7 +149,7 @@ export async function exportToOo(
   // process Environment variables..
   const env = (variables.env = createEnv(getPlatformValue(globalSetting.env) ?? {}, variables));
 
-  const pandocPath = getPlatformValue(globalSetting.pandocPath) ?? 'pandoc';
+  const pandocPath = normalizePandocPath(getPlatformValue(globalSetting.pandocPath));
 
   const cmdTpl =
     setting.type === 'pandoc'

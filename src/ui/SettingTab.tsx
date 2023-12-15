@@ -1,4 +1,5 @@
 import * as ct from 'electron';
+import process from 'process';
 import { PluginSettingTab } from 'obsidian';
 import type UniversalExportPlugin from '../main';
 import {
@@ -200,6 +201,17 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
     }
   };
 
+  const choosePandocPath = async () => {
+    const retval = await ct.remote.dialog.showOpenDialog({
+      filters: process.platform == 'win32' ? [{ extensions: ['exe'], name: 'pandoc' }]: undefined,
+      properties: ['openFile'],
+    });
+
+    if (!retval.canceled && retval.filePaths.length > 0) {
+      setSettings('pandocPath', (v) => setPlatformValue(v, retval.filePaths[0]));
+    }
+  };
+
   createEffect(async () => {
     try {
       const env = createEnv(getPlatformValue(settings.env) ?? {});
@@ -220,6 +232,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
         value={getPlatformValue(settings.pandocPath) ?? ''}
         onChange={(value) => setSettings('pandocPath', (v) => setPlatformValue(v, value))}
       />
+      <ExtraButton icon="folder" onClick={choosePandocPath} />
     </Setting>
 
     <Setting name={lang.settingTab.defaultFolderForExportedFile}>
