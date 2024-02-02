@@ -6,7 +6,9 @@ local url = require('url')
 local pandoc=pandoc
 local PANDOC_STATE=PANDOC_STATE
 
-PANDOC_VERSION:must_be_at_least '2.17'
+PANDOC_VERSION:must_be_at_least '3.1.7'
+
+os.text = pandoc.text
 
 local PATH = pandoc.path
 local doc_dir = nil
@@ -22,7 +24,7 @@ if PANDOC_STATE.output_file then
   local output_file = PANDOC_STATE.output_file
   doc_dir = PATH.directory(output_file)
   if PANDOC_WRITER_OPTIONS.variables["media_dir"] then
-    media_dir = PANDOC_WRITER_OPTIONS.variables["media_dir"]
+    media_dir = tostring(PANDOC_WRITER_OPTIONS.variables["media_dir"])
   else
     media_dir = PATH.split_extension(output_file)
     if Mode ~= 'hugo' then

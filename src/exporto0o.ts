@@ -6,7 +6,7 @@ import argsParser from 'yargs-parser';
 import { Variables, ExportSetting, extractDefaultExtension as extractExtension, createEnv } from './settings';
 import { MessageBox } from './ui/message_box';
 import { Notice, TFile } from 'obsidian';
-import { exec, renderTemplate, getPlatformValue } from './utils';
+import { exec, renderTemplate, getPlatformValue, trimQuotes } from './utils';
 import type ExportPlugin from './main';
 import pandoc from './pandoc';
 
@@ -154,6 +154,7 @@ export async function exportToOo(
   let pandocPath = pandoc.normalizePath(getPlatformValue(globalSetting.pandocPath));
 
   if (process.platform === 'win32') {
+    // https://github.com/mokeyish/obsidian-enhancing-export/issues/153
     pandocPath = pandocPath.replaceAll('\\', '/');
     const pathKeys: Array<keyof Variables> = [
       'pluginDir',
@@ -174,7 +175,7 @@ export async function exportToOo(
 
   const cmdTpl =
     setting.type === 'pandoc'
-      ? `${pandocPath} ${setting.arguments ?? ''} ${setting.customArguments ?? ''} "${currentPath}"`
+      ? `${pandocPath} ${setting.arguments ?? ''} ${setting.customArguments ?? ''} "\${currentPath}"`
       : setting.command;
 
   const cmd = renderTemplate(cmdTpl, variables);
@@ -183,11 +184,7 @@ export async function exportToOo(
       output: ['o'],
     },
   });
-  const actualOutputPath = path.normalize(
-    (args.output.startsWith('"') && args.output.endsWith('"')) || (args.output.startsWith("'") && args.output.endsWith("'"))
-      ? args.output.substring(1, args.output.length - 1)
-      : args.output
-  );
+  const actualOutputPath = path.normalize(trimQuotes(args.output));
 
   const actualOutputDir = path.dirname(actualOutputPath);
   if (!fs.existsSync(actualOutputDir)) {
