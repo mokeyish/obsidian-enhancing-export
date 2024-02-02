@@ -1,4 +1,3 @@
-import * as os from 'os';
 import export_templates from './export_templates';
 import { setPlatformValue, PlatformValue, renderTemplate, getPlatformValue } from './utils';
 import type { PropertyGridMeta } from './ui/components/PropertyGrid';
@@ -118,7 +117,7 @@ export const DEFAULT_ENV = (() => {
     env,
     {
       'TEXINPUTS': '${pluginDir}/textemplate/;', // Windows uses ; rather than : for appending
-      'PATH': `${os.homedir()}AppData\\Local\\Pandoc\\:\${PATH}`,
+      'PATH': '${HOME}\\AppData\\Local\\Pandoc;${PATH}',
     },
     'win32' // available for windows only.
   );

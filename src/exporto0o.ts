@@ -1,5 +1,6 @@
 import * as ct from 'electron';
 import * as fs from 'fs';
+import process from 'process';
 import path from 'path';
 import argsParser from 'yargs-parser';
 import { Variables, ExportSetting, extractDefaultExtension as extractExtension, createEnv } from './settings';
@@ -150,7 +151,26 @@ export async function exportToOo(
   // process Environment variables..
   const env = (variables.env = createEnv(getPlatformValue(globalSetting.env) ?? {}, variables));
 
-  const pandocPath = pandoc.normalizePath(getPlatformValue(globalSetting.pandocPath));
+  let pandocPath = pandoc.normalizePath(getPlatformValue(globalSetting.pandocPath));
+
+  if (process.platform === 'win32') {
+    pandocPath = pandocPath.replaceAll('\\', '/');
+    const pathKeys: Array<keyof Variables> = [
+      'pluginDir',
+      'luaDir',
+      'outputDir',
+      'outputPath',
+      'currentDir',
+      'currentPath',
+      'attachmentFolderPath',
+      'vaultDir',
+    ];
+
+    for (const pathKey of pathKeys) {
+      const path = variables[pathKey] as string;
+      variables[pathKey] = path.replaceAll('\\', '/');
+    }
+  }
 
   const cmdTpl =
     setting.type === 'pandoc'
