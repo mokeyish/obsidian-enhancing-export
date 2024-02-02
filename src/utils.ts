@@ -51,11 +51,16 @@ export function exec(cmd: string, options?: ExecOptions): Promise<string> {
     node_exec(cmd, options, (error, stdout, stderr) => {
       if (error) {
         reject(error);
+        console.error(stdout, error);
         return;
       }
       if (stderr && stderr !== '') {
         reject(stderr);
+        console.error(stdout, error);
         return;
+      }
+      if (stdout?.trim().length === 0 && '1' === localStorage.getItem('debug-plugin')) {
+        console.log(stdout);
       }
       resolve(stdout);
     });
@@ -69,6 +74,10 @@ export function joinEnvPath(...paths: string[]) {
     default:
       return paths.join(':');
   }
+}
+
+export function trimQuotes(s: string) {
+  return (s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'")) ? s.substring(1, s.length - 1) : s;
 }
 
 /**

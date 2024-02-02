@@ -23,8 +23,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install Pandoc
         run: | 
-          wget https://github.com/jgm/pandoc/releases/download/3.1.6.1/pandoc-3.1.6.1-1-amd64.deb
-          sudo dpkg -i pandoc-3.1.6.1-1-amd64.deb
+          wget https://github.com/jgm/pandoc/releases/download/3.1.11.1/pandoc-3.1.11.1-1-amd64.deb
+          sudo dpkg -i pandoc-3.1.11.1-1-amd64.deb
       - name: Install Dependencies
         run: npm install
       - name: Test

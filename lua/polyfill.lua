@@ -3,7 +3,6 @@ if os.platform == nil then
   local libExt = package.cpath:match("%p[\\|/]?\\.%p(%a+)")
   if libExt == 'dll' then
     os.platform = "Windows"
-    require"utf8_filenames"
   elseif libExt == 'so' then
     os.platform = "Linux"
   elseif libExt == 'dylib' then
@@ -15,7 +14,9 @@ end
 os.copy = function(src, dest)
   if os.platform == "Windows" then
     src = string.gsub(src, "/", "\\")
-    os.execute('copy "' .. src .. '" "' .. dest .. '"')
+    src = os.text.toencoding(src)
+    dest = os.text.toencoding(dest)
+    os.execute('copy "' .. src .. '" "' .. dest .. '" >NUL')
   else
     os.execute('cp "' .. src .. '" "' .. dest .. '"')
   end
@@ -26,6 +27,7 @@ os.mkdir = function(dir)
     return
   end
   if os.platform == "Windows" then
+    dir = os.text.toencoding(dir)
     os.execute('mkdir "' .. dir .. '"')
   else
     os.execute('mkdir -p "' .. dir .. '"')
@@ -35,6 +37,7 @@ end
 os.exists = function(path)
   if os.platform == "Windows" then
     path = string.gsub(path, "/", "\\")
+    path = os.text.toencoding(path)
     local _, _, code = os.execute('if exist "' .. path .. '" (exit 0) else (exit 1)')
     return code == 0
   else
