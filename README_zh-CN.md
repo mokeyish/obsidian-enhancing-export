@@ -16,7 +16,7 @@
    ![](https://raw.githubusercontent.com/mokeyish/obsidian-enhancing-export/master/screenshot/settingview_zh-CN.png)
 
 ## 安装
-1. 需要先安装最新的 `pandoc`(2.18+)，最好配置到 PATH 环境变量，或者设置界面指定路径。
+1. 需要先安装最新的 `pandoc`(3.1.9+)，最好配置到 PATH 环境变量，或者设置界面指定路径。
    参考地址：[https://pandoc.org/installing.html](https://pandoc.org/installing.html)
 2. 在 Obsidian 插件市场，搜索 `obsidian-enhancing-export` 进行安装。
 
