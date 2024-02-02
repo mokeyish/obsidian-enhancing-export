@@ -7,7 +7,7 @@ import { MessageBox } from './ui/message_box';
 import { Notice, TFile } from 'obsidian';
 import { exec, renderTemplate, getPlatformValue } from './utils';
 import type ExportPlugin from './main';
-import { normalizePandocPath } from './pandoc';
+import pandoc from './pandoc';
 
 export async function exportToOo(
   plugin: ExportPlugin,
@@ -100,6 +100,7 @@ export async function exportToOo(
     // now: new Date()
     metadata: frontMatter,
     options,
+    fromFormat: app.vault.config.useMarkdownLinks ? 'markdown' : 'markdown+wikilinks_title_after_pipe',
   };
 
   const showCommandLineOutput = setting.type === 'custom' && setting.showCommandOutput;
@@ -149,7 +150,7 @@ export async function exportToOo(
   // process Environment variables..
   const env = (variables.env = createEnv(getPlatformValue(globalSetting.env) ?? {}, variables));
 
-  const pandocPath = normalizePandocPath(getPlatformValue(globalSetting.pandocPath));
+  const pandocPath = pandoc.normalizePath(getPlatformValue(globalSetting.pandocPath));
 
   const cmdTpl =
     setting.type === 'pandoc'
