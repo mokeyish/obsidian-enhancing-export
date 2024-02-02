@@ -2,7 +2,7 @@ import { App, PluginSettingTab, Setting, TextComponent } from 'obsidian';
 import * as ct from 'electron';
 import { CustomExportSetting, ExportSetting, PandocExportSetting, UniversalExportPluginSettings } from '../../settings';
 import { setPlatformValue, getPlatformValue } from '../../utils';
-import { getPandocVersion } from '../../pandoc';
+import pandoc from '../../pandoc';
 
 import { Modal } from 'obsidian';
 import export_command_templates from '../../export_templates';
@@ -98,9 +98,10 @@ export default class extends PluginSettingTab {
       .setHeading();
 
     const pandocPathSetting = new Setting(containerEl);
-    getPandocVersion(getPlatformValue(globalSetting.pandocPath))
+    pandoc
+      .getVersion(getPlatformValue(globalSetting.pandocPath))
       .then(ver => {
-        pandocPathSetting.setDesc(lang.settingTab.version(ver.version));
+        pandocPathSetting.setDesc(lang.settingTab.pandocVersion(ver.version));
       })
       .catch(() => {
         pandocPathSetting.setDesc(lang.settingTab.pandocNotFound);
@@ -110,9 +111,10 @@ export default class extends PluginSettingTab {
       cb.setPlaceholder(lang.settingTab.pandocPathPlaceholder).onChange(v => {
         if (globalSetting.pandocPath !== v) {
           globalSetting.pandocPath = setPlatformValue(globalSetting.pandocPath, v);
-          getPandocVersion(getPlatformValue(globalSetting.pandocPath))
+          pandoc
+            .getVersion(getPlatformValue(globalSetting.pandocPath))
             .then(ver => {
-              pandocPathSetting.setDesc(lang.settingTab.version(ver.version));
+              pandocPathSetting.setDesc(lang.settingTab.pandocVersion(ver.version));
             })
             .catch(() => {
               pandocPathSetting.setDesc(lang.settingTab.pandocNotFound);

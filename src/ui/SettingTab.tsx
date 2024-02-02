@@ -1,6 +1,7 @@
 import * as ct from 'electron';
 import process from 'process';
 import { PluginSettingTab } from 'obsidian';
+import type { SemVer } from 'semver'
 import type UniversalExportPlugin from '../main';
 import {
   CustomExportSetting,
@@ -16,7 +17,7 @@ import { createStore, produce } from 'solid-js/store';
 import { insert, Dynamic } from 'solid-js/web';
 import type { Lang } from '../lang';
 
-import { getPandocVersion } from '../pandoc';
+import pandoc from '../pandoc';
 import Modal from './components/Modal';
 import Button from './components/Button';
 import Setting, { Text, Toggle, ExtraButton, DropDown, TextArea } from './components/Setting';
@@ -26,7 +27,7 @@ import export_templates from '../export_templates';
 const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
   const { plugin, lang } = props;
   const [settings, setSettings0] = createStore(plugin.settings);
-  const [pandocVersion, setPandocVersion] = createSignal<string>();
+  const [pandocVersion, setPandocVersion] = createSignal<SemVer>();
   const envVars = createMemo(() => Object.entries(Object.assign({}, getPlatformValue(DEFAULT_ENV), getPlatformValue(settings.env) ?? {})).map(([n, v]) => `${n}="${v}"`).join('\n'));
   const setSettings: typeof setSettings0 = (...args: unknown[]) => {
     (setSettings0 as ((...args: unknown[]) => void))(...args);
@@ -70,7 +71,13 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
 
   const pandocDescription = createMemo(() => {
     const version = pandocVersion();
-    return version ? lang.settingTab.version(version) : lang.settingTab.pandocNotFound;
+    if (version) {
+      if (app.vault.config.useMarkdownLinks && version.compare(pandoc.requiredVersion) === -1) {
+        return lang.settingTab.pandocVersionWithWarning(pandoc.requiredVersion)
+      }
+      return lang.settingTab.pandocVersion(version)
+    }
+    return lang.settingTab.pandocNotFound;
   });
 
   const [modal, setModal] = createSignal<() => JSX.Element>();
@@ -215,7 +222,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
   createEffect(async () => {
     try {
       const env = createEnv(getPlatformValue(settings.env) ?? {});
-      setPandocVersion((await getPandocVersion(getPlatformValue(settings.pandocPath), env)).version);
+      setPandocVersion(await pandoc.getVersion(getPlatformValue(settings.pandocPath), env));
     } catch {
       setPandocVersion(undefined);
     }

@@ -26,7 +26,8 @@ declare module 'obsidian' {
   
   export interface Vault {
     config: {
-      attachmentFolderPath: string
+      attachmentFolderPath: string,
+      useMarkdownLinks: boolean,
     }
     on(name: 'raw', callback: (file: string) => void, ctx?: any): EventRef;
   }
