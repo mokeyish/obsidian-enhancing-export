@@ -43,6 +43,8 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
   if (globalSetting.defaultExportDirectoryMode === 'Same') {
     const path = currentFile.vault.adapter.getBasePath() + '/' + currentFile.parent.path;
     setCandidateOutputDirectory(path);
+  } else if (globalSetting.defaultExportDirectoryMode === 'Custom') {
+    setCandidateOutputDirectory(getPlatformValue(globalSetting.customDefaultExportDirectory));
   }
   
   const chooseFolder = async () => {
