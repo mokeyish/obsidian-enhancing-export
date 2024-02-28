@@ -175,7 +175,7 @@ export async function exportToOo(
 
   const cmdTpl =
     setting.type === 'pandoc'
-      ? `${pandocPath} ${setting.arguments ?? ''} ${setting.customArguments ?? ''} "\${currentPath}"`
+      ? `${pandocPath} "\${currentPath}" ${setting.arguments ?? ''} ${setting.customArguments ?? ''}`
       : setting.command;
 
   const cmd = renderTemplate(cmdTpl, variables);
