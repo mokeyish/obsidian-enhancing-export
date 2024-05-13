@@ -74,6 +74,8 @@ export async function exportToOo(
     attachmentFolderPath = vaultDir;
   } else if (attachmentFolderPath.startsWith('.')) {
     attachmentFolderPath = path.join(currentDir, attachmentFolderPath.substring(1));
+  } else {
+    attachmentFolderPath = path.join(vaultDir, attachmentFolderPath);
   }
 
   let frontMatter: unknown = null;
