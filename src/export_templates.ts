@@ -44,7 +44,7 @@ export default {
     name: 'TextBundle',
     type: 'pandoc',
     arguments:
-      '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/markdown.lua" -V media_dir="${outputDir}/${outputFileName}.textbundle/assets" -o "${outputDir}/${outputFileName}.textbundle/text.md" -t commonmark_x-attributes',
+      '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/markdown.lua" -V media_dir="${outputDir}/${outputFileName}.textbundle/assets" -s -o "${outputDir}/${outputFileName}.textbundle/text.md" -t commonmark_x-attributes',
     extension: '.md',
   },
   'Typst': {
@@ -58,7 +58,7 @@ export default {
     name: 'PDF',
     type: 'pandoc',
     arguments:
-      '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" ${ options.textemplate ? `--resource-path="${pluginDir}/textemplate" --template="${options.textemplate}"` : ` ` } -s -o "${outputPath}" -t pdf',
+      '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" ${ options.textemplate ? `--resource-path="${pluginDir}/textemplate" --template="${options.textemplate}"` : ` ` } -o "${outputPath}" -t pdf',
     customArguments: '--pdf-engine=pdflatex',
     optionsMeta: {
       'textemplate': 'preset:textemplate', // reference from `PresetOptionsMeta` in `src/settings.ts`
