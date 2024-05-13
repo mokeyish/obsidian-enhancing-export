@@ -44,7 +44,7 @@ export default {
     name: 'TextBundle',
     type: 'pandoc',
     arguments:
-      '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/markdown.lua" -V media_dir="${outputDir}/${outputFileName}.textbundle/assets" -s -o "${outputDir}/${outputFileName}.textbundle/text.md" -t commonmark_x-attributes',
+      '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/markdown.lua" -V media_dir="${outputDir}/${outputFileName}.textbundle/assets" -o "${outputDir}/${outputFileName}.textbundle/text.md" -t commonmark_x-attributes',
     extension: '.md',
   },
   'Typst': {
@@ -68,13 +68,13 @@ export default {
   'Word (.docx)': {
     name: 'Word (.docx)',
     type: 'pandoc',
-    arguments: '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t docx',
+    arguments: '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -o "${outputPath}" -t docx',
     extension: '.docx',
   },
   'OpenOffice': {
     name: 'OpenOffice',
     type: 'pandoc',
-    arguments: '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t odt',
+    arguments: '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -o "${outputPath}" -t odt',
     extension: '.odt',
   },
   'RTF': {
@@ -86,7 +86,7 @@ export default {
   'Epub': {
     name: 'Epub',
     type: 'pandoc',
-    arguments: '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -s -o "${outputPath}" -t epub',
+    arguments: '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -o "${outputPath}" -t epub',
     extension: '.epub',
   },
   'Latex': {
