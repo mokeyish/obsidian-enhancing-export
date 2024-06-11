@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import { defineConfig, loadEnv, Plugin } from 'vite';
+import { defineConfig, loadEnv, Plugin, UserConfig } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import solidPlugin from 'vite-plugin-solid';
 import builtins from 'builtin-modules';
@@ -94,7 +94,7 @@ export default defineConfig(async ({ mode }) => {
         ],
       },
     }
-  };
+  } as UserConfig;
 });
 
 

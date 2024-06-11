@@ -7,6 +7,7 @@ import { Variables, ExportSetting, extractDefaultExtension as extractExtension, 
 import { MessageBox } from './ui/message_box';
 import { Notice, TFile } from 'obsidian';
 import { exec, renderTemplate, getPlatformValue, trimQuotes } from './utils';
+import ProgressBar from './ui/components/ProgressBar';
 import type ExportPlugin from './main';
 import pandoc from './pandoc';
 
@@ -28,7 +29,6 @@ export async function exportToOo(
     manifest,
     app: {
       vault: { adapter, config: obsidianConfig },
-      loadProgress: progress,
       metadataCache,
     },
   } = plugin;
@@ -144,10 +144,10 @@ export async function exportToOo(
   }
 
   // show progress
+  let progressBarHide: (() => void) | undefined = undefined;
   if (showExportProgressBar) {
-    progress.setMessage(lang.preparing(variables.outputFileFullName));
     beforeExport?.();
-    progress.show();
+    progressBarHide = ProgressBar.show(lang.preparing(variables.outputFileFullName));
   }
 
   // process Environment variables..
@@ -199,9 +199,7 @@ export async function exportToOo(
       options: { cwd: variables.currentDir, env },
     });
     await exec(cmd, { cwd: variables.currentDir, env });
-    if (showExportProgressBar) {
-      progress.hide();
-    }
+    progressBarHide?.();
 
     const next = async () => {
       if (openExportedFileLocation) {
@@ -229,7 +227,7 @@ export async function exportToOo(
       await next();
     }
   } catch (err) {
-    progress.hide();
+    progressBarHide?.();
     new MessageBox(app, lang.exportErrorOutputMessage(cmd, err)).open();
     onFailure && onFailure();
   }

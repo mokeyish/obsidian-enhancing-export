@@ -8,11 +8,15 @@ export async function getPandocVersion(path?: string, env?: Record<string, strin
   let version = await exec(`${path} --version`, { env });
   version = version.substring(0, version.indexOf('\n')).replace('pandoc.exe', '').replace('pandoc', '').trim();
   let dotCount = [...version].filter(c => c === '.').length;
-  while (dotCount > 2) {
-    version = version.substring(0, version.lastIndexOf('.'));
-    dotCount -= 1;
+  if (dotCount === 1) {
+    version = `${version}.0`;
+  } else {
+    while (dotCount > 2) {
+      version = version.substring(0, version.lastIndexOf('.'));
+      dotCount -= 1;
+    }
   }
-  return semver.parse(version);
+  return semver.parse(version, true);
 }
 
 export const PANDOC_REQUIRED_VERSION = '3.1.7';
