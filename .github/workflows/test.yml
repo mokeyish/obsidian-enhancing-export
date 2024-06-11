@@ -13,19 +13,22 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [20.x]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - name: Install Pandoc
         run: | 
           wget https://github.com/jgm/pandoc/releases/download/3.1.11.1/pandoc-3.1.11.1-1-amd64.deb
           sudo dpkg -i pandoc-3.1.11.1-1-amd64.deb
       - name: Install Dependencies
-        run: npm install
+        run: pnpm install
       - name: Test
         run: npm test

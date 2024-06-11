@@ -17,6 +17,7 @@
   "author": "YISH",
   "license": "MIT",
   "repository": "https://github.com/mokeyish/obsidian-enhancing-export",
+  "type": "module",
   "devDependencies": {
     "@types/jest": "^29.5.1",
     "@types/node": "^16.18.34",
@@ -33,13 +34,13 @@
     "ts-jest": "^29.1.0",
     "tslib": "2.3.1",
     "typescript": "5.0.4",
-    "vite": "^4.3.9",
-    "vite-plugin-solid": "^2.7.0",
-    "vite-plugin-static-copy": "^0.15.0"
+    "vite": "^5.2.13",
+    "vite-plugin-solid": "^2.10.2",
+    "vite-plugin-static-copy": "^1.0.5"
   },
   "dependencies": {
     "semver": "^7.5.1",
-    "solid-js": "^1.7.5",
+    "solid-js": "^1.8.17",
     "yargs-parser": "^21.1.1"
   }
 }
