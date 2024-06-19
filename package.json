@@ -24,7 +24,7 @@
     "@types/semver": "^7.5.0",
     "@types/yargs-parser": "^21.0.0",
     "@typescript-eslint/eslint-plugin": "^5.59.7",
-    "@typescript-eslint/parser": "^5.59.7",
+    "@typescript-eslint/parser": "^5.62.0",
     "builtin-modules": "^3.3.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.41.0",
