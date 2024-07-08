@@ -70,8 +70,8 @@ importers:
         specifier: ^2.10.2
         version: 2.10.2(solid-js@1.8.18)(vite@5.3.1(@types/node@20.14.8))
       vite-plugin-static-copy:
-        specifier: ^1.0.5
-        version: 1.0.5(vite@5.3.1(@types/node@20.14.8))
+        specifier: ^1.0.6
+        version: 1.0.6(vite@5.3.1(@types/node@20.14.8))
 
 packages:
 
@@ -1920,8 +1920,8 @@ packages:
       '@testing-library/jest-dom':
         optional: true
 
-  vite-plugin-static-copy@1.0.5:
-    resolution: {integrity: sha512-02k0Rox+buYdEOfeilKZSgs1gXfPf9RjVztZEIYZgVIxjsVZi6AXssjzdi+qW6zYt00d3bq+tpP2voVXN2fKLw==}
+  vite-plugin-static-copy@1.0.6:
+    resolution: {integrity: sha512-3uSvsMwDVFZRitqoWHj0t4137Kz7UynnJeq1EZlRW7e25h2068fyIZX4ORCCOAkfp1FklGxJNVJBkBOD+PZIew==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
       vite: ^5.0.0
@@ -4136,7 +4136,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-plugin-static-copy@1.0.5(vite@5.3.1(@types/node@20.14.8)):
+  vite-plugin-static-copy@1.0.6(vite@5.3.1(@types/node@20.14.8)):
     dependencies:
       chokidar: 3.6.0
       fast-glob: 3.3.2
