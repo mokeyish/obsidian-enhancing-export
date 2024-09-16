@@ -19,7 +19,7 @@
   "repository": "https://github.com/mokeyish/obsidian-enhancing-export",
   "type": "module",
   "devDependencies": {
-    "@types/jest": "^29.5.1",
+    "@types/jest": "^29.5.13",
     "@types/node": "^20.14.8",
     "@types/semver": "^7.5.0",
     "@types/yargs-parser": "^21.0.3",
