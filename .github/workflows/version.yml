@@ -1,11 +1,14 @@
-name: Release Obsidian plugin
+name: Bump Version
 
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'version'
+      bump:
+        description: 'Bump version'
         required: true
+        type: choice
+        options: [major, premajor, minor, preminor, patch, prepatch, prerelease]
+        default: 'patch'
 
 env:
   PLUGIN_NAME: obsidian-enhancing-export
@@ -13,6 +16,8 @@ env:
 jobs:
   bump:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{env.version}}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -22,15 +27,21 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 20
+    - uses: pnpm/action-setup@v4
+      with:
+        version: latest
+    - name: Install Dependencies
+      run: pnpm install
     - name: Create local changes
       run: |
-        npm run version ${{ github.event.inputs.version }}
+        npm run version-bump ${{ github.event.inputs.bump }}
+        echo "version=$(node version.mjs)" >> "$GITHUB_ENV"
     - name: Commit files
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git commit -a -m "🔖 Bump version number to ${{ github.event.inputs.version }}"
-        git tag -a ${{ github.event.inputs.version }} -m ""
+        git commit -a -m "🔖 Bump version number to $version"
+        git tag -a $version -m ""
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
@@ -44,18 +55,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.version }}
+          ref: ${{ needs.bump.outputs.version }}
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
       - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: latest
+      - name: Install Dependencies
+        run: pnpm install
       - name: Build
         id: build
         run: |
-          pnpm install
           npm run build
           mkdir ${{ env.PLUGIN_NAME }}
           cp dist/* ${{ env.PLUGIN_NAME }}
@@ -67,10 +79,10 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ github.event.inputs.version }}
+          VERSION: ${{ needs.bump.outputs.version }}
         with:
-          tag_name: ${{ github.event.inputs.version }}
-          release_name: ${{ github.event.inputs.version }}
+          tag_name: ${{ needs.bump.outputs.version }}
+          release_name: ${{ needs.bump.outputs.version }}
           draft: false
           prerelease: false
 

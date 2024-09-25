@@ -1,14 +1,46 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { exec } from 'child_process';
-import process from 'process';
+import console from 'console';
+import process, { exit } from 'process';
+import { parse } from 'semver';
+
+
+
+const ReleaseTypes = ['major', 'premajor', 'minor', 'preminor', 'patch', 'prepatch', 'prerelease'];
+
+let bump = 'patch';
+
+let cmdType = 'version';
+
+for (let arg of process.argv.slice(2)) {
+  arg = arg.toLowerCase();
+  if (arg === 'bump') {
+    cmdType = 'bump';
+    continue;
+  }
+  if (ReleaseTypes.includes(arg)) {
+    bump = arg;
+    break;
+  }
+}
 
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
 
-const version = process.argv.at(2) ?? pkg.version;
 
-if (version != pkg.version) {
-  pkg.version = version;
+if (cmdType === 'version') {
+  console.log(pkg.version);
+  exit();
+}
+
+let semver = parse(pkg.version);
+
+if (semver) {
+  semver = semver.inc(bump);
+}
+
+if (semver?.toString() != pkg.version) {
+  pkg.version = semver.version;
   writeFileSync('package.json', `${JSON.stringify(pkg, null, 2)}\n`);
   exec('git add package.json');
 }
