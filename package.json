@@ -37,7 +37,7 @@
     "typescript": "5.0.4",
     "vite": "^5.2.13",
     "vite-plugin-solid": "^2.10.2",
-    "vite-plugin-static-copy": "^1.0.5"
+    "vite-plugin-static-copy": "^2.0.0"
   },
   "dependencies": {
     "semver": "^7.5.1",
