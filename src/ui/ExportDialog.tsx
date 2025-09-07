@@ -38,7 +38,7 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
     setCandidateOutputFileName(`${fileName}${extension()}`);
   });
 
-  const exportTypes = globalSetting.items.map(o => ({ name: o.name, value: o.name }));
+  const exportTypes = globalSetting.items.map(o => ({ name: o.name, value: o.name })).sort((a, b) => a.name.localeCompare(b.name));
 
   if (globalSetting.defaultExportDirectoryMode === 'Same') {
     const path = currentFile.vault.adapter.getBasePath() + '/' + currentFile.parent.path;
