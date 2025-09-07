@@ -99,7 +99,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
       <Modal app={app} title={lang.settingTab.new} onClose={() => setModal(undefined)}>
         <Setting name={lang.settingTab.template}>
           <DropDown
-            options={Object.entries(export_templates).map(([k, v]) => ({ name: v.name, value: k }))}
+            options={Object.entries(export_templates).map(([k, v]) => ({ name: v.name, value: k })).sort((a, b) => a.name.localeCompare(b.name))}
             selected={name() ?? templateName()}
             onChange={(v: TemplateKey) => setTemplateName(v)}
           />
@@ -283,7 +283,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
 
     <Setting name={lang.settingTab.chooseCommandTemplate}>
       <DropDown
-        options={settings.items.map(o => ({ name: o.name, value: o.name }))}
+        options={settings.items.map(o => ({ name: o.name, value: o.name })).sort((a, b) => a.name.localeCompare(b.name))}
         selected={settings.lastEditName}
         onChange={(v) => setSettings('lastEditName', v)}
       />
