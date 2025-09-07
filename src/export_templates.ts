@@ -132,6 +132,12 @@ export default {
       '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/citefilter.lua" -o "${outputPath}" --to=bibtex "${currentPath}"',
     extension: '.bib',
   },
+  'PowerPoint (.pptx)': {
+    name: 'PowerPoint (.pptx)',
+    type: 'pandoc',
+    arguments: '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" -o "${outputPath}" -t pptx',
+    extension: '.pptx',
+  },
   'Custom': {
     name: 'Custom',
     type: 'custom',
