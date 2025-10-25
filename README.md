@@ -53,6 +53,7 @@ You can use `${variables}` in custom export command, their values are:
 | `${currentFileFullName}`  | Filename with extension of currently edited file. It will be `readme.md` in above case. |
 | `${vaultDir}`             | The obsidian current vaultDir.                               |
 | `${attachmentFolderPath}` | The `attachmentFolderPath` of Obsidian.                      |
+| `${embedDirs}` 			| String containing directories of embedded files for use with --resource-path argument e.g. --resource-path=`${embedDirs}`    |
 | Others variables          | You can use `keyword: value` in [YAML Front Matter](https://jekyllrb.com/docs/front-matter/), then use `${metadata.keyword}` |
 
 ## Related resources

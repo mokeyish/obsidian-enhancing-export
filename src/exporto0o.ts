@@ -84,6 +84,25 @@ export async function exportToOo(
   } catch (e) {
     console.error(e);
   }
+  
+  let embedArray: unknown = null;
+  try {
+    embedArray = metadataCache.getCache(currentFile.path).embeds;
+  } catch (e) {
+    console.error(e);
+  }
+  let targetDirArray: string[] = [];
+  for (const embed of embedArray) {
+	const linkPath = embed.link;
+	const targetFile = metadataCache.getFirstLinkpathDest(linkPath, currentFile.path);
+	if (targetFile instanceof TFile) {
+      targetDirArray.push(path.join(vaultDir, path.dirname(targetFile.path)));
+	} else if (targetFile === null) {
+	  console.warn(`Could not resolve embedded file: ${linkPath}`);
+	}
+  }
+  targetDirArray = [...new Set(targetDirArray)];
+  const embedDirs = targetDirArray.join(path.delimiter);
 
   const variables: Variables = {
     pluginDir,
@@ -102,6 +121,7 @@ export async function exportToOo(
     // lastMod: new Date(currentFile.stat.mtime),
     // now: new Date()
     metadata: frontMatter,
+    embedDirs,
     options,
     fromFormat: app.vault.config.useMarkdownLinks ? 'markdown' : 'markdown+wikilinks_title_after_pipe',
   };
@@ -167,6 +187,7 @@ export async function exportToOo(
       'currentPath',
       'attachmentFolderPath',
       'vaultDir',
+      'embedDirs',
     ];
 
     for (const pathKey of pathKeys) {
