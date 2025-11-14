@@ -33,6 +33,7 @@ export interface Variables extends Record<string, unknown> {
   // lastMod: new Date(currentFile.stat.mtime),
   // now: new Date()
   metadata?: unknown;
+  embedDirs: string;
   options?: unknown;
   env?: Record<string, string>;
 }
