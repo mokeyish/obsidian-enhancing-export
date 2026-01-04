@@ -84,7 +84,7 @@ export async function exportToOo(
   } catch (e) {
     console.error(e);
   }
-  
+
   let embedArray: unknown = null;
   try {
     embedArray = metadataCache.getCache(currentFile.path).embeds;
@@ -92,14 +92,14 @@ export async function exportToOo(
     console.error(e);
   }
   let targetDirArray: string[] = [];
-  for (const embed of embedArray) {
-	const linkPath = embed.link;
-	const targetFile = metadataCache.getFirstLinkpathDest(linkPath, currentFile.path);
-	if (targetFile instanceof TFile) {
+  for (const embed of (embedArray || [])) {
+    const linkPath = embed.link;
+    const targetFile = metadataCache.getFirstLinkpathDest(linkPath, currentFile.path);
+    if (targetFile instanceof TFile) {
       targetDirArray.push(path.join(vaultDir, path.dirname(targetFile.path)));
-	} else if (targetFile === null) {
-	  console.warn(`Could not resolve embedded file: ${linkPath}`);
-	}
+    } else if (targetFile === null) {
+      console.warn(`Could not resolve embedded file: ${linkPath}`);
+    }
   }
   targetDirArray = [...new Set(targetDirArray)];
   const embedDirs = targetDirArray.join(path.delimiter);
