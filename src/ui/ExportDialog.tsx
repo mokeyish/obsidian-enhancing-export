@@ -19,6 +19,7 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
   const [showOverwriteConfirmation, setShowOverwriteConfirmation] = createSignal(globalSetting.showOverwriteConfirmation);
   const [exportType, setExportType] = createSignal(globalSetting.lastExportType ?? globalSetting.items.first()?.name);
   const [options, setOptions] = createSignal({});
+  const [extraArguments, setExtraArguments] = createSignal('');
   const setting = createMemo(() => globalSetting.items.find(o => o.name === exportType()));
   const extension = createMemo(() => extractExtension(setting()));
   const title = createMemo(() => lang.exportDialog.title(setting().name));
@@ -69,6 +70,7 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
       untrack(setting),
       untrack(showOverwriteConfirmation),
       options(),
+      untrack(extraArguments),
       async () => {
         globalSetting.showOverwriteConfirmation = untrack(showOverwriteConfirmation);
         globalSetting.lastExportDirectory = setPlatformValue(globalSetting.lastExportDirectory, untrack(candidateOutputDirectory));
@@ -106,6 +108,15 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
         <ExtraButton icon='folder' onClick={chooseFolder} />
       </Setting>
 
+      <Show when={setting()?.type === 'pandoc'}>
+        <Setting name={lang.exportDialog.extraArguments}>
+          <Text
+            style="width: 100%"
+            value={extraArguments()}
+            onChange={(value) => setExtraArguments(value)}
+          />
+        </Setting>
+      </Show>
 
       <Setting name={lang.exportDialog.overwriteConfirmation} class="mod-toggle">
         <Toggle checked={showOverwriteConfirmation()} onChange={setShowOverwriteConfirmation} />

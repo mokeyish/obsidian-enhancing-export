@@ -19,6 +19,7 @@ export async function exportToOo(
   setting: ExportSetting,
   showOverwriteConfirmation?: boolean,
   options?: unknown,
+  extraArguments?: string,
   onSuccess?: () => void,
   onFailure?: () => void,
   beforeExport?: () => void
@@ -198,7 +199,7 @@ export async function exportToOo(
 
   const cmdTpl =
     setting.type === 'pandoc'
-      ? `${pandocPath} "\${currentPath}" ${setting.arguments ?? ''} ${setting.customArguments ?? ''}`
+      ? `${pandocPath} "\${currentPath}" ${setting.arguments ?? ''} ${setting.customArguments ?? ''} ${extraArguments ?? ''}`
       : setting.command;
 
   const cmd = renderTemplate(cmdTpl, variables);

@@ -17,6 +17,7 @@ export default {
     export: '导出',
     selectExportFolder: '请选择导出文件夹',
     overwriteConfirmation: '覆盖提示',
+    extraArguments: '自定义参数',
   },
   messageBox: {
     yes: '是',
