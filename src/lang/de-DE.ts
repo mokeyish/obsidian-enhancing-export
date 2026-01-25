@@ -17,6 +17,7 @@ export default {
     selectExportFolder: 'Zielordner auswählen',
     overwriteConfirmation: 'Überschreibe den Zielordner',
     type: 'Typ',
+    extraArguments: 'Zusätzliche Parameter',
   },
   messageBox: {
     yes: 'Ja',

@@ -16,6 +16,7 @@ export default {
     selectExportFolder: 'Please select an export folder.',
     overwriteConfirmation: 'Overwrite confirmation',
     type: 'Type',
+    extraArguments: 'Extra arguments',
   },
   messageBox: {
     yes: 'Yes',
