@@ -35,7 +35,7 @@ export default {
     title: 'Export Settings',
     pandocVersion: strTpl`Версия: ${0}`,
     pandocVersionWithWarning: strTpl`Версия: ${0}, пожалуйста обновите версию до ${1}`,
-    pandocNotFound: 'Pandoc не найден, пожалуйста укажите путь путь к файлу Pandoc или добавьте его в переменные системного окружения.',
+    pandocNotFound: 'Pandoc не найден, пожалуйста укажите путь к файлу Pandoc или добавьте его в переменные системного окружения.',
     defaultFolderForExportedFile: 'Папка по умолчанию для экспортированного файла',
     openExportedFileLocation: 'Открыть расположение экспортированного файла',
     ShowExportProgressBar: 'Показывать прогресс экспорта',
