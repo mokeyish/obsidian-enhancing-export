@@ -4,7 +4,7 @@ export default {
   exportToOo: 'Экспорт в...',
   exportSuccessNotice: strTpl`Файл ${0} успешно экспортирован!`,
   exportCommandOutputMessage: strTpl`Команда: ${0}`,
-  exportErrorOutputMessage: strTpl`Команда: ${0}，Ошибка: ${1}`,
+  exportErrorOutputMessage: strTpl`Команда: ${0}, Ошибка: ${1}`,
   exportWithPrevious: 'Экспортировать как предыдущий',
   pleaseOpenFile: 'Пожалуйста, сначала откройте файл.',
   preparing: strTpl`генерируется "${0}"...`,
