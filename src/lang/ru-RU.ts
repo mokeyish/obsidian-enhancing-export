@@ -64,7 +64,7 @@ export default {
     arguments: 'Аргументы',
 
     advanced: 'Расширенные',
-    environmentVariables: 'Аргументы окружения',
-    environmentVariablesDesc: 'Определить аргументы окружения для экспорта.',
+    environmentVariables: 'Переменные окружения',
+    environmentVariablesDesc: 'Определить переменные окружения для экспорта.',
   },
 };
