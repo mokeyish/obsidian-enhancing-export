@@ -208,14 +208,15 @@ export async function exportToOo(
       output: ['o'],
     },
   });
-  const actualOutputPath = path.normalize(trimQuotes(args.output));
-
-  const actualOutputDir = path.dirname(actualOutputPath);
-  if (!fs.existsSync(actualOutputDir)) {
-    fs.mkdirSync(actualOutputDir);
-  }
 
   try {
+    const actualOutputPath = path.normalize(trimQuotes(args.output));
+
+    const actualOutputDir = path.dirname(actualOutputPath);
+    if (!fs.existsSync(actualOutputDir)) {
+      fs.mkdirSync(actualOutputDir);
+    }
+
     console.log(`[${plugin.manifest.name}]: export command and options:`, {
       cmd,
       options: { cwd: variables.currentDir, env },
