@@ -1,4 +1,5 @@
 import zhCN from './zh-CN';
+import zhTW from './zh-TW';
 import enUS from './en-US';
 import deDE from './de-DE';
 import ruRU from './ru-RU';
@@ -10,6 +11,7 @@ export default {
   'de-DE': deDE,
   'en-US': enUS,
   'zh-CN': zhCN,
+  'zh-TW': zhTW,
   'ru-RU': ruRU,
   get current() {
     const langIds = Object.keys(this);
