@@ -50,7 +50,7 @@ importers:
         version: 29.7.0(@types/node@20.14.8)
       obsidian:
         specifier: latest
-        version: 1.6.6(@codemirror/state@6.4.1)(@codemirror/view@6.28.1)
+        version: 1.7.2(@codemirror/state@6.4.1)(@codemirror/view@6.28.1)
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
@@ -70,8 +70,8 @@ importers:
         specifier: ^2.10.2
         version: 2.10.2(solid-js@1.8.20)(vite@5.3.1(@types/node@20.14.8))
       vite-plugin-static-copy:
-        specifier: ^1.0.5
-        version: 1.0.5(vite@5.3.1(@types/node@20.14.8))
+        specifier: ^2.1.0
+        version: 2.1.0(vite@5.3.1(@types/node@20.14.8))
 
 packages:
 
@@ -1024,6 +1024,7 @@ packages:
   eslint@8.57.0:
     resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
@@ -1548,8 +1549,8 @@ packages:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
     engines: {node: '>=8'}
 
-  obsidian@1.6.6:
-    resolution: {integrity: sha512-GZHzeOiwmw/wBjB5JwrsxAZBLqxGQmqtEKSvJJvT0LtTcqeOFnV8jv0ZK5kO7hBb44WxJc+LdS7mZgLXbb+qXQ==}
+  obsidian@1.7.2:
+    resolution: {integrity: sha512-k9hN9brdknJC+afKr5FQzDRuEFGDKbDjfCazJwpgibwCAoZNYHYV8p/s3mM8I6AsnKrPKNXf8xGuMZ4enWelZQ==}
     peerDependencies:
       '@codemirror/state': ^6.0.0
       '@codemirror/view': ^6.0.0
@@ -1920,8 +1921,8 @@ packages:
       '@testing-library/jest-dom':
         optional: true
 
-  vite-plugin-static-copy@1.0.5:
-    resolution: {integrity: sha512-02k0Rox+buYdEOfeilKZSgs1gXfPf9RjVztZEIYZgVIxjsVZi6AXssjzdi+qW6zYt00d3bq+tpP2voVXN2fKLw==}
+  vite-plugin-static-copy@2.1.0:
+    resolution: {integrity: sha512-n8lEOIVM00Y/zronm0RG8RdPyFd0SAAFR0sii3NWmgG3PSCyYMsvUNRQTlb3onp1XeMrKIDwCrPGxthKvqX9OQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
       vite: ^5.0.0
@@ -3801,7 +3802,7 @@ snapshots:
     dependencies:
       path-key: 3.1.1
 
-  obsidian@1.6.6(@codemirror/state@6.4.1)(@codemirror/view@6.28.1):
+  obsidian@1.7.2(@codemirror/state@6.4.1)(@codemirror/view@6.28.1):
     dependencies:
       '@codemirror/state': 6.4.1
       '@codemirror/view': 6.28.1
@@ -4136,7 +4137,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-plugin-static-copy@1.0.5(vite@5.3.1(@types/node@20.14.8)):
+  vite-plugin-static-copy@2.1.0(vite@5.3.1(@types/node@20.14.8)):
     dependencies:
       chokidar: 3.6.0
       fast-glob: 3.3.2
