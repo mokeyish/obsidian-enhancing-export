@@ -26,8 +26,8 @@ if is_partially_supported then
         {
             Math = function(elem)
                 if elem.text:find("^%s*\\begin{") ~= nil then
-                    local replacement = pandoc.text:gsub(elem.text, "^%s*\\begin{(.-)}", "\\begin{%1}"):gsub("\\end{(.-)}%s*$", "\\end{%1}")
-                    return pandoc.Math(replacement, elem.mathtype)
+                    local replacement = elem.text:gsub("^%s*\\begin{(.-)}", "\\begin{%1}"):gsub("\\end{(.-)}%s*$", "\\end{%1}")
+                    return pandoc.Math(elem.mathtype, replacement)
                 else
                     return elem
                 end
