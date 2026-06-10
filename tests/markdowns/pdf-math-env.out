@@ -1,0 +1,15 @@
+Pandoc
+  Meta { unMeta = fromList [] }
+  [ Para
+      [ Math
+          DisplayMath
+          "\\begin{align}\na &= b \\\\\nc &= d\n\\end{align}"
+      ]
+  , Para
+      [ Str "Inline"
+      , Space
+      , Math InlineMath "x^2 + y^2 = z^2"
+      , Space
+      , Str "here."
+      ]
+  ]
