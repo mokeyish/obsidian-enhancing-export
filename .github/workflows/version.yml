@@ -29,7 +29,7 @@ jobs:
         node-version: 20
     - uses: pnpm/action-setup@v4
       with:
-        version: 10.33.4
+        version: 10.34.5
     - name: Install Dependencies
       run: pnpm install
     - name: Create local changes
@@ -62,7 +62,7 @@ jobs:
           node-version: 20
       - uses: pnpm/action-setup@v4
         with:
-          version: 10.33.4
+          version: 10.34.5
       - name: Install Dependencies
         run: pnpm install
       - name: Build
