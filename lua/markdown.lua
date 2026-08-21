@@ -105,7 +105,10 @@ function Image(el)
   return el
 end
 
-function Space()
+function Space(el)
+  if FORMAT == 'typst' then
+    return el
+  end
   return raw(' ')
 end
 
