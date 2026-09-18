@@ -1,0 +1,94 @@
+%%
+%% ieee.tex -- IEEE conference paper template for Pandoc.
+%% Uses the standard `IEEEtran` class (shipped with TeX Live).
+%%
+%% Front matter: title, author(s), abstract, keywords, CJKmainfont, ...
+%% Compile with XeLaTeX or LuaLaTeX for Chinese support.
+%%
+\documentclass[conference]{IEEEtran}
+
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{textcomp}
+
+% IEEEtran conference papers are two-column, where longtable cannot be used,
+% but Pandoc always emits longtable for tables. Alias it to a regular tabular
+% so tables compile (they no longer break across pages, which is acceptable).
+\def\endfirsthead{}\def\endhead{}\def\endfoot{}\def\endlastfoot{}
+\ifdefined\longtable\renewenvironment{longtable}[2][]{\begin{tabular}{#2}}{\end{tabular}}\else\newenvironment{longtable}[2][]{\begin{tabular}{#2}}{\end{tabular}}\fi
+
+% Chinese / Japanese / Korean support. The plugin also injects an automatic
+% font header, this block only honours explicit front matter settings.
+\ifdefined\XeTeXversion
+  \usepackage{xeCJK}
+  $if(CJKmainfont)$
+  \IfFontExistsTF{$CJKmainfont$}{\setCJKmainfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}}{}
+  $endif$
+  $if(CJKsansfont)$
+  \IfFontExistsTF{$CJKsansfont$}{\setCJKsansfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKsansfont$}}{}
+  $endif$
+  $if(CJKmonofont)$
+  \IfFontExistsTF{$CJKmonofont$}{\setCJKmonofont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmonofont$}}{}
+  $endif$
+  \ifdefined\CJKrmfamily \XeTeXlinebreaklocale "zh" \fi
+  \XeTeXlinebreakskip = 0pt plus 1pt
+\else\ifdefined\directlua
+  \usepackage{fontspec}
+  \usepackage{luatexja-fontspec}
+  $if(CJKmainfont)$
+  \IfFontExistsTF{$CJKmainfont$}{\setmainjfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}}{}
+  $endif$
+\fi\fi
+
+% Pandoc helper macros (required for images / diagrams and tight lists)
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{%
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi%
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+\makeatother
+
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+\title{$title$}
+$if(author)$
+\author{$for(author)$$author$$sep$ \and $endfor$}
+$endif$
+
+\begin{document}
+
+\maketitle
+
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+$endif$
+
+$if(keywords)$
+\begin{IEEEkeywords}
+$for(keywords)$$keywords$$sep$, $endfor$
+\end{IEEEkeywords}
+$endif$
+
+$body$
+
+\end{document}

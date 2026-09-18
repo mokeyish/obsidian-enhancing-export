@@ -1,0 +1,181 @@
+%%
+%% chinese-thesis.tex -- a clean, self contained template for Chinese
+%% graduation theses / academic papers written with Pandoc.
+%%
+%% Everything user specific comes from the YAML front matter; this file only
+%% provides sensible defaults. Supported front matter fields:
+%%
+%%   title, author, date, abstract, keywords
+%%   fontsize, papersize, geometry, linestretch, parskip
+%%   mainfont, sansfont, monofont, CJKmainfont, CJKsansfont, CJKmonofont
+%%   numbersections, secnumdepth, toc, toc-depth, colorlinks
+%%   header-includes            (overrides any default below)
+%%
+\documentclass[
+$if(fontsize)$
+  $fontsize$,
+$endif$
+$if(papersize)$
+  $papersize$paper,
+$else$
+  a4paper,
+$endif$
+$for(classoption)$
+  $classoption$$sep$,
+$endfor$
+]{article}
+
+% ---------------------------------------------------------------------------
+% Layout
+% ---------------------------------------------------------------------------
+\usepackage{xcolor}
+$if(geometry)$
+\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
+$else$
+\usepackage[a4paper,margin=2.5cm]{geometry}
+$endif$
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{caption}
+\captionsetup{font=small}
+\usepackage{titlesec}
+\usepackage{setspace}
+$if(linestretch)$
+\setstretch{$linestretch$}
+$else$
+\setstretch{1.5}
+$endif$
+$if(parskip)$
+\setlength{\parskip}{$parskip$}
+$else$
+\setlength{\parskip}{0.5em}
+$endif$
+
+% ---------------------------------------------------------------------------
+% Fonts. Fontspec / xeCJK are required for OpenType fonts. The plugin also
+% injects a header that selects an installed CJK font automatically, this
+% block only honours explicit front matter settings.
+% ---------------------------------------------------------------------------
+\ifdefined\XeTeXversion
+  \usepackage{xeCJK}
+  $if(mainfont)$
+  \IfFontExistsTF{$mainfont$}{\setmainfont{$mainfont$}}{}
+  $endif$
+  $if(CJKmainfont)$
+  \IfFontExistsTF{$CJKmainfont$}{\setCJKmainfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}}{}
+  $endif$
+  $if(CJKsansfont)$
+  \IfFontExistsTF{$CJKsansfont$}{\setCJKsansfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKsansfont$}}{}
+  $endif$
+  $if(CJKmonofont)$
+  \IfFontExistsTF{$CJKmonofont$}{\setCJKmonofont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmonofont$}}{}
+  $endif$
+  \ifdefined\CJKrmfamily \XeTeXlinebreaklocale "zh" \fi
+  \XeTeXlinebreakskip = 0pt plus 1pt
+\else\ifdefined\directlua
+  \usepackage{fontspec}
+  \usepackage{luatexja-fontspec}
+  $if(mainfont)$
+  \IfFontExistsTF{$mainfont$}{\setmainfont{$mainfont$}}{}
+  $endif$
+  $if(CJKmainfont)$
+  \IfFontExistsTF{$CJKmainfont$}{\setmainjfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}}{}
+  $endif$
+\fi\fi
+
+% ---------------------------------------------------------------------------
+% Section headings (override these via header-includes if you like)
+% ---------------------------------------------------------------------------
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+% ---------------------------------------------------------------------------
+% Hyperlinks
+% ---------------------------------------------------------------------------
+\usepackage{hyperref}
+\hypersetup{
+$if(colorlinks)$
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue,
+$else$
+  hidelinks,
+$endif$
+  pdftitle={$title$},
+  pdfauthor={$for(author)$$author$$sep$, $endfor$},
+}
+
+% ---------------------------------------------------------------------------
+% User supplied preamble additions
+% ---------------------------------------------------------------------------
+% Pandoc helper macros (required for images / diagrams and tight lists)
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{%
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi%
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+\makeatother
+
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+% ---------------------------------------------------------------------------
+% Section numbering
+% ---------------------------------------------------------------------------
+$if(numbersections)$
+\setcounter{secnumdepth}{$if(secnumdepth)$$secnumdepth$$else$3$endif$}
+$else$
+\setcounter{secnumdepth}{-\maxdimen}
+$endif$
+
+% ---------------------------------------------------------------------------
+% Title
+% ---------------------------------------------------------------------------
+$if(title)$
+\title{$title$}
+$endif$
+$if(author)$
+\author{$for(author)$$author$$sep$ \and $endfor$$if(institute)$\\[4pt]{\normalsize\itshape $institute$}$endif$}
+$endif$
+\date{$if(date)$$date$$else$$endif$}
+
+\begin{document}
+$if(title)$
+\maketitle
+$endif$
+
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+$endif$
+
+$if(keywords)$
+\noindent\textbf{关键词：} $for(keywords)$$keywords$$sep$；$endfor$
+$endif$
+
+$if(toc)$
+\tableofcontents
+\newpage
+$endif$
+
+$body$
+
+\end{document}

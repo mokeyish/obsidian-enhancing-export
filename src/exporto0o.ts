@@ -3,13 +3,16 @@ import * as fs from 'fs';
 import process from 'process';
 import path from 'path';
 import argsParser from 'yargs-parser';
-import { Variables, ExportSetting, extractDefaultExtension as extractExtension, createEnv } from './settings';
+import { Variables, ExportSetting, DocumentInfo, extractDefaultExtension as extractExtension, createEnv } from './settings';
 import { MessageBox } from './ui/message_box';
 import { Notice, TFile } from 'obsidian';
 import { exec, renderTemplate, getPlatformValue, trimQuotes } from './utils';
 import ProgressBar from './ui/components/ProgressBar';
 import type ExportPlugin from './main';
 import pandoc from './pandoc';
+import { buildEnhancement } from './export_enhancements';
+import { buildMetadataArguments } from './document_info';
+import { consumeDiagramErrors, finalizeDiagrams } from './diagrams';
 
 export async function exportToOo(
   plugin: ExportPlugin,
@@ -22,7 +25,8 @@ export async function exportToOo(
   extraArguments?: string,
   onSuccess?: () => void,
   onFailure?: () => void,
-  beforeExport?: () => void
+  beforeExport?: () => void,
+  documentInfo?: DocumentInfo
 ) {
   const {
     settings: globalSetting,
@@ -93,7 +97,7 @@ export async function exportToOo(
     console.error(e);
   }
   let targetDirArray: string[] = [];
-  for (const embed of (embedArray || [])) {
+  for (const embed of embedArray || []) {
     const linkPath = embed.link;
     const targetFile = metadataCache.getFirstLinkpathDest(linkPath, currentFile.path);
     if (targetFile instanceof TFile) {
@@ -197,12 +201,30 @@ export async function exportToOo(
     }
   }
 
+  const enhancement = buildEnhancement({
+    setting,
+    settings: globalSetting,
+    outputPath: variables.outputPath,
+    currentPath,
+    pluginDir,
+    luaDir,
+    metadata: frontMatter,
+    documentInfo,
+    combinedArguments:
+      setting.type === 'pandoc' ? `${setting.arguments ?? ''} ${setting.customArguments ?? ''} ${extraArguments ?? ''}` : '',
+  });
+  const enhancementArguments = enhancement.arguments;
+  const diagramContext = enhancement.diagramContext;
+
   const cmdTpl =
     setting.type === 'pandoc'
-      ? `${pandocPath} "\${currentPath}" ${setting.arguments ?? ''} ${setting.customArguments ?? ''} ${extraArguments ?? ''}`
+      ? `${pandocPath} "\${currentPath}" ${setting.arguments ?? ''} ${setting.customArguments ?? ''} ${enhancementArguments} ${extraArguments ?? ''}`
       : setting.command;
 
-  const cmd = renderTemplate(cmdTpl, variables);
+  // Metadata typed in the export dialog is appended after template rendering so
+  // that user text is never interpreted as a template (or shell) expression.
+  const metadataArguments = setting.type === 'pandoc' ? buildMetadataArguments(documentInfo) : '';
+  const cmd = `${renderTemplate(cmdTpl, variables)} ${metadataArguments}`.trim();
   const args = argsParser(cmd.match(/(?:[^\s"]+|"[^"]*")+/g), {
     alias: {
       output: ['o'],
@@ -223,6 +245,16 @@ export async function exportToOo(
     });
     await exec(cmd, { cwd: variables.currentDir, env });
     progressBarHide?.();
+
+    // Copy rendered images to the output for text formats, then clean up tmp.
+    if (diagramContext) {
+      finalizeDiagrams(diagramContext, variables.outputPath);
+    }
+
+    const diagramErrors = consumeDiagramErrors();
+    if (diagramErrors) {
+      new Notice(`Enhancing Export — diagram render failed, kept as code:\n${diagramErrors}`, 10000);
+    }
 
     const next = async () => {
       if (openExportedFileLocation) {

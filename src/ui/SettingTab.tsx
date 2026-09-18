@@ -279,6 +279,60 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
       />
     </Setting>
 
+    <Setting name={lang.settingTab.fontFallback} heading={true} />
+    <Setting name={lang.settingTab.enableFontFallback} description={lang.settingTab.enableFontFallbackDesc}>
+      <Toggle
+        checked={settings.enableFontFallback ?? true}
+        onChange={(v) => setSettings('enableFontFallback', v)}
+      />
+    </Setting>
+    <Setting name={lang.settingTab.fallbackFonts} description={lang.settingTab.fallbackFontsDesc}>
+      <Text
+        style="width: 100%"
+        placeholder={lang.settingTab.fallbackFontPlaceholder}
+        value={settings.fallbackFonts ?? ''}
+        onChange={(value) => setSettings('fallbackFonts', value)}
+      />
+    </Setting>
+
+    <Setting name={lang.settingTab.diagrams} heading={true} />
+    <Setting name={lang.settingTab.renderDiagrams} description={lang.settingTab.renderDiagramsDesc}>
+      <Toggle
+        checked={settings.renderDiagrams ?? true}
+        onChange={(v) => setSettings('renderDiagrams', v)}
+      />
+    </Setting>
+    <Setting name={lang.settingTab.diagramScale}>
+      <Text
+        value={String(settings.diagramScale ?? 3)}
+        onChange={(value) => setSettings('diagramScale', Number.parseInt(value, 10) || 3)}
+      />
+    </Setting>
+    <Setting name="mmdc" description={lang.settingTab.diagramToolPaths}>
+      <Text
+        style="width: 100%"
+        placeholder={lang.settingTab.toolPathPlaceholder}
+        value={getPlatformValue(settings.mmdcPath) ?? ''}
+        onChange={(value) => setSettings('mmdcPath', (v) => setPlatformValue(v, value))}
+      />
+    </Setting>
+    <Setting name="PlantUML">
+      <Text
+        style="width: 100%"
+        placeholder={lang.settingTab.toolPathPlaceholder}
+        value={getPlatformValue(settings.plantumlPath) ?? ''}
+        onChange={(value) => setSettings('plantumlPath', (v) => setPlatformValue(v, value))}
+      />
+    </Setting>
+    <Setting name="Graphviz (dot)">
+      <Text
+        style="width: 100%"
+        placeholder={lang.settingTab.toolPathPlaceholder}
+        value={getPlatformValue(settings.dotPath) ?? ''}
+        onChange={(value) => setSettings('dotPath', (v) => setPlatformValue(v, value))}
+      />
+    </Setting>
+
     <Setting name={lang.settingTab.editCommandTemplate} heading={true} />
 
     <Setting name={lang.settingTab.chooseCommandTemplate}>

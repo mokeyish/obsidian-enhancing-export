@@ -56,6 +56,69 @@ You can use `${variables}` in custom export command, their values are:
 | `${embedDirs}` 			| String containing directories of embedded files for use with --resource-path argument e.g. --resource-path=`${embedDirs}`    |
 | Others variables          | You can use `keyword: value` in [YAML Front Matter](https://jekyllrb.com/docs/front-matter/), then use `${metadata.keyword}` |
 
+## Multilingual fonts and diagrams
+
+This fork ships two defaults that need no extra configuration:
+
+### Font fallback (Chinese, Japanese, Korean, Cyrillic, Greek, Devanagari, Thai…)
+
+When the LaTeX template or the front matter does not configure a font, the plugin
+detects the writing systems used by the document (the front matter `lang` field
+plus a scan of the text) and falls back to fonts that are actually installed:
+
+- **PDF / LaTeX**: an extra header with `\IfFontExistsTF` chains is injected, so a
+  missing font never breaks the export. It requires `xelatex` (the default) or
+  `lualatex`; `pdflatex` cannot embed these fonts and is skipped automatically.
+- **HTML / ePub**: a CSS font stack is injected.
+- **Override** fonts through the front matter (`CJKmainfont`, `CJKsansfont`,
+  `CJKmonofont`, `mainfont`, `sansfont`, `monofont`) or through
+  `Settings → Multilingual fonts → Extra fallback fonts`.
+
+### Finding pandoc, xelatex and the diagram tools
+
+Obsidian started from the GUI does not inherit the `PATH` of your terminal, so
+tools installed through Homebrew, MacPorts, pyenv, nvm, … are often reported as
+"not installed". At startup the plugin resolves the `PATH` of your login shell
+and merges it with the process `PATH`, so these tools are found without any
+configuration. On Windows the normal environment is used.
+
+Everything is still overridable:
+
+- `Settings → Pandoc path`: absolute path to the `pandoc` / `pandoc.exe` binary.
+- `Settings → Advanced → Environment Variables`: set `PATH` to replace it, or
+  `PATH=/my/bin:${PATH}` to prepend a directory.
+- `Settings → Diagrams`: absolute paths for `mmdc` / `plantuml` / `dot`.
+
+### Diagrams (Mermaid / PlantUML / Graphviz)
+
+Fenced code blocks are rendered to images before Pandoc runs, using a beautified
+Mermaid theme and high resolution output for PDF / Word:
+
+- ` ```mermaid ` → [mermaid-cli](https://github.com/mermaid-js/mermaid-cli) (`mmdc`)
+- ` ```plantuml ` / ` ```puml ` → PlantUML (`plantuml` or a `plantuml.jar`)
+- ` ```dot ` / ` ```graphviz ` → Graphviz (`dot`)
+
+Install the tools you need and make sure they are on `PATH` (or set their path in
+the plugin settings). Missing tools, or diagrams the renderer cannot parse, are
+kept as a code block and reported in a notice, so an export never fails and a
+broken error image is never embedded. Rendered images are cached next to the
+exported file in `<name>-media/`.
+
+### Paper templates and paper info
+
+The `Latex Template` dropdown offers:
+
+- `Chinese Thesis` — a clean article based template for Chinese theses / papers.
+  It supports `title`, `author`, `abstract`, `keywords`, `fontsize`, `mainfont`,
+  `CJKmainfont`, `geometry`, `linestretch`, `parskip` and `header-includes`.
+- `IEEE`, `LNCS`, `NeurIPS` — common conference / journal paper templates. IEEE
+  and LNCS use the standard `IEEEtran` / `llncs` classes shipped with TeX Live.
+
+Paper metadata (title, authors, institution, date, keywords) can be filled in
+directly in the export dialog. What you type there overrides the front matter
+and is remembered for the next export; leave a field empty to keep the value
+from the front matter.
+
 ## Related resources
 
 - **Tutorial**: [Obsidian Tutorial for Academic Writing](https://betterhumans.pub/obsidian-tutorial-for-academic-writing-87b038060522) - tutorial on how to setup this plugin and use it for academic writing (export to `.docx`, `.pdf`, `.tex`, `.bib`)

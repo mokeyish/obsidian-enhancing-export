@@ -18,6 +18,12 @@ export default {
     selectExportFolder: '請選擇匯出資料夾',
     overwriteConfirmation: '覆蓋提示',
     extraArguments: '自定義參數',
+    documentInfo: '論文資訊',
+    paperTitle: '標題',
+    author: '作者',
+    institute: '單位/機構',
+    date: '日期',
+    keywords: '關鍵詞',
   },
   messageBox: {
     yes: '是',
@@ -63,9 +69,24 @@ export default {
     new: '新建',
     template: '範本',
 
+    fontFallback: '多語言字型',
+    enableFontFallback: '啟用多語言字型回退',
+    enableFontFallbackDesc:
+      '當範本或 Front Matter 未設定字型時，自動為文件中出現的書寫系統（中文、日文、韓文、西里爾、希臘、天城體、泰文等）選擇系統字型，適用於 PDF、LaTeX、HTML 與 ePub。',
+    fallbackFonts: '額外回退字型',
+    fallbackFontsDesc: '以逗號分隔的字型名稱，會優先於內建候選字型嘗試。',
+    fallbackFontPlaceholder: '（自動）',
+    diagrams: '圖表',
+    renderDiagrams: '渲染 mermaid / plantuml 圖表',
+    renderDiagramsDesc:
+      '將 mermaid、plantuml、graphviz 程式碼區塊渲染為圖片。需要安裝 mmdc / plantuml / dot，缺少時會略過並保留程式碼區塊。',
+    diagramScale: '點陣縮放倍數',
+    diagramToolPaths: '工具路徑（mmdc / plantuml / dot）',
+    toolPathPlaceholder: '（自動偵測）',
+
     advanced: '進階',
     environmentVariables: '環境變數',
-    environmentVariablesDesc: '定義匯出的環境變數。',
+    environmentVariablesDesc: '定義匯出的環境變數。PATH 會自動從登入 shell 讀取；在此設定 PATH 可覆蓋它，或用 ${PATH} 追加自己的目錄。',
     ShowExportProgressBar: '顯示匯出進度條',
   },
 } satisfies Lang;

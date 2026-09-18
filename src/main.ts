@@ -7,6 +7,7 @@ import { getPlatformValue, PlatformKey } from './utils';
 import lang, { Lang } from './lang';
 import path from 'path';
 import resources from './resources';
+import { resolveLoginShellPath } from './shellenv';
 import './styles.css';
 
 export default class UniversalExportPlugin extends Plugin {
@@ -21,6 +22,9 @@ export default class UniversalExportPlugin extends Plugin {
 
   async onload() {
     await this.releaseResources();
+    // Resolve the login shell PATH before anything queries pandoc, so tools
+    // installed through Homebrew / MacPorts / nvm are found.
+    await resolveLoginShellPath();
 
     await this.loadSettings();
     const { lang } = this;
@@ -50,7 +54,20 @@ export default class UniversalExportPlugin extends Plugin {
           if (this.settings.lastExportType && this.settings.lastExportDirectory) {
             const setting = this.settings.items.find(s => s.name === this.settings.lastExportType);
             if (setting) {
-              await exportToOo(this, file, getPlatformValue(this.settings.lastExportDirectory), undefined, setting);
+              await exportToOo(
+                this,
+                file,
+                getPlatformValue(this.settings.lastExportDirectory),
+                undefined,
+                setting,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                this.settings.lastDocumentInfo
+              );
               return;
             }
           }
@@ -105,7 +122,6 @@ export default class UniversalExportPlugin extends Plugin {
   }
 
   public async saveSettings(): Promise<void> {
-    console.log('[obsidian-enhancing-export] saveSettings', this.settings);
     const settings: UniversalExportPluginSettings = JSON.parse(JSON.stringify(this.settings));
     settings.items.forEach(v => {
       const def = DEFAULT_SETTINGS.items.find(o => o.name === v.name);

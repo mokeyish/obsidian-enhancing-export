@@ -3,7 +3,7 @@ import { TFile } from 'obsidian';
 import { createSignal, createRoot, onCleanup, createMemo, untrack, createEffect, Show } from 'solid-js';
 import { insert } from 'solid-js/web';
 import type UniversalExportPlugin from '../main';
-import { extractDefaultExtension as extractExtension, finalizeOptionsMeta } from '../settings';
+import { extractDefaultExtension as extractExtension, finalizeOptionsMeta, DocumentInfo } from '../settings';
 import { setPlatformValue, getPlatformValue, } from '../utils';
 import { exportToOo } from '../exporto0o';
 import Modal from './components/Modal';
@@ -27,6 +27,23 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
 
   const [candidateOutputDirectory, setCandidateOutputDirectory] = createSignal(`${getPlatformValue(globalSetting.lastExportDirectory) ?? ct.remote.app.getPath('documents')}`);
   const [candidateOutputFileName, setCandidateOutputFileName] = createSignal(`${currentFile.basename}${extension()}`);
+
+  // Paper metadata: prefill from the note front matter, then from the last used
+  // values, so users can fill/override it right in the export dialog.
+  const frontMatter = (app.metadataCache.getCache(currentFile.path)?.frontmatter ?? {}) as Record<string, unknown>;
+  const asText = (value: unknown): string =>
+    Array.isArray(value) ? value.join(', ') : value == null ? '' : String(value);
+  const initialInfo = (key: keyof DocumentInfo): string =>
+    asText(frontMatter[key]) || globalSetting.lastDocumentInfo?.[key] || '';
+  const [documentInfo, setDocumentInfo] = createSignal<DocumentInfo>({
+    title: initialInfo('title'),
+    author: initialInfo('author'),
+    institute: initialInfo('institute'),
+    date: initialInfo('date'),
+    keywords: initialInfo('keywords'),
+  });
+  const updateInfo = (key: keyof DocumentInfo) => (value: string) =>
+    setDocumentInfo(prev => ({ ...prev, [key]: value }));
 
   createEffect(() => {
     const meta = optionsMeta();
@@ -76,54 +93,79 @@ const Dialog = (props: { plugin: UniversalExportPlugin, currentFile: TFile, onCl
         globalSetting.lastExportDirectory = setPlatformValue(globalSetting.lastExportDirectory, untrack(candidateOutputDirectory));
 
         globalSetting.lastExportType = untrack(setting).name;
+        globalSetting.lastDocumentInfo = untrack(documentInfo);
         await plugin.saveSettings();
         props.onClose && props.onClose();
       },
       () => {
         setHidden(false);
-      }
+      },
+      undefined,
+      untrack(documentInfo)
     );
   };
 
   return <>
-    <Modal app={app} title={title()} hidden={hidden()} onClose={props.onClose} >
-      <Setting name={lang.exportDialog.type}>
-        <DropDown options={exportTypes} onChange={(typ) => setExportType(typ)} selected={exportType()}/>
-      </Setting>
+    <Modal app={app} title={title()} hidden={hidden()} onClose={props.onClose} classList={{ 'oee-export-modal': true }}>
+      <div class="oee-export-dialog">
+        <Setting name={lang.exportDialog.type}>
+          <DropDown options={exportTypes} onChange={(typ) => setExportType(typ)} selected={exportType()}/>
+        </Setting>
 
-      <Setting name={lang.exportDialog.fileName}>
-        <Text
-          title={candidateOutputFileName()}
-          value={candidateOutputFileName()}
-          onChange={(value) => setCandidateOutputFileName(value)}
-        />
-      </Setting>
-
-      <Show when={optionsMeta()}>
-        <PropertyGrid meta={optionsMeta()} value={options()} onChange={ (o) => setOptions(o)}/>
-      </Show>
-
-      <Setting name={lang.exportDialog.exportTo}>
-        <Text title={candidateOutputDirectory()} value={candidateOutputDirectory()} disabled />
-        <ExtraButton icon='folder' onClick={chooseFolder} />
-      </Setting>
-
-      <Show when={setting()?.type === 'pandoc'}>
-        <Setting name={lang.exportDialog.extraArguments}>
+        <Setting name={lang.exportDialog.fileName}>
           <Text
-            style="width: 100%"
-            value={extraArguments()}
-            onChange={(value) => setExtraArguments(value)}
+            title={candidateOutputFileName()}
+            value={candidateOutputFileName()}
+            onChange={(value) => setCandidateOutputFileName(value)}
           />
         </Setting>
-      </Show>
 
-      <Setting name={lang.exportDialog.overwriteConfirmation} class="mod-toggle">
-        <Toggle checked={showOverwriteConfirmation()} onChange={setShowOverwriteConfirmation} />
-      </Setting>
+        <Show when={optionsMeta()}>
+          <PropertyGrid meta={optionsMeta()} value={options()} onChange={ (o) => setOptions(o)}/>
+        </Show>
 
-      <div class="modal-button-container">
-        <Button cta={true} onClick={doExport}>{lang.exportDialog.export}</Button>
+        <Setting name={lang.exportDialog.exportTo}>
+          <Text title={candidateOutputDirectory()} value={candidateOutputDirectory()} disabled />
+          <ExtraButton icon='folder' onClick={chooseFolder} />
+        </Setting>
+
+        <Show when={setting()?.type === 'pandoc'}>
+          <Setting name={lang.exportDialog.documentInfo} heading={true} />
+          <div class="oee-card oee-grid">
+            <Setting class="oee-span-2" name={lang.exportDialog.paperTitle}>
+              <Text value={documentInfo().title ?? ''} onChange={updateInfo('title')} />
+            </Setting>
+            <Setting name={lang.exportDialog.author}>
+              <Text value={documentInfo().author ?? ''} onChange={updateInfo('author')} />
+            </Setting>
+            <Setting name={lang.exportDialog.institute}>
+              <Text value={documentInfo().institute ?? ''} onChange={updateInfo('institute')} />
+            </Setting>
+            <Setting name={lang.exportDialog.date}>
+              <Text value={documentInfo().date ?? ''} onChange={updateInfo('date')} />
+            </Setting>
+            <Setting name={lang.exportDialog.keywords}>
+              <Text value={documentInfo().keywords ?? ''} onChange={updateInfo('keywords')} />
+            </Setting>
+          </div>
+
+          <Setting name={lang.settingTab.advanced} heading={true} />
+          <Setting name={lang.exportDialog.extraArguments}>
+            <Text
+              style="width: 100%"
+              value={extraArguments()}
+              onChange={(value) => setExtraArguments(value)}
+            />
+          </Setting>
+        </Show>
+
+        <Setting name={lang.exportDialog.overwriteConfirmation} class="mod-toggle">
+          <Toggle checked={showOverwriteConfirmation()} onChange={setShowOverwriteConfirmation} />
+        </Setting>
+
+        <div class="modal-button-container">
+          <Button cta={true} onClick={doExport}>{lang.exportDialog.export}</Button>
+        </div>
       </div>
     </Modal>
   </>;

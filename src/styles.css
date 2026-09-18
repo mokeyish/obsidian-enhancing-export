@@ -6,3 +6,89 @@
 *[hidden] {
   display: none;
 }
+
+/* ---------------------------------------------------------------------------
+ * Export dialog
+ * ------------------------------------------------------------------------- */
+.modal-container.oee-export-modal .modal {
+  width: min(760px, 94vw);
+  max-width: 94vw;
+}
+
+.oee-export-dialog .setting-item {
+  padding: 7px 0;
+}
+
+.oee-export-dialog .setting-item-heading {
+  margin-top: 10px;
+  padding: 6px 0 8px;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.oee-export-dialog .setting-item-heading .setting-item-name {
+  font-size: var(--font-ui-medium);
+  font-weight: 600;
+  color: var(--text-normal);
+  letter-spacing: 0.01em;
+}
+
+/* Paper info card: compact two column grid with the label above the input */
+.oee-export-dialog .oee-card {
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  padding: 4px 16px 10px;
+  margin: 8px 0 4px;
+}
+
+.oee-export-dialog .oee-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 20px;
+}
+
+.oee-export-dialog .oee-grid .setting-item {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 5px;
+  border: none;
+  border-top: none;
+  padding: 7px 0;
+}
+
+.oee-export-dialog .oee-grid .setting-item-info {
+  margin: 0;
+}
+
+.oee-export-dialog .oee-grid .setting-item-name {
+  font-size: var(--font-ui-smaller);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.oee-export-dialog .oee-grid .setting-item-control {
+  justify-content: stretch;
+  width: 100%;
+}
+
+.oee-export-dialog .oee-grid input[type='text'] {
+  width: 100%;
+}
+
+.oee-export-dialog .oee-span-2 {
+  grid-column: 1 / -1;
+}
+
+.oee-export-dialog .modal-button-container {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  margin-top: 14px;
+  padding: 12px 0 4px;
+  background: var(--background-primary);
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+.oee-export-dialog .modal-button-container button {
+  min-width: 120px;
+}

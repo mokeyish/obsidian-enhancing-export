@@ -49,17 +49,18 @@ export function exec(cmd: string, options?: ExecOptions): Promise<string> {
   options = options ?? {};
   return new Promise((resolve, reject) => {
     node_exec(cmd, options, (error, stdout, stderr) => {
+      // The exit code is authoritative: pandoc and friends write harmless
+      // warnings (missing glyphs, skipped diagrams, ...) to stderr while still
+      // exiting successfully, which must not be reported as a failed export.
       if (error) {
-        reject(error);
-        console.error(stdout, error);
+        console.error(stdout, stderr, error);
+        reject(stderr || stdout || error);
         return;
       }
       if (stderr && stderr !== '') {
-        reject(stderr);
-        console.error(stdout, error);
-        return;
+        console.warn(stderr);
       }
-      if (stdout?.trim().length === 0 && '1' === localStorage.getItem('debug-plugin')) {
+      if (stdout?.trim().length === 0 && typeof localStorage !== 'undefined' && '1' === localStorage.getItem('debug-plugin')) {
         console.log(stdout);
       }
       resolve(stdout);
