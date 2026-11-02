@@ -14,7 +14,7 @@ import { setPlatformValue, getPlatformValue } from '../utils';
 
 import { createSignal, createRoot, onCleanup, createMemo, createEffect, Show, batch, Match, Switch, JSX } from 'solid-js';
 import { createStore, produce } from 'solid-js/store';
-import { insert, Dynamic } from 'solid-js/web';
+import { insert, Dynamic, delegateEvents } from 'solid-js/web';
 import type { Lang } from '../lang';
 
 import pandoc from '../pandoc';
@@ -24,8 +24,8 @@ import Setting, { Text, Toggle, ExtraButton, DropDown, TextArea } from './compon
 import export_templates from '../export_templates';
 
 
-const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
-  const { plugin, lang } = props;
+const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin, ownerDocument: Document }) => {
+  const { plugin, lang, ownerDocument } = props;
   const [settings, setSettings0] = createStore(plugin.settings);
   const [pandocVersion, setPandocVersion] = createSignal<SemVer>();
   const envVars = createMemo(() => Object.entries(Object.assign({}, getPlatformValue(DEFAULT_ENV), getPlatformValue(settings.env) ?? {})).map(([n, v]) => `${n}="${v}"`).join('\n'));
@@ -326,7 +326,7 @@ const SettingTab = (props: { lang: Lang, plugin: UniversalExportPlugin }) => {
     </Setting>
 
     <Show when={modal()}>
-      <Dynamic component={modal()} ref={(el: Node) => document.body.appendChild(el)} />
+      <Dynamic component={modal()} ref={(el: Node) => ownerDocument.body.appendChild(el)} />
     </Show>
   </>;
 };
@@ -347,8 +347,12 @@ export default class extends PluginSettingTab {
   }
 
   display() {
+    const ownerDocument = this.containerEl.ownerDocument;
+    // Solid delegates JSX events to the main document by default, while
+    // Obsidian may render plugin settings in a separate window.
+    delegateEvents(['click', 'change'], ownerDocument);
     this.#dispose = createRoot(dispose => {
-      insert(this.containerEl, <SettingTab plugin={this.plugin} lang={this.lang} />);
+      insert(this.containerEl, <SettingTab plugin={this.plugin} lang={this.lang} ownerDocument={ownerDocument} />);
       onCleanup(() => {
         this.containerEl.empty();
       });
