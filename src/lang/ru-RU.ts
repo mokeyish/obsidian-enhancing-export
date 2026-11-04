@@ -17,6 +17,12 @@ export default {
     overwriteConfirmation: 'Подтверждение перезаписи',
     type: 'Тип',
     extraArguments: 'Дополнительные аргументы',
+    documentInfo: 'Информация о работе',
+    paperTitle: 'Название',
+    author: 'Автор(ы)',
+    institute: 'Организация',
+    date: 'Дата',
+    keywords: 'Ключевые слова',
   },
   messageBox: {
     yes: 'Да',
@@ -63,8 +69,24 @@ export default {
     new: 'Новый',
     arguments: 'Аргументы',
 
+    fontFallback: 'Многоязычные шрифты',
+    enableFontFallback: 'Использовать многоязычный подбор шрифтов',
+    enableFontFallbackDesc:
+      'Автоматически подбирать шрифты для всех систем письма в документе, если они не заданы в шаблоне или front matter. Применяется к PDF, LaTeX, HTML и ePub.',
+    fallbackFonts: 'Дополнительные шрифты',
+    fallbackFontsDesc: 'Имена шрифтов через запятую; пробуются раньше встроенных.',
+    fallbackFontPlaceholder: '(Авто)',
+    diagrams: 'Диаграммы',
+    renderDiagrams: 'Отрисовывать диаграммы mermaid / plantuml',
+    renderDiagramsDesc:
+      'Преобразовывать блоки кода mermaid, plantuml и graphviz в изображения. Требуется mmdc / plantuml / dot; отсутствующие инструменты пропускаются.',
+    diagramScale: 'Масштаб растровых изображений',
+    diagramToolPaths: 'Пути к инструментам (mmdc / plantuml / dot)',
+    toolPathPlaceholder: '(Автоопределение)',
+
     advanced: 'Расширенные',
     environmentVariables: 'Переменные окружения',
-    environmentVariablesDesc: 'Определить переменные окружения для экспорта.',
+    environmentVariablesDesc:
+      'Переменные окружения для экспорта. PATH определяется из вашего login shell; задайте PATH здесь, чтобы переопределить его, или используйте ${PATH}, чтобы добавить свои каталоги.',
   },
 };

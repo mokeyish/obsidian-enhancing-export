@@ -18,6 +18,12 @@ export default {
     overwriteConfirmation: 'Überschreibe den Zielordner',
     type: 'Typ',
     extraArguments: 'Zusätzliche Parameter',
+    documentInfo: 'Paper info',
+    paperTitle: 'Title',
+    author: 'Author(s)',
+    institute: 'Institution',
+    date: 'Date',
+    keywords: 'Keywords',
   },
   messageBox: {
     yes: 'Ja',
@@ -64,9 +70,25 @@ export default {
     new: 'Neu',
     arguments: 'Parameter',
 
+    fontFallback: 'Multilingual fonts',
+    enableFontFallback: 'Use multilingual font fallback',
+    enableFontFallbackDesc:
+      'Automatically pick fonts for every writing system found in the document when the template or front matter does not specify one. Applies to PDF, LaTeX, HTML and ePub.',
+    fallbackFonts: 'Extra fallback fonts',
+    fallbackFontsDesc: 'Comma separated font names tried before the built-in ones.',
+    fallbackFontPlaceholder: '(Auto)',
+    diagrams: 'Diagrams',
+    renderDiagrams: 'Render mermaid / plantuml diagrams',
+    renderDiagramsDesc:
+      'Convert mermaid, plantuml and graphviz code blocks into images. Requires mmdc / plantuml / dot; missing tools are skipped.',
+    diagramScale: 'Raster scale',
+    diagramToolPaths: 'Tool paths (mmdc / plantuml / dot)',
+    toolPathPlaceholder: '(Auto detect)',
+
     advanced: 'Advanced',
     environmentVariables: 'Environment Variables',
-    environmentVariablesDesc: 'Define the Environment Variables for exporting.',
+    environmentVariablesDesc:
+      'Define the Environment Variables for exporting. PATH is auto-detected from your login shell; set PATH here to override it, or use ${PATH} to append your own directories.',
     ShowExportProgressBar: 'Show export progressBar',
   },
 } satisfies Lang;

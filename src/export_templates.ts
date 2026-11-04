@@ -59,7 +59,7 @@ export default {
     type: 'pandoc',
     arguments:
       '-f ${fromFormat} --resource-path="${currentDir}" --resource-path="${attachmentFolderPath}" --lua-filter="${luaDir}/pdf.lua" ${ options.textemplate ? `--resource-path="${pluginDir}/textemplate" --template="${options.textemplate}"` : ` ` } -o "${outputPath}" -t pdf',
-    customArguments: '--pdf-engine=pdflatex',
+    customArguments: '--pdf-engine=xelatex',
     optionsMeta: {
       'textemplate': 'preset:textemplate', // reference from `PresetOptionsMeta` in `src/settings.ts`
     },

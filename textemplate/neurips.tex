@@ -38,6 +38,27 @@
 \usepackage{array}     % For table alignment improvements
 \usepackage{amsmath}
 \usepackage{textcomp}
+\usepackage{amssymb}       % blackboard / empty-set symbols (e.g. \varnothing)
+% Chinese text support. Fonts are chosen from the ones actually installed on
+% the machine, so the template works on macOS, Windows and Linux alike.
+% This template targets XeLaTeX / LuaLaTeX; pdflatex cannot embed CJK fonts.
+\ifdefined\XeTeXversion
+\usepackage{xeCJK}
+\IfFontExistsTF{Songti SC}{\setCJKmainfont{Songti SC}}{%
+  \IfFontExistsTF{SimSun}{\setCJKmainfont{SimSun}}{%
+    \IfFontExistsTF{Noto Serif CJK SC}{\setCJKmainfont{Noto Serif CJK SC}}{%
+      \IfFontExistsTF{Source Han Serif SC}{\setCJKmainfont{Source Han Serif SC}}{%
+        \IfFontExistsTF{AR PL UMing CN}{\setCJKmainfont{AR PL UMing CN}}{}}}}}
+\IfFontExistsTF{PingFang SC}{\setCJKsansfont{PingFang SC}}{%
+  \IfFontExistsTF{Microsoft YaHei}{\setCJKsansfont{Microsoft YaHei}}{%
+    \IfFontExistsTF{Noto Sans CJK SC}{\setCJKsansfont{Noto Sans CJK SC}}{%
+      \IfFontExistsTF{Heiti SC}{\setCJKsansfont{Heiti SC}}{}}}}
+\IfFontExistsTF{Menlo}{\setCJKmonofont{Menlo}}{%
+  \IfFontExistsTF{Consolas}{\setCJKmonofont{Consolas}}{%
+    \IfFontExistsTF{Noto Sans Mono CJK SC}{\setCJKmonofont{Noto Sans Mono CJK SC}}{}}}
+\ifdefined\CJKrmfamily \XeTeXlinebreaklocale "zh" \fi
+\XeTeXlinebreakskip = 0pt plus 1pt
+\fi
 \setlength{\LTcapwidth}{\textwidth} % To make captions fit within page width
 
 \makeatletter
@@ -102,11 +123,16 @@ $if(csl-refs)$
 $endif$
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+$if(highlighting-macros)$
+% Pandoc syntax highlighting (defines Shaded/Highlighting environments and token commands)
+$highlighting-macros$
+$endif$
 \title{$title$}
 
 
-% Iterate through the authors except last to add \And. 
+% Iterate through the authors except last to add \And.
 
+$if(authors)$
 \author{%
 $for(authors/allbutlast)$
   $authors.name$\\$authors.affiliation$\\$authors.institution$\\$authors.email$\\$authors.address$ \And
@@ -115,35 +141,20 @@ $for(authors/last)$
   $authors.name$\\$authors.affiliation$\\$authors.institution$\\$authors.email$\\$authors.address$
 $endfor$
 }
+$else$
+\author{$for(author)$$author$$sep$ \and $endfor$}
+$endif$
+\date{$if(date)$$date$$else$\today$endif$}
 
-% \author{%
-%   David S.~Hippocampus \\
-%   Department of Computer Science\\
-%   Cranberry-Lemon University\\
-%   Pittsburgh, PA 15213 \\
-%   \texttt{hippo@cs.cranberry-lemon.edu} \\
-%   % examples of more authors
-%   % \And
-%   % Coauthor \\
-%   % Affiliation \\
-%   % Address \\
-%   % \texttt{email} \\
-%   % \AND
-%   % Coauthor \\
-%   % Affiliation \\
-%   % Address \\
-%   % \texttt{email} \\
-%   % \And
-%   % Coauthor \\
-%   % Affiliation \\
-%   % Address \\
-%   % \texttt{email} \\
-%   % \And
-%   % Coauthor \\
-%   % Affiliation \\
-%   % Address \\
-%   % \texttt{email} \\
-% }
+$if(numbersections)$
+\setcounter{secnumdepth}{$if(secnumdepth)$$secnumdepth$$else$5$endif$}
+$else$
+\setcounter{secnumdepth}{-\maxdimen} % suppress auto numbering: notes carry their own
+$endif$
+
+$for(header-includes)$
+$header-includes$
+$endfor$
 
 
 \begin{document}
@@ -152,31 +163,11 @@ $endfor$
 \maketitle
 
 
+$if(abstract)$
 \begin{abstract}
-  $if(abstract)$
   $abstract$
-  $else$
-  Add your abstract at the beginning of your markdown file like this 
-  \begin{verbatim}
-  --- 
-  title: "Your Title" 
-  abstract: "your abstract here"
-  authors:
-  - name: Leonardo V. Castorina
-    affiliation: School of Informatics
-    institution: University of Edinburgh
-    email: justanemail@domain.ext
-    address: Edinburgh
-  - name: Coauthor
-    affiliation: Affiliation
-    institution: Institution
-    email: coauthor@example.com
-    address: Address
-  ---
-  \end{verbatim}
-  This is called YAML frontmatter. If you set your abstract correctly you should not see this message.
-  $endif$
 \end{abstract}
+$endif$
 
 
 $body$

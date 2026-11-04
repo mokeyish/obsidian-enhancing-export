@@ -1,5 +1,6 @@
 import export_templates from './export_templates';
 import { setPlatformValue, PlatformValue, renderTemplate, getPlatformValue } from './utils';
+import { buildPath } from './shellenv';
 import type { PropertyGridMeta } from './ui/components/PropertyGrid';
 
 /*
@@ -38,6 +39,14 @@ export interface Variables extends Record<string, unknown> {
   env?: Record<string, string>;
 }
 
+export interface DocumentInfo {
+  title?: string;
+  author?: string;
+  institute?: string;
+  date?: string;
+  keywords?: string;
+}
+
 export interface UniversalExportPluginSettings {
   version?: string;
   pandocPath?: PlatformValue<string>;
@@ -55,7 +64,23 @@ export interface UniversalExportPluginSettings {
   lastExportDirectory?: PlatformValue<string>;
   lastExportType?: string;
 
+  /** Paper metadata the user filled in the export dialog, reused as defaults. */
+  lastDocumentInfo?: DocumentInfo;
+
   showExportProgressBar?: boolean;
+
+  // Multilingual font fallback. When enabled (the default), export templates
+  // that do not configure fonts automatically fall back to fonts available on
+  // the current machine, for every writing system found in the document.
+  enableFontFallback?: boolean;
+  fallbackFonts?: string;
+
+  // Render mermaid / plantuml / graphviz code blocks into images.
+  renderDiagrams?: boolean;
+  diagramScale?: number;
+  mmdcPath?: PlatformValue<string>;
+  plantumlPath?: PlatformValue<string>;
+  dotPath?: PlatformValue<string>;
 }
 
 export type OptionsMeta = {
@@ -96,8 +121,10 @@ export const PRESET_OPTIONS_META: PropertyGridMeta = {
     type: 'dropdown',
     options: [
       { name: 'None', value: null },
-      { name: 'Dissertation', value: 'dissertation.tex' },
-      { name: 'Academic Paper', value: 'neurips.tex' },
+      { name: 'Chinese Thesis', value: 'chinese-thesis.tex' },
+      { name: 'IEEE', value: 'ieee.tex' },
+      { name: 'LNCS', value: 'lncs.tex' },
+      { name: 'NeurIPS', value: 'neurips.tex' },
     ],
   },
 };
@@ -123,13 +150,8 @@ export const DEFAULT_ENV = (() => {
     'win32' // available for windows only.
   );
 
-  env = setPlatformValue(
-    env,
-    {
-      'PATH': '/opt/homebrew/bin:/usr/local/bin:/Library/TeX/texbin:${PATH}', // Add HomebrewBin and TexBin. see: https://docs.brew.sh/Installation
-    },
-    'darwin' // for MacOS only.
-  );
+  // macOS / Linux: the real PATH is resolved from the login shell at runtime
+  // (see src/shellenv.ts) instead of hard coding installation directories.
 
   return env;
 })();
@@ -141,6 +163,9 @@ export const DEFAULT_SETTINGS: UniversalExportPluginSettings = {
   openExportedFile: true,
   env: DEFAULT_ENV,
   showExportProgressBar: true,
+  enableFontFallback: true,
+  renderDiagrams: true,
+  diagramScale: 3,
 };
 
 export function extractDefaultExtension(s: ExportSetting): string {
@@ -154,7 +179,15 @@ export function extractDefaultExtension(s: ExportSetting): string {
 
 export function createEnv(env: Record<string, string>, envVars?: Record<string, unknown>) {
   env = Object.assign({}, getPlatformValue(DEFAULT_ENV), env);
-  envVars = Object.assign({ HOME: process.env['HOME'] ?? process.env['USERPROFILE'] }, process.env, envVars ?? {});
+  // PATH from the login shell (resolved at load time) + process PATH + fallbacks,
+  // so pandoc / xelatex / mmdc are found even when Obsidian was started from the GUI.
+  const resolvedPath = buildPath(process.env['PATH']);
+  envVars = Object.assign({ HOME: process.env['HOME'] ?? process.env['USERPROFILE'] }, process.env, { PATH: resolvedPath }, envVars ?? {});
+  // Ensure the locale is set: without LANG, UTF-8 text (Chinese etc.) passed
+  // through --metadata or the command line becomes mojibake.
+  if (!env['LANG'] && !env['LC_ALL']) {
+    env['LANG'] = process.env['LANG'] ?? 'en_US.UTF-8';
+  }
   return Object.fromEntries(Object.entries(env).map(([n, v]) => [n, renderTemplate(v, envVars)]));
 }
 

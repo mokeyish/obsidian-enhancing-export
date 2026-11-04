@@ -44,11 +44,7 @@
 \PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names,table}{xcolor}
-$if(CJKmainfont)$
 \PassOptionsToPackage{space}{xeCJK}
-\usepackage{datetime}
-
-$endif$
 %
 \documentclass[
 $if(fontsize)$
@@ -73,6 +69,7 @@ $for(classoption)$
 $endfor$
   ,captions=tableheading
 ]{$if(beamer)$$documentclass$$else$$if(book)$scrbook$else$scrartcl$endif$$endif$}
+\usepackage{datetime}
 $if(beamer)$
 $if(background-image)$
 \usebackgroundtemplate{%
@@ -139,6 +136,24 @@ $else$
 \setstretch{1.2}
 $endif$
 \usepackage{iftex}
+% Default CJK fonts. The first installed font wins, so the same template works
+% on macOS, Windows and Linux. Overridable through the `CJKmainfont`,
+% `CJKsansfont` and `CJKmonofont` metadata / front matter fields.
+\newcommand{\oeecjkdefaultmain}{%
+  \IfFontExistsTF{Songti SC}{\setCJKmainfont{Songti SC}}{%
+  \IfFontExistsTF{SimSun}{\setCJKmainfont{SimSun}}{%
+  \IfFontExistsTF{Noto Serif CJK SC}{\setCJKmainfont{Noto Serif CJK SC}}{%
+  \IfFontExistsTF{Source Han Serif SC}{\setCJKmainfont{Source Han Serif SC}}{%
+  \IfFontExistsTF{AR PL UMing CN}{\setCJKmainfont{AR PL UMing CN}}{}}}}}}
+\newcommand{\oeecjkdefaultsans}{%
+  \IfFontExistsTF{PingFang SC}{\setCJKsansfont{PingFang SC}}{%
+  \IfFontExistsTF{Microsoft YaHei}{\setCJKsansfont{Microsoft YaHei}}{%
+  \IfFontExistsTF{Noto Sans CJK SC}{\setCJKsansfont{Noto Sans CJK SC}}{%
+  \IfFontExistsTF{Heiti SC}{\setCJKsansfont{Heiti SC}}{}}}}}
+\newcommand{\oeecjkdefaultmono}{%
+  \IfFontExistsTF{Menlo}{\setCJKmonofont{Menlo}}{%
+  \IfFontExistsTF{Consolas}{\setCJKmonofont{Consolas}}{%
+  \IfFontExistsTF{Noto Sans Mono CJK SC}{\setCJKmonofont{Noto Sans Mono CJK SC}}{}}}}
 \ifPDFTeX
   \usepackage[$if(fontenc)$$fontenc$$else$T1$endif$]{fontenc}
   \usepackage[utf8]{inputenc}
@@ -211,18 +226,26 @@ $else$
   \setmathfont[$for(mathfontoptions)$$mathfontoptions$$sep$,$endfor$]{$mathfont$}
 $endif$
 $endif$
-$if(CJKmainfont)$
   \ifXeTeX
     \usepackage{xeCJK}
-    \setCJKmainfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}
+    $if(CJKmainfont)$
+    \IfFontExistsTF{$CJKmainfont$}{\setCJKmainfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}}{\oeecjkdefaultmain}
+    $else$
+    \oeecjkdefaultmain
+    $endif$
     $if(CJKsansfont)$
-      \setCJKsansfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKsansfont$}
+    \IfFontExistsTF{$CJKsansfont$}{\setCJKsansfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKsansfont$}}{\oeecjkdefaultsans}
+    $else$
+    \oeecjkdefaultsans
     $endif$
     $if(CJKmonofont)$
-      \setCJKmonofont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmonofont$}
+    \IfFontExistsTF{$CJKmonofont$}{\setCJKmonofont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmonofont$}}{\oeecjkdefaultmono}
+    $else$
+    \oeecjkdefaultmono
     $endif$
+    \ifdefined\CJKrmfamily \XeTeXlinebreaklocale "zh" \fi
+    \XeTeXlinebreakskip = 0pt plus 1pt
   \fi
-$endif$
 $if(luatexjapresetoptions)$
   \ifLuaTeX
     \usepackage[$for(luatexjapresetoptions)$$luatexjapresetoptions$$sep$,$endfor$]{luatexja-preset}
@@ -399,13 +422,11 @@ $-- also used for underline
   \usepackage[soul]{lua-ul}
 \else
 \usepackage{soul}
-$if(CJKmainfont)$
   \ifXeTeX
     % soul's \st doesn't work for CJK:
     \usepackage{xeCJKfntef}
     \renewcommand{\st}[1]{\sout{#1}}
   \fi
-$endif$
 \fi
 $endif$
 \setlength{\emergencystretch}{3em} % prevent overfull lines
@@ -565,7 +586,7 @@ $endif$
   breaklinks=true,
   pdfcreator={LaTeX via pandoc with the Eisvogel template}}
 $if(title)$
-\title{$if(title)$$title$$else$Set up Title in Frontmatter (see abstract)$endif$}
+\title{$if(title)$$title$$endif$}
 $endif$
 $if(subtitle)$
 $if(beamer)$
@@ -666,12 +687,15 @@ $endif$
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   $if(fontfamily)$
   $else$
-  \usepackage[default]{sourcesanspro}
-  \usepackage{sourcecodepro}
+  \IfFileExists{sourcesanspro.sty}{%
+    \usepackage[default]{sourcesanspro}
+    \usepackage{sourcecodepro}
+  }{}
   $endif$
 \else % if not pdftex
   $if(mainfont)$
   $else$
+  \IfFileExists{sourcesanspro.sty}{%
   \usepackage[default]{sourcesanspro}
   \usepackage{sourcecodepro}
 
@@ -693,6 +717,7 @@ $endif$
       {SourceCodePro}
     \makeatother
   \fi
+  }{}
   $endif$
 \fi
 
@@ -756,8 +781,12 @@ $endif$
 %
 % remove paragraph indentation
 %
+$if(indent)$
+% indent: true — keep first-line paragraph indentation (notes may set \parindent via header-includes)
+$else$
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt plus 2pt minus 1pt}
+$endif$
 \setlength{\emergencystretch}{3em}  % prevent overfull lines
 
 %
@@ -975,8 +1004,6 @@ $if(titlepage-background)$
   \noindent {\huge \textbf{\textsf{
   $if(title)$
     $title$
-  $else$
-    Set up Title in Frontmatter (see Abstract)
   $endif$
 }}}
   $if(subtitle)$
@@ -995,8 +1022,6 @@ $else$
   \noindent {\huge \textbf{\textsf{
   $if(title)$
     $title$
-  $else$
-    Set up Title in Frontmatter (see Abstract)
   $endif$
 }}}
   $if(subtitle)$
@@ -1066,22 +1091,6 @@ $if(has-frontmatter)$
 \begin{justify}
   $if(abstract)$
   $abstract$
-  $else$
-  Add your abstract at the beginning of your markdown file like this 
-  \begin{verbatim}
-  ---
-  title: "Your Title" 
-  abstract: "your abstract here"
-  author: Leonardo V. Castorina, Another 1, Another 2
-  titlepage-logo: /absolute/path/to/logo.pdf
-  acknowledgements: "I would like to thank my dog Data."
-  declaration: "I declare that this thesis was composed by myself."
-  ---
-  \end{verbatim}
-  This is called YAML frontmatter.  Make sure to set up a title! If you set your abstract correctly you should not see this message.
-
-  Optionally you can set up \texttt{titlepage-logo} for a logo in the cover page, \texttt{acknowledgements} section, and  \texttt{declaration} section.
-
   $endif$
 \end{justify}
 \end{abstract}

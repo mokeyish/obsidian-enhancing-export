@@ -18,6 +18,12 @@ export default {
     selectExportFolder: '请选择导出文件夹',
     overwriteConfirmation: '覆盖提示',
     extraArguments: '自定义参数',
+    documentInfo: '论文信息',
+    paperTitle: '标题',
+    author: '作者',
+    institute: '单位/机构',
+    date: '日期',
+    keywords: '关键词',
   },
   messageBox: {
     yes: '是',
@@ -63,9 +69,23 @@ export default {
     new: '新建',
     template: '模板',
 
+    fontFallback: '多语言字体',
+    enableFontFallback: '启用多语言字体回退',
+    enableFontFallbackDesc:
+      '当模板或 Front Matter 未配置字体时，自动为文档中出现的书写系统（中文、日文、韩文、西里尔、希腊、天城体、泰文等）选择系统字体，适用于 PDF、LaTeX、HTML 与 ePub。',
+    fallbackFonts: '额外回退字体',
+    fallbackFontsDesc: '以逗号分隔的字体名，会优先于内置候选字体尝试。',
+    fallbackFontPlaceholder: '（自动）',
+    diagrams: '图表',
+    renderDiagrams: '渲染 mermaid / plantuml 图表',
+    renderDiagramsDesc: '将 mermaid、plantuml、graphviz 代码块渲染为图片。需要安装 mmdc / plantuml / dot，缺失时会跳过并保留代码块。',
+    diagramScale: '位图缩放倍数',
+    diagramToolPaths: '工具路径（mmdc / plantuml / dot）',
+    toolPathPlaceholder: '（自动检测）',
+
     advanced: '高级',
     environmentVariables: '环境变量',
-    environmentVariablesDesc: '定义导出的环境变量.',
+    environmentVariablesDesc: '定义导出的环境变量。PATH 会自动从登录 shell 读取；在此设置 PATH 可覆盖它，或用 ${PATH} 追加自己的目录。',
     ShowExportProgressBar: '显示导出进度条',
   },
 } satisfies Lang;
